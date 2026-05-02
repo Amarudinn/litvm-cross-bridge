@@ -1,0 +1,42 @@
+import { WagmiProvider } from 'wagmi'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { RainbowKitProvider, darkTheme } from '@rainbow-me/rainbowkit'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { Toaster } from 'sonner'
+import { config } from './config/wagmi'
+import '@rainbow-me/rainbowkit/styles.css'
+
+import BridgePage from './pages/BridgePage'
+import HistoryPage from './pages/HistoryPage'
+import ExplorerPage from './pages/ExplorerPage'
+import Header from './components/layout/Header'
+import Footer from './components/layout/Footer'
+
+const queryClient = new QueryClient()
+
+function App() {
+  return (
+    <WagmiProvider config={config}>
+      <QueryClientProvider client={queryClient}>
+        <RainbowKitProvider theme={darkTheme({ accentColor: '#4f6ef7', borderRadius: 'medium' })}>
+          <BrowserRouter>
+            <div className="min-h-screen bg-background text-foreground flex flex-col">
+              <Header />
+              <main className="flex-1 flex flex-col">
+                <Routes>
+                  <Route path="/" element={<BridgePage />} />
+                  <Route path="/history" element={<HistoryPage />} />
+                  <Route path="/explorer" element={<ExplorerPage />} />
+                </Routes>
+              </main>
+              <Footer />
+            </div>
+            <Toaster theme="dark" position="bottom-right" />
+          </BrowserRouter>
+        </RainbowKitProvider>
+      </QueryClientProvider>
+    </WagmiProvider>
+  )
+}
+
+export default App

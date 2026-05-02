@@ -1,0 +1,183 @@
+export const bridgeVaultAbi = [
+  // Functions
+  {
+    type: 'function',
+    name: 'lock',
+    inputs: [{ name: 'recipient', type: 'address', internalType: 'address' }],
+    outputs: [],
+    stateMutability: 'payable',
+  },
+  {
+    type: 'function',
+    name: 'unlock',
+    inputs: [
+      { name: 'recipient', type: 'address', internalType: 'address' },
+      { name: 'amount', type: 'uint256', internalType: 'uint256' },
+      { name: 'processId', type: 'bytes32', internalType: 'bytes32' },
+      { name: 'sourceNonce', type: 'uint256', internalType: 'uint256' },
+    ],
+    outputs: [],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
+    name: 'feePercent',
+    inputs: [],
+    outputs: [{ name: '', type: 'uint256', internalType: 'uint256' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    name: 'minLockAmount',
+    inputs: [],
+    outputs: [{ name: '', type: 'uint256', internalType: 'uint256' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    name: 'availableBalance',
+    inputs: [],
+    outputs: [{ name: '', type: 'uint256', internalType: 'uint256' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    name: 'nonce',
+    inputs: [],
+    outputs: [{ name: '', type: 'uint256', internalType: 'uint256' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    name: 'accumulatedFees',
+    inputs: [],
+    outputs: [{ name: '', type: 'uint256', internalType: 'uint256' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    name: 'relayer',
+    inputs: [],
+    outputs: [{ name: '', type: 'address', internalType: 'address' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    name: 'owner',
+    inputs: [],
+    outputs: [{ name: '', type: 'address', internalType: 'address' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    name: 'paused',
+    inputs: [],
+    outputs: [{ name: '', type: 'bool', internalType: 'bool' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    name: 'isProcessed',
+    inputs: [
+      { name: 'processId', type: 'bytes32', internalType: 'bytes32' },
+      { name: 'sourceNonce', type: 'uint256', internalType: 'uint256' },
+    ],
+    outputs: [{ name: '', type: 'bool', internalType: 'bool' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    name: 'setRelayer',
+    inputs: [{ name: 'newRelayer', type: 'address', internalType: 'address' }],
+    outputs: [],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
+    name: 'setFeePercent',
+    inputs: [{ name: 'newFeePercent', type: 'uint256', internalType: 'uint256' }],
+    outputs: [],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
+    name: 'setMinLockAmount',
+    inputs: [{ name: 'newMinLockAmount', type: 'uint256', internalType: 'uint256' }],
+    outputs: [],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
+    name: 'withdrawFees',
+    inputs: [],
+    outputs: [],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
+    name: 'pause',
+    inputs: [],
+    outputs: [],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
+    name: 'unpause',
+    inputs: [],
+    outputs: [],
+    stateMutability: 'nonpayable',
+  },
+  // Events
+  {
+    type: 'event',
+    name: 'Locked',
+    inputs: [
+      { name: 'sender', type: 'address', indexed: true, internalType: 'address' },
+      { name: 'recipient', type: 'address', indexed: true, internalType: 'address' },
+      { name: 'amount', type: 'uint256', indexed: false, internalType: 'uint256' },
+      { name: 'fee', type: 'uint256', indexed: false, internalType: 'uint256' },
+      { name: 'nonce', type: 'uint256', indexed: false, internalType: 'uint256' },
+    ],
+  },
+  {
+    type: 'event',
+    name: 'Unlocked',
+    inputs: [
+      { name: 'recipient', type: 'address', indexed: true, internalType: 'address' },
+      { name: 'amount', type: 'uint256', indexed: false, internalType: 'uint256' },
+      { name: 'processId', type: 'bytes32', indexed: true, internalType: 'bytes32' },
+    ],
+  },
+  {
+    type: 'event',
+    name: 'RelayerUpdated',
+    inputs: [
+      { name: 'oldRelayer', type: 'address', indexed: true, internalType: 'address' },
+      { name: 'newRelayer', type: 'address', indexed: true, internalType: 'address' },
+    ],
+  },
+  {
+    type: 'event',
+    name: 'FeePercentUpdated',
+    inputs: [
+      { name: 'oldFeePercent', type: 'uint256', indexed: false, internalType: 'uint256' },
+      { name: 'newFeePercent', type: 'uint256', indexed: false, internalType: 'uint256' },
+    ],
+  },
+  {
+    type: 'event',
+    name: 'FeesWithdrawn',
+    inputs: [
+      { name: 'owner', type: 'address', indexed: true, internalType: 'address' },
+      { name: 'amount', type: 'uint256', indexed: false, internalType: 'uint256' },
+    ],
+  },
+  {
+    type: 'event',
+    name: 'MinLockAmountUpdated',
+    inputs: [
+      { name: 'oldMinLockAmount', type: 'uint256', indexed: false, internalType: 'uint256' },
+      { name: 'newMinLockAmount', type: 'uint256', indexed: false, internalType: 'uint256' },
+    ],
+  },
+] as const

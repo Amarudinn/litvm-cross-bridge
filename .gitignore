@@ -1,0 +1,28 @@
+# Dependencies
+node_modules/
+
+# Environment files
+.env
+.env.local
+
+# Build outputs
+contracts/out/
+contracts/cache/
+contracts/broadcast/
+frontend/dist/
+
+# Database
+relayer/data/*.db
+relayer/data/*.db-shm
+relayer/data/*.db-wal
+
+# Logs
+relayer/data/*.log
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db

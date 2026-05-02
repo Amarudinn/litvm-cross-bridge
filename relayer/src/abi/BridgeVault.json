@@ -1,0 +1,58 @@
+[
+  {
+    "type": "event",
+    "name": "Locked",
+    "inputs": [
+      { "name": "sender", "type": "address", "indexed": true },
+      { "name": "recipient", "type": "address", "indexed": true },
+      { "name": "amount", "type": "uint256", "indexed": false },
+      { "name": "fee", "type": "uint256", "indexed": false },
+      { "name": "nonce", "type": "uint256", "indexed": false }
+    ]
+  },
+  {
+    "type": "event",
+    "name": "Unlocked",
+    "inputs": [
+      { "name": "recipient", "type": "address", "indexed": true },
+      { "name": "amount", "type": "uint256", "indexed": false },
+      { "name": "processId", "type": "bytes32", "indexed": true }
+    ]
+  },
+  {
+    "type": "function",
+    "name": "unlock",
+    "inputs": [
+      { "name": "_recipient", "type": "address" },
+      { "name": "_amount", "type": "uint256" },
+      { "name": "_burnTxHash", "type": "bytes32" },
+      { "name": "_sourceNonce", "type": "uint256" }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "nonce",
+    "inputs": [],
+    "outputs": [{ "name": "", "type": "uint256" }],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "isProcessed",
+    "inputs": [
+      { "name": "_burnTxHash", "type": "bytes32" },
+      { "name": "_sourceNonce", "type": "uint256" }
+    ],
+    "outputs": [{ "name": "", "type": "bool" }],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "availableBalance",
+    "inputs": [],
+    "outputs": [{ "name": "", "type": "uint256" }],
+    "stateMutability": "view"
+  }
+]

@@ -1,0 +1,12 @@
+# Compiler files
+cache/
+out/
+
+# Environment
+.env
+
+# Ignores development broadcast logs
+broadcast/
+
+# Docs
+docs/
