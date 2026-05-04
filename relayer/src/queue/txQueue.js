@@ -102,6 +102,34 @@ export class TxQueue {
   }
 
   /**
+   * Get pending MINT transactions (for Sepolia execution)
+   * @param {number} limit - Max number of transactions to return
+   */
+  getPendingMint(limit = 3) {
+    const stmt = this.db.prepare(`
+      SELECT * FROM transactions
+      WHERE type = 'MINT' AND status IN ('PENDING', 'RETRYING')
+      ORDER BY created_at ASC
+      LIMIT ?
+    `);
+    return stmt.all(limit);
+  }
+
+  /**
+   * Get pending UNLOCK transactions (for LiteForge execution)
+   * @param {number} limit - Max number of transactions to return
+   */
+  getPendingUnlock(limit = 3) {
+    const stmt = this.db.prepare(`
+      SELECT * FROM transactions
+      WHERE type = 'UNLOCK' AND status IN ('PENDING', 'RETRYING')
+      ORDER BY created_at ASC
+      LIMIT ?
+    `);
+    return stmt.all(limit);
+  }
+
+  /**
    * Mark transaction as executing
    */
   markExecuting(id) {

@@ -9,9 +9,10 @@
     "dev": "node --watch src/index.js"
   },
   "dependencies": {
-    "ethers": "^6.13.0",
+    "@supabase/supabase-js": "^2.105.1",
     "better-sqlite3": "^11.0.0",
     "dotenv": "^16.4.0",
+    "ethers": "^6.13.0",
     "winston": "^3.14.0"
   },
   "engines": {

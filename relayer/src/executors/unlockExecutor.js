@@ -2,12 +2,15 @@ import { ethers } from 'ethers';
 import { config } from '../config.js';
 import { getLiteforgeWallet } from '../utils/provider.js';
 import { logger } from '../utils/logger.js';
+import { completeBridgeTransaction } from '../utils/supabase.js';
 import BridgeVaultABI from '../abi/BridgeVault.json' with { type: 'json' };
 
 /**
  * Unlock Executor
  * Executes unlock() on BridgeVault contract on LiteForge
  * when wzkLTC is burned on Sepolia.
+ *
+ * Supports batch execution with manual nonce management for concurrency.
  */
 export class UnlockExecutor {
   constructor(txQueue) {
@@ -21,18 +24,39 @@ export class UnlockExecutor {
   }
 
   /**
-   * Execute an unlock transaction
-   * @param {Object} tx - Transaction from queue
-   * @returns {string|null} - Destination tx hash or null on failure
+   * Execute a batch of unlock transactions in parallel with manual nonce management
+   * @param {Object[]} txs - Array of transactions from queue
    */
-  async execute(tx) {
+  async executeBatch(txs) {
+    if (!txs.length) return;
+
+    // Get base nonce once for the whole batch
+    const baseNonce = await this.wallet.getNonce('pending');
+
+    logger.info(`[UNLOCK Worker] Processing batch of ${txs.length} transactions (baseNonce: ${baseNonce})`);
+
+    const results = await Promise.allSettled(
+      txs.map((tx, i) => this._executeSingle(tx, baseNonce + i))
+    );
+
+    results.forEach((result, i) => {
+      if (result.status === 'rejected') {
+        logger.error(`[UNLOCK Worker] Batch item failed`, { id: txs[i].id, error: result.reason?.message });
+      }
+    });
+  }
+
+  /**
+   * Execute a single unlock transaction with a specific nonce
+   */
+  async _executeSingle(tx, nonce) {
     const { id, source_tx_hash, source_nonce, recipient, amount } = tx;
 
     logger.info(`Executing UNLOCK`, {
       id,
       recipient: recipient.slice(0, 10) + '...',
       amount: ethers.formatEther(amount),
-      sourceTxHash: source_tx_hash.slice(0, 10) + '...',
+      nonce,
     });
 
     try {
@@ -41,6 +65,7 @@ export class UnlockExecutor {
       if (isProcessed) {
         logger.warn(`Unlock already processed on-chain, marking completed`, { id });
         this.txQueue.markCompleted(id, 'already_processed');
+        await completeBridgeTransaction(source_tx_hash, source_nonce, 'already_processed');
         return 'already_processed';
       }
 
@@ -53,15 +78,15 @@ export class UnlockExecutor {
       // Mark as executing
       this.txQueue.markExecuting(id);
 
-      // Execute unlock transaction
+      // Execute unlock transaction with manual nonce
       const unlockTx = await this.contract.unlock(
         recipient,
         amount,
         source_tx_hash,
         source_nonce,
         {
-          // Gas settings
           gasLimit: 100000,
+          nonce,
         }
       );
 
@@ -72,6 +97,7 @@ export class UnlockExecutor {
 
       if (receipt.status === 1) {
         this.txQueue.markCompleted(id, unlockTx.hash);
+        await completeBridgeTransaction(source_tx_hash, source_nonce, unlockTx.hash);
         logger.info(`Unlock CONFIRMED`, {
           id,
           txHash: unlockTx.hash,
@@ -87,5 +113,13 @@ export class UnlockExecutor {
       this.txQueue.markFailed(id, errorMsg);
       return null;
     }
+  }
+
+  /**
+   * Backward-compatible single execute method
+   */
+  async execute(tx) {
+    const nonce = await this.wallet.getNonce('pending');
+    return this._executeSingle(tx, nonce);
   }
 }

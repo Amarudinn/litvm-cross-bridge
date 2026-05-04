@@ -2,6 +2,7 @@ import { ethers } from 'ethers';
 import { config } from '../config.js';
 import { getSepoliaProvider } from '../utils/provider.js';
 import { logger } from '../utils/logger.js';
+import { saveBridgeTransaction } from '../utils/supabase.js';
 import WrappedZkLTCABI from '../abi/WrappedZkLTC.json' with { type: 'json' };
 
 /**
@@ -124,6 +125,21 @@ export class SepoliaListener {
       sourceNonce: Number(nonce),
       recipient,
       amount: amount.toString(),
+    });
+
+    // Save to Supabase as pending
+    await saveBridgeTransaction({
+      direction: 'sepolia_to_liteforge',
+      source_tx_hash: txHash,
+      source_chain_id: 11155111,
+      source_block: blockNumber,
+      source_nonce: Number(nonce),
+      dest_chain_id: 4441,
+      sender: sender,
+      recipient: recipient,
+      amount: amount.toString(),
+      fee: fee.toString(),
+      status: 'pending',
     });
   }
 }

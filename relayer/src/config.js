@@ -27,6 +27,14 @@ export const config = {
   confirmationBlocks: parseInt(process.env.CONFIRMATION_BLOCKS || '3'),
   maxRetries: parseInt(process.env.MAX_RETRIES || '5'),
 
+  // Concurrency settings
+  mintConcurrency: parseInt(process.env.MINT_CONCURRENCY || '3'),
+  unlockConcurrency: parseInt(process.env.UNLOCK_CONCURRENCY || '3'),
+
+  // Supabase (optional - for indexing)
+  supabaseUrl: process.env.SUPABASE_URL || '',
+  supabaseServiceKey: process.env.SUPABASE_SERVICE_KEY || '',
+
   // Database
   dbPath: process.env.DB_PATH || './data/relayer.db',
 };

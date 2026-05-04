@@ -56,7 +56,7 @@ export function WalletButton() {
       >
         <img src={chainIcon} alt={chainName} className="w-5 h-5 rounded-full" />
         <span className="hidden sm:inline text-foreground">{shortenAddress(address!)}</span>
-        <ChevronDown className={cn('h-3.5 w-3.5 text-muted-foreground transition-transform', open && 'rotate-180')} />
+        <ChevronDown className={cn('h-3.5 w-3.5 text-muted-foreground transition-transform hidden md:block', open && 'rotate-180')} />
       </button>
 
       {open && (
