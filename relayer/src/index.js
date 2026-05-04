@@ -6,6 +6,7 @@ import { LiteforgeListener } from './listeners/liteforgeListener.js';
 import { SepoliaListener } from './listeners/sepoliaListener.js';
 import { MintExecutor } from './executors/mintExecutor.js';
 import { UnlockExecutor } from './executors/unlockExecutor.js';
+import { startAdminApi } from './admin/adminApi.js';
 
 /**
  * LitVM Bridge Relayer
@@ -22,6 +23,7 @@ let liteforgeListener;
 let sepoliaListener;
 let mintExecutor;
 let unlockExecutor;
+let adminServer;
 let retryTimer;
 let statsTimer;
 let shuttingDown = false;
@@ -128,6 +130,9 @@ async function shutdown(signal) {
   if (retryTimer) clearInterval(retryTimer);
   if (statsTimer) clearInterval(statsTimer);
 
+  // Stop admin API
+  if (adminServer) adminServer.close();
+
   // Close database
   if (txQueue) txQueue.close();
 
@@ -192,6 +197,9 @@ async function main() {
 
   // Log stats every 60 seconds
   statsTimer = setInterval(logStats, 60000);
+
+  // Start admin API
+  adminServer = startAdminApi(txQueue);
 
   logger.info('Relayer is running!');
   logger.info(`Poll interval: ${config.pollIntervalMs}ms`);

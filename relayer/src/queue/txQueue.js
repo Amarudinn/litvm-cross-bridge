@@ -223,6 +223,41 @@ export class TxQueue {
   }
 
   /**
+   * Find transaction by source tx hash
+   */
+  getTransactionByHash(sourceTxHash) {
+    const stmt = this.db.prepare('SELECT * FROM transactions WHERE source_tx_hash = ?');
+    return stmt.all(sourceTxHash);
+  }
+
+  /**
+   * Get all transactions (with optional status filter, ordered by newest first)
+   */
+  getAllTransactions(status = null, limit = 50) {
+    if (status) {
+      const stmt = this.db.prepare('SELECT * FROM transactions WHERE status = ? ORDER BY created_at DESC LIMIT ?');
+      return stmt.all(status, limit);
+    }
+    const stmt = this.db.prepare('SELECT * FROM transactions ORDER BY created_at DESC LIMIT ?');
+    return stmt.all(limit);
+  }
+
+  /**
+   * Force retry a specific transaction (reset retries, set to RETRYING)
+   */
+  forceRetry(id) {
+    const tx = this.getTransaction(id);
+    if (!tx) return null;
+    const stmt = this.db.prepare(`
+      UPDATE transactions
+      SET status = 'RETRYING', retries = 0, error = NULL, updated_at = datetime('now')
+      WHERE id = ?
+    `);
+    stmt.run(id);
+    return this.getTransaction(id);
+  }
+
+  /**
    * Get transaction stats
    */
   getStats() {

@@ -1,11 +1,15 @@
-import { ArrowRight, ExternalLink, Clock, CheckCircle2, XCircle } from 'lucide-react'
+import { useState } from 'react'
+import { ArrowRight, ExternalLink, Clock, CheckCircle2, XCircle, ChevronLeft, ChevronRight } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
+import { cn } from '@/lib/utils'
 import { formatAmount, shortenTxHash, getExplorerUrl, timeAgo } from '@/lib/format'
 import type { BridgeTransaction } from '@/hooks/useBridgeEvents'
 
 interface HistoryTableProps {
   transactions: BridgeTransaction[]
 }
+
+const PAGE_SIZE = 10
 
 function DirectionLabel({ direction }: { direction: BridgeTransaction['direction'] }) {
   if (direction === 'liteforge_to_sepolia') {
@@ -94,7 +98,47 @@ function TransactionCard({ tx }: { tx: BridgeTransaction }) {
   )
 }
 
+function Pagination({ page, totalPages, setPage }: { page: number; totalPages: number; setPage: (fn: (p: number) => number) => void }) {
+  return (
+    <div className="flex justify-center pt-2">
+      <div className="flex items-center gap-1 bg-muted/30 rounded-xl p-1">
+        <button
+          onClick={() => setPage((p) => Math.max(0, p - 1))}
+          disabled={page === 0}
+          className={cn(
+            'px-3 py-1.5 rounded-lg text-xs md:text-sm font-medium transition-all whitespace-nowrap inline-flex items-center',
+            page === 0
+              ? 'text-muted-foreground/40 cursor-not-allowed'
+              : 'text-muted-foreground hover:text-foreground cursor-pointer'
+          )}
+        >
+          <ChevronLeft className="h-3.5 w-3.5 mr-1" />
+          Prev
+        </button>
+        <span className="px-3 py-1.5 text-xs md:text-sm font-medium text-primary bg-primary/15 rounded-lg shadow-sm">
+          {page + 1} / {totalPages}
+        </span>
+        <button
+          onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
+          disabled={page >= totalPages - 1}
+          className={cn(
+            'px-3 py-1.5 rounded-lg text-xs md:text-sm font-medium transition-all whitespace-nowrap inline-flex items-center',
+            page >= totalPages - 1
+              ? 'text-muted-foreground/40 cursor-not-allowed'
+              : 'text-muted-foreground hover:text-foreground cursor-pointer'
+          )}
+        >
+          Next
+          <ChevronRight className="h-3.5 w-3.5 ml-1" />
+        </button>
+      </div>
+    </div>
+  )
+}
+
 export function HistoryTable({ transactions }: HistoryTableProps) {
+  const [page, setPage] = useState(0)
+
   if (transactions.length === 0) {
     return (
       <div className="text-center py-12">
@@ -107,11 +151,14 @@ export function HistoryTable({ transactions }: HistoryTableProps) {
     )
   }
 
+  const totalPages = Math.max(1, Math.ceil(transactions.length / PAGE_SIZE))
+  const paginatedTxs = transactions.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE)
+
   return (
-    <>
+    <div className="space-y-3">
       {/* Mobile: Card layout */}
       <div className="md:hidden space-y-3">
-        {transactions.map((tx) => (
+        {paginatedTxs.map((tx) => (
           <TransactionCard key={tx.id} tx={tx} />
         ))}
       </div>
@@ -142,7 +189,7 @@ export function HistoryTable({ transactions }: HistoryTableProps) {
             </tr>
           </thead>
           <tbody className="divide-y divide-border/30">
-            {transactions.map((tx) => (
+            {paginatedTxs.map((tx) => (
               <tr key={tx.id} className="hover:bg-muted/30 transition-colors">
                 <td className="py-3 px-4">
                   <DirectionLabel direction={tx.direction} />
@@ -182,6 +229,11 @@ export function HistoryTable({ transactions }: HistoryTableProps) {
           </tbody>
         </table>
       </div>
-    </>
+
+      {/* Pagination */}
+      {transactions.length > PAGE_SIZE && (
+        <Pagination page={page} totalPages={totalPages} setPage={setPage} />
+      )}
+    </div>
   )
 }

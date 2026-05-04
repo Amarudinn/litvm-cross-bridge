@@ -46,6 +46,10 @@ export const config = {
 
   // Database
   dbPath: process.env.DB_PATH || './data/relayer.db',
+
+  // Admin API
+  adminPort: parseInt(process.env.ADMIN_PORT || '3001'),
+  adminApiKey: process.env.ADMIN_API_KEY || '',
 };
 
 /**

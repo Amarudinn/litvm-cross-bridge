@@ -1,7 +1,6 @@
 import { useState, useMemo } from 'react'
 import { ArrowRight, ExternalLink, Clock, CheckCircle2, XCircle, Search, ChevronLeft, ChevronRight } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { formatAmount, shortenTxHash, shortenAddress, getExplorerUrl, timeAgo } from '@/lib/format'
 import { cn } from '@/lib/utils'
@@ -282,31 +281,37 @@ export function ExplorerTable({ transactions }: ExplorerTableProps) {
 
       {/* Pagination */}
       {filteredTransactions.length > PAGE_SIZE && (
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-2 pt-2">
-          <p className="text-xs sm:text-sm text-muted-foreground">
-            Showing {page * PAGE_SIZE + 1}-
-            {Math.min((page + 1) * PAGE_SIZE, filteredTransactions.length)} of{' '}
-            {filteredTransactions.length}
-          </p>
-          <div className="flex gap-2">
-            <Button
-              variant="outline"
-              size="sm"
+        <div className="flex justify-center pt-2">
+          <div className="flex items-center gap-1 bg-muted/30 rounded-xl p-1">
+            <button
               onClick={() => setPage((p) => Math.max(0, p - 1))}
               disabled={page === 0}
+              className={cn(
+                'px-3 py-1.5 rounded-lg text-xs md:text-sm font-medium transition-all whitespace-nowrap inline-flex items-center',
+                page === 0
+                  ? 'text-muted-foreground/40 cursor-not-allowed'
+                  : 'text-muted-foreground hover:text-foreground cursor-pointer'
+              )}
             >
-              <ChevronLeft className="h-4 w-4" />
+              <ChevronLeft className="h-3.5 w-3.5 mr-1" />
               Prev
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
+            </button>
+            <span className="px-3 py-1.5 text-xs md:text-sm font-medium text-primary bg-primary/15 rounded-lg shadow-sm">
+              {page + 1} / {totalPages}
+            </span>
+            <button
               onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
               disabled={page >= totalPages - 1}
+              className={cn(
+                'px-3 py-1.5 rounded-lg text-xs md:text-sm font-medium transition-all whitespace-nowrap inline-flex items-center',
+                page >= totalPages - 1
+                  ? 'text-muted-foreground/40 cursor-not-allowed'
+                  : 'text-muted-foreground hover:text-foreground cursor-pointer'
+              )}
             >
               Next
-              <ChevronRight className="h-4 w-4" />
-            </Button>
+              <ChevronRight className="h-3.5 w-3.5 ml-1" />
+            </button>
           </div>
         </div>
       )}

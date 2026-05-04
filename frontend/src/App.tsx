@@ -9,6 +9,7 @@ import '@rainbow-me/rainbowkit/styles.css'
 import BridgePage from './pages/BridgePage'
 import HistoryPage from './pages/HistoryPage'
 import ExplorerPage from './pages/ExplorerPage'
+import AdminPage from './pages/AdminPage'
 import Header from './components/layout/Header'
 
 const queryClient = new QueryClient()
@@ -26,6 +27,7 @@ function App() {
                   <Route path="/" element={<BridgePage />} />
                   <Route path="/history" element={<HistoryPage />} />
                   <Route path="/explorer" element={<ExplorerPage />} />
+                  <Route path="/admin" element={<AdminPage />} />
                 </Routes>
               </main>
             </div>
