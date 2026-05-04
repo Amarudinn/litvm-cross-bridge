@@ -33,8 +33,9 @@ export default function ExplorerPage() {
 
         {/* Transactions Table */}
         <div className="relative">
-          <div className="absolute -inset-[1px] rounded-2xl bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 opacity-15 animate-border-spin" />
-          <Card className="relative rounded-2xl border-0 bg-card shadow-xl">
+          <div className="absolute -inset-[1px] rounded-2xl bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 opacity-20 group-hover:opacity-40 transition-opacity duration-500 animate-border-spin" />
+          <div className="absolute -inset-[1px] rounded-2xl bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 opacity-10 blur-md group-hover:opacity-25 transition-opacity duration-500 animate-border-spin" />
+          <Card className="relative rounded-2xl border-0 bg-card shadow-2xl group">
             <CardContent className="p-4 md:p-5">
               {isLoading ? (
                 <div className="space-y-3">

@@ -118,7 +118,7 @@ const DialogContent = React.forwardRef<HTMLDivElement, DialogContentProps>(
               exit={{ opacity: 0, scale: 0.95 }}
               transition={{ duration: 0.2, ease: "easeOut" }}
               className={cn(
-                "relative z-50 grid w-full max-w-lg gap-4 border bg-background p-6 shadow-lg sm:rounded-lg",
+                "relative z-50 grid w-[calc(100%-2rem)] max-w-lg gap-4 border bg-background p-4 sm:p-6 shadow-lg rounded-lg mx-auto",
                 className,
               )}
             >

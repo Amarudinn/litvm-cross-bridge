@@ -10,7 +10,6 @@ import BridgePage from './pages/BridgePage'
 import HistoryPage from './pages/HistoryPage'
 import ExplorerPage from './pages/ExplorerPage'
 import Header from './components/layout/Header'
-import Footer from './components/layout/Footer'
 
 const queryClient = new QueryClient()
 
@@ -29,7 +28,6 @@ function App() {
                   <Route path="/explorer" element={<ExplorerPage />} />
                 </Routes>
               </main>
-              <Footer />
             </div>
             <Toaster theme="dark" position="bottom-right" />
           </BrowserRouter>

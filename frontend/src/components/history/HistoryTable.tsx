@@ -43,6 +43,49 @@ function StatusBadge({ status }: { status: BridgeTransaction['status'] }) {
   )
 }
 
+function TransactionCard({ tx }: { tx: BridgeTransaction }) {
+  return (
+    <div className="rounded-xl bg-muted/20 border border-border/30 p-3.5 space-y-3">
+      {/* Row 1: Direction + Status */}
+      <div className="flex items-center justify-between">
+        <DirectionLabel direction={tx.direction} />
+        <StatusBadge status={tx.status} />
+      </div>
+      {/* Row 2: Amount + Fee */}
+      <div className="flex items-center justify-between">
+        <div>
+          <p className="text-xs text-muted-foreground mb-0.5">Amount</p>
+          <span className="font-mono text-sm font-medium">
+            {formatAmount(tx.amount)}{' '}
+            <span className="text-muted-foreground text-xs">
+              {tx.direction === 'liteforge_to_sepolia' ? 'zkLTC' : 'wzkLTC'}
+            </span>
+          </span>
+        </div>
+        <div className="text-right">
+          <p className="text-xs text-muted-foreground mb-0.5">Fee</p>
+          <span className="font-mono text-sm text-muted-foreground">
+            {formatAmount(tx.fee)}
+          </span>
+        </div>
+      </div>
+      {/* Row 3: Tx Hash */}
+      <div className="flex items-center justify-between pt-1 border-t border-border/20">
+        <span className="text-xs text-muted-foreground">Source Tx</span>
+        <a
+          href={getExplorerUrl(tx.sourceChainId, 'tx', tx.sourceTxHash)}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-1 text-xs font-mono text-blue-400 hover:text-blue-300 transition-colors"
+        >
+          {shortenTxHash(tx.sourceTxHash)}
+          <ExternalLink className="h-3 w-3" />
+        </a>
+      </div>
+    </div>
+  )
+}
+
 export function HistoryTable({ transactions }: HistoryTableProps) {
   if (transactions.length === 0) {
     return (
@@ -57,64 +100,74 @@ export function HistoryTable({ transactions }: HistoryTableProps) {
   }
 
   return (
-    <div className="overflow-x-auto">
-      <table className="w-full">
-        <thead>
-          <tr className="border-b border-border/50">
-            <th className="text-left py-3 px-4 text-xs font-medium text-muted-foreground uppercase tracking-wider">
-              Direction
-            </th>
-            <th className="text-left py-3 px-4 text-xs font-medium text-muted-foreground uppercase tracking-wider">
-              Amount
-            </th>
-            <th className="text-left py-3 px-4 text-xs font-medium text-muted-foreground uppercase tracking-wider">
-              Fee
-            </th>
-            <th className="text-left py-3 px-4 text-xs font-medium text-muted-foreground uppercase tracking-wider">
-              Status
-            </th>
-            <th className="text-left py-3 px-4 text-xs font-medium text-muted-foreground uppercase tracking-wider">
-              Source Tx
-            </th>
-          </tr>
-        </thead>
-        <tbody className="divide-y divide-border/30">
-          {transactions.map((tx) => (
-            <tr key={tx.id} className="hover:bg-muted/30 transition-colors">
-              <td className="py-3 px-4">
-                <DirectionLabel direction={tx.direction} />
-              </td>
-              <td className="py-3 px-4">
-                <span className="font-mono text-sm">
-                  {formatAmount(tx.amount)}{' '}
-                  <span className="text-muted-foreground text-xs">
-                    {tx.direction === 'liteforge_to_sepolia' ? 'zkLTC' : 'wzkLTC'}
-                  </span>
-                </span>
-              </td>
-              <td className="py-3 px-4">
-                <span className="font-mono text-sm text-muted-foreground">
-                  {formatAmount(tx.fee)}
-                </span>
-              </td>
-              <td className="py-3 px-4">
-                <StatusBadge status={tx.status} />
-              </td>
-              <td className="py-3 px-4">
-                <a
-                  href={getExplorerUrl(tx.sourceChainId, 'tx', tx.sourceTxHash)}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 text-sm font-mono text-blue-400 hover:text-blue-300 transition-colors"
-                >
-                  {shortenTxHash(tx.sourceTxHash)}
-                  <ExternalLink className="h-3 w-3" />
-                </a>
-              </td>
+    <>
+      {/* Mobile: Card layout */}
+      <div className="md:hidden space-y-3">
+        {transactions.map((tx) => (
+          <TransactionCard key={tx.id} tx={tx} />
+        ))}
+      </div>
+
+      {/* Desktop: Table layout */}
+      <div className="hidden md:block overflow-x-auto">
+        <table className="w-full">
+          <thead>
+            <tr className="border-b border-border/50">
+              <th className="text-left py-3 px-4 text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                Direction
+              </th>
+              <th className="text-left py-3 px-4 text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                Amount
+              </th>
+              <th className="text-left py-3 px-4 text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                Fee
+              </th>
+              <th className="text-left py-3 px-4 text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                Status
+              </th>
+              <th className="text-left py-3 px-4 text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                Source Tx
+              </th>
             </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+          </thead>
+          <tbody className="divide-y divide-border/30">
+            {transactions.map((tx) => (
+              <tr key={tx.id} className="hover:bg-muted/30 transition-colors">
+                <td className="py-3 px-4">
+                  <DirectionLabel direction={tx.direction} />
+                </td>
+                <td className="py-3 px-4">
+                  <span className="font-mono text-sm">
+                    {formatAmount(tx.amount)}{' '}
+                    <span className="text-muted-foreground text-xs">
+                      {tx.direction === 'liteforge_to_sepolia' ? 'zkLTC' : 'wzkLTC'}
+                    </span>
+                  </span>
+                </td>
+                <td className="py-3 px-4">
+                  <span className="font-mono text-sm text-muted-foreground">
+                    {formatAmount(tx.fee)}
+                  </span>
+                </td>
+                <td className="py-3 px-4">
+                  <StatusBadge status={tx.status} />
+                </td>
+                <td className="py-3 px-4">
+                  <a
+                    href={getExplorerUrl(tx.sourceChainId, 'tx', tx.sourceTxHash)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 text-sm font-mono text-blue-400 hover:text-blue-300 transition-colors"
+                  >
+                    {shortenTxHash(tx.sourceTxHash)}
+                    <ExternalLink className="h-3 w-3" />
+                  </a>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </>
   )
 }

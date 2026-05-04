@@ -4,6 +4,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { formatAmount, shortenTxHash, shortenAddress, getExplorerUrl } from '@/lib/format'
+import { cn } from '@/lib/utils'
 import type { BridgeTransaction } from '@/hooks/useBridgeEvents'
 
 interface ExplorerTableProps {
@@ -101,35 +102,47 @@ export function ExplorerTable({ transactions }: ExplorerTableProps) {
             placeholder="Search by address..."
             value={searchAddress}
             onChange={(e) => handleSearchChange(e.target.value)}
-            className="pl-9"
+            className="pl-9 focus-visible:ring-0 focus-visible:ring-offset-0"
           />
         </div>
-        <div className="flex gap-2">
-          <Button
-            variant={directionFilter === 'all' ? 'default' : 'outline'}
-            size="sm"
+        <div className="flex gap-1 bg-muted/30 rounded-xl p-1 w-fit self-start">
+          <button
             onClick={() => handleFilterChange('all')}
+            className={cn(
+              'px-3 py-1.5 rounded-lg text-xs md:text-sm font-medium transition-all cursor-pointer whitespace-nowrap',
+              directionFilter === 'all'
+                ? 'bg-primary/15 text-primary shadow-sm'
+                : 'text-muted-foreground hover:text-foreground'
+            )}
           >
             All
-          </Button>
-          <Button
-            variant={directionFilter === 'liteforge_to_sepolia' ? 'default' : 'outline'}
-            size="sm"
+          </button>
+          <button
             onClick={() => handleFilterChange('liteforge_to_sepolia')}
+            className={cn(
+              'px-3 py-1.5 rounded-lg text-xs md:text-sm font-medium transition-all cursor-pointer whitespace-nowrap',
+              directionFilter === 'liteforge_to_sepolia'
+                ? 'bg-primary/15 text-primary shadow-sm'
+                : 'text-muted-foreground hover:text-foreground'
+            )}
           >
             LF &rarr; Sep
-          </Button>
-          <Button
-            variant={directionFilter === 'sepolia_to_liteforge' ? 'default' : 'outline'}
-            size="sm"
+          </button>
+          <button
             onClick={() => handleFilterChange('sepolia_to_liteforge')}
+            className={cn(
+              'px-3 py-1.5 rounded-lg text-xs md:text-sm font-medium transition-all cursor-pointer whitespace-nowrap',
+              directionFilter === 'sepolia_to_liteforge'
+                ? 'bg-primary/15 text-primary shadow-sm'
+                : 'text-muted-foreground hover:text-foreground'
+            )}
           >
             Sep &rarr; LF
-          </Button>
+          </button>
         </div>
       </div>
 
-      {/* Table */}
+      {/* Table / Cards */}
       {paginatedTransactions.length === 0 ? (
         <div className="text-center py-12">
           <Search className="h-12 w-12 mx-auto text-muted-foreground/50 mb-4" />
@@ -141,76 +154,122 @@ export function ExplorerTable({ transactions }: ExplorerTableProps) {
           </p>
         </div>
       ) : (
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              <tr className="border-b border-border/50">
-                <th className="text-left py-3 px-4 text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                  Sender
-                </th>
-                <th className="text-left py-3 px-4 text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                  Direction
-                </th>
-                <th className="text-left py-3 px-4 text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                  Amount
-                </th>
-                <th className="text-left py-3 px-4 text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                  Status
-                </th>
-                <th className="text-left py-3 px-4 text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                  Source Tx
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border/30">
-              {paginatedTransactions.map((tx) => (
-                <tr key={tx.id} className="hover:bg-muted/30 transition-colors">
-                  <td className="py-3 px-4">
-                    <a
-                      href={getExplorerUrl(tx.sourceChainId, 'address', tx.sender)}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="font-mono text-sm text-blue-400 hover:text-blue-300 transition-colors"
-                    >
-                      {shortenAddress(tx.sender)}
-                    </a>
-                  </td>
-                  <td className="py-3 px-4">
-                    <DirectionLabel direction={tx.direction} />
-                  </td>
-                  <td className="py-3 px-4">
-                    <span className="font-mono text-sm">
-                      {formatAmount(tx.amount)}{' '}
-                      <span className="text-muted-foreground text-xs">
-                        {tx.direction === 'liteforge_to_sepolia' ? 'zkLTC' : 'wzkLTC'}
-                      </span>
+        <>
+          {/* Mobile: Card layout */}
+          <div className="md:hidden space-y-3">
+            {paginatedTransactions.map((tx) => (
+              <div key={tx.id} className="rounded-xl bg-muted/20 border border-border/30 p-3.5 space-y-3">
+                {/* Row 1: Sender + Status */}
+                <div className="flex items-center justify-between">
+                  <a
+                    href={getExplorerUrl(tx.sourceChainId, 'address', tx.sender)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-mono text-xs text-blue-400 hover:text-blue-300 transition-colors"
+                  >
+                    {shortenAddress(tx.sender)}
+                  </a>
+                  <StatusBadge status={tx.status} />
+                </div>
+                {/* Row 2: Direction + Amount */}
+                <div className="flex items-center justify-between">
+                  <DirectionLabel direction={tx.direction} />
+                  <span className="font-mono text-sm font-medium">
+                    {formatAmount(tx.amount)}{' '}
+                    <span className="text-muted-foreground text-xs">
+                      {tx.direction === 'liteforge_to_sepolia' ? 'zkLTC' : 'wzkLTC'}
                     </span>
-                  </td>
-                  <td className="py-3 px-4">
-                    <StatusBadge status={tx.status} />
-                  </td>
-                  <td className="py-3 px-4">
-                    <a
-                      href={getExplorerUrl(tx.sourceChainId, 'tx', tx.sourceTxHash)}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 text-sm font-mono text-blue-400 hover:text-blue-300 transition-colors"
-                    >
-                      {shortenTxHash(tx.sourceTxHash)}
-                      <ExternalLink className="h-3 w-3" />
-                    </a>
-                  </td>
+                  </span>
+                </div>
+                {/* Row 3: Tx Hash */}
+                <div className="flex items-center justify-between pt-1 border-t border-border/20">
+                  <span className="text-xs text-muted-foreground">Source Tx</span>
+                  <a
+                    href={getExplorerUrl(tx.sourceChainId, 'tx', tx.sourceTxHash)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 text-xs font-mono text-blue-400 hover:text-blue-300 transition-colors"
+                  >
+                    {shortenTxHash(tx.sourceTxHash)}
+                    <ExternalLink className="h-3 w-3" />
+                  </a>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Desktop: Table layout */}
+          <div className="hidden md:block overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b border-border/50">
+                  <th className="text-left py-3 px-4 text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                    Sender
+                  </th>
+                  <th className="text-left py-3 px-4 text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                    Direction
+                  </th>
+                  <th className="text-left py-3 px-4 text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                    Amount
+                  </th>
+                  <th className="text-left py-3 px-4 text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                    Status
+                  </th>
+                  <th className="text-left py-3 px-4 text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                    Source Tx
+                  </th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody className="divide-y divide-border/30">
+                {paginatedTransactions.map((tx) => (
+                  <tr key={tx.id} className="hover:bg-muted/30 transition-colors">
+                    <td className="py-3 px-4">
+                      <a
+                        href={getExplorerUrl(tx.sourceChainId, 'address', tx.sender)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="font-mono text-sm text-blue-400 hover:text-blue-300 transition-colors"
+                      >
+                        {shortenAddress(tx.sender)}
+                      </a>
+                    </td>
+                    <td className="py-3 px-4">
+                      <DirectionLabel direction={tx.direction} />
+                    </td>
+                    <td className="py-3 px-4">
+                      <span className="font-mono text-sm">
+                        {formatAmount(tx.amount)}{' '}
+                        <span className="text-muted-foreground text-xs">
+                          {tx.direction === 'liteforge_to_sepolia' ? 'zkLTC' : 'wzkLTC'}
+                        </span>
+                      </span>
+                    </td>
+                    <td className="py-3 px-4">
+                      <StatusBadge status={tx.status} />
+                    </td>
+                    <td className="py-3 px-4">
+                      <a
+                        href={getExplorerUrl(tx.sourceChainId, 'tx', tx.sourceTxHash)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 text-sm font-mono text-blue-400 hover:text-blue-300 transition-colors"
+                      >
+                        {shortenTxHash(tx.sourceTxHash)}
+                        <ExternalLink className="h-3 w-3" />
+                      </a>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </>
       )}
 
       {/* Pagination */}
       {filteredTransactions.length > PAGE_SIZE && (
-        <div className="flex items-center justify-between pt-2">
-          <p className="text-sm text-muted-foreground">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-2 pt-2">
+          <p className="text-xs sm:text-sm text-muted-foreground">
             Showing {page * PAGE_SIZE + 1}-
             {Math.min((page + 1) * PAGE_SIZE, filteredTransactions.length)} of{' '}
             {filteredTransactions.length}

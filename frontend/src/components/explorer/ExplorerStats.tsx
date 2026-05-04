@@ -12,12 +12,13 @@ interface ExplorerStatsProps {
 interface StatCardProps {
   title: string
   value: string
+  unit?: string
   subtitle: string
   icon: React.ReactNode
   delay: number
 }
 
-function StatCard({ title, value, subtitle, icon, delay }: StatCardProps) {
+function StatCard({ title, value, unit, subtitle, icon, delay }: StatCardProps) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
@@ -29,10 +30,13 @@ function StatCard({ title, value, subtitle, icon, delay }: StatCardProps) {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-muted-foreground">{title}</p>
-              <p className="text-2xl font-bold mt-1">{value}</p>
+              <p className="text-xl font-bold mt-1">
+                {value}
+                {unit && <span className="text-sm font-medium text-muted-foreground ml-1">{unit}</span>}
+              </p>
               <p className="text-xs text-muted-foreground mt-1">{subtitle}</p>
             </div>
-            <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
+            <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
               {icon}
             </div>
           </div>
@@ -63,23 +67,25 @@ export function ExplorerStats({ stats, isLoading }: ExplorerStatsProps) {
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
       <StatCard
         title="Total Locked"
-        value={`${formatAmount(stats.totalLocked)} zkLTC`}
+        value={formatAmount(stats.totalLocked)}
+        unit="zkLTC"
         subtitle={`${stats.lockCount} transaction${stats.lockCount !== 1 ? 's' : ''}`}
-        icon={<Lock className="h-5 w-5 text-blue-400" />}
+        icon={<Lock className="h-4 w-4 text-blue-400" />}
         delay={0}
       />
       <StatCard
         title="Total Burned"
-        value={`${formatAmount(stats.totalBurned)} wzkLTC`}
+        value={formatAmount(stats.totalBurned)}
+        unit="wzkLTC"
         subtitle={`${stats.burnCount} transaction${stats.burnCount !== 1 ? 's' : ''}`}
-        icon={<Flame className="h-5 w-5 text-orange-400" />}
+        icon={<Flame className="h-4 w-4 text-orange-400" />}
         delay={0.1}
       />
       <StatCard
         title="Total Transactions"
         value={stats.totalTxCount.toString()}
         subtitle="All bridge operations"
-        icon={<Activity className="h-5 w-5 text-purple-400" />}
+        icon={<Activity className="h-4 w-4 text-purple-400" />}
         delay={0.2}
       />
     </div>

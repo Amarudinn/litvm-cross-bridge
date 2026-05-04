@@ -16,6 +16,22 @@ export function formatAmount(value: bigint, decimals = 18): string {
 }
 
 /**
+ * Format a bigint wei value in compact form for stats cards (e.g. 1.5M, 250K).
+ */
+export function formatAmountCompact(value: bigint, decimals = 18): string {
+  const formatted = formatUnits(value, decimals)
+  const num = parseFloat(formatted)
+
+  if (num === 0) return '0'
+  if (num < 0.0001) return '< 0.0001'
+  if (num < 1) return num.toFixed(4)
+  if (num < 1000) return num.toFixed(4).replace(/\.?0+$/, '')
+  if (num < 1_000_000) return `${(num / 1000).toFixed(2).replace(/\.?0+$/, '')}K`
+  if (num < 1_000_000_000) return `${(num / 1_000_000).toFixed(2).replace(/\.?0+$/, '')}M`
+  return `${(num / 1_000_000_000).toFixed(2).replace(/\.?0+$/, '')}B`
+}
+
+/**
  * Shorten an Ethereum address to 0x1234...5678 format.
  */
 export function shortenAddress(address: string): string {

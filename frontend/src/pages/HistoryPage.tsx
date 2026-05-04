@@ -77,27 +77,30 @@ export default function HistoryPage() {
         </p>
 
         {/* Filter Tabs */}
-        <div className="flex gap-1 mb-4 bg-muted/30 rounded-xl p-1 w-fit">
-          {tabs.map(tab => (
-            <button
-              key={tab.key}
-              onClick={() => setActiveTab(tab.key)}
-              className={cn(
-                'px-3 py-1.5 rounded-lg text-xs md:text-sm font-medium transition-all cursor-pointer',
-                activeTab === tab.key
-                  ? 'bg-primary/15 text-primary shadow-sm'
-                  : 'text-muted-foreground hover:text-foreground'
-              )}
-            >
-              {tab.label}
-            </button>
-          ))}
+        <div className="overflow-x-auto mb-4 -mx-4 px-4">
+          <div className="flex gap-1 bg-muted/30 rounded-xl p-1 w-fit">
+            {tabs.map(tab => (
+              <button
+                key={tab.key}
+                onClick={() => setActiveTab(tab.key)}
+                className={cn(
+                  'px-3 py-1.5 rounded-lg text-xs md:text-sm font-medium transition-all cursor-pointer whitespace-nowrap',
+                  activeTab === tab.key
+                    ? 'bg-primary/15 text-primary shadow-sm'
+                    : 'text-muted-foreground hover:text-foreground'
+                )}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
         </div>
 
         {/* Table Card */}
         <div className="relative">
-          <div className="absolute -inset-[1px] rounded-2xl bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 opacity-15 animate-border-spin" />
-          <Card className="relative rounded-2xl border-0 bg-card shadow-xl">
+          <div className="absolute -inset-[1px] rounded-2xl bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 opacity-20 group-hover:opacity-40 transition-opacity duration-500 animate-border-spin" />
+          <div className="absolute -inset-[1px] rounded-2xl bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 opacity-10 blur-md group-hover:opacity-25 transition-opacity duration-500 animate-border-spin" />
+          <Card className="relative rounded-2xl border-0 bg-card shadow-2xl group">
             <CardContent className="p-4 md:p-5">
               {isLoading ? (
                 <div className="space-y-3">
