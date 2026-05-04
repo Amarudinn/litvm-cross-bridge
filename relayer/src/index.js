@@ -146,7 +146,7 @@ async function shutdown(signal) {
 async function main() {
   console.log(`
   ╔═══════════════════════════════════════════╗
-  ║         LitVM Bridge Relayer              ║
+  ║         Multyra Bridge Relayer              ║
   ║   LiteForge (zkLTC) ↔ Sepolia (wzkLTC)   ║
   ╚═══════════════════════════════════════════╝
   `);

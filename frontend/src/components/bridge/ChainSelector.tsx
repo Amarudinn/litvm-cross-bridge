@@ -45,7 +45,7 @@ export function ChainSelector() {
         chainName={isLock ? 'LiteForge' : 'Sepolia'}
         chainIcon={isLock ? '/litvm.png' : '/eth.png'}
         token={isLock ? 'zkLTC' : 'wzkLTC'}
-        tokenIcon="/litvm.png"
+        tokenIcon="/ltc.png"
       />
 
       <div className="flex justify-center -my-1 relative z-10">
@@ -68,7 +68,7 @@ export function ChainSelector() {
         chainName={isLock ? 'Sepolia' : 'LiteForge'}
         chainIcon={isLock ? '/eth.png' : '/litvm.png'}
         token={isLock ? 'wzkLTC' : 'zkLTC'}
-        tokenIcon="/litvm.png"
+        tokenIcon="/ltc.png"
       />
     </div>
   )

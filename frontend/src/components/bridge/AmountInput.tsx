@@ -27,7 +27,7 @@ export function AmountInput() {
 
   const isLock = direction === 'lock'
   const token = isLock ? 'zkLTC' : 'wzkLTC'
-  const icon = '/litvm.png' // Both zkLTC and wzkLTC use litvm logo
+  const icon = '/ltc.png' // Both zkLTC and wzkLTC use ltc logo
 
   const currentBalance = isLock
     ? nativeBalance?.value
