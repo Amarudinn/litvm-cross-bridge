@@ -10,6 +10,8 @@ export interface BridgeStore {
     status: 'idle' | 'signing' | 'confirming' | 'relaying' | 'completed' | 'failed'
     error?: string
     sourceNonce?: bigint
+    startedAt?: number    // timestamp when tx submitted (confirming starts)
+    completedAt?: number  // timestamp when relay completed
   }
 
   setDirection: (d: 'lock' | 'burn') => void

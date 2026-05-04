@@ -21,6 +21,13 @@ export function useTransactionStatus() {
     },
   })
 
+  // Set startedAt when status moves to confirming (tx submitted to blockchain)
+  useEffect(() => {
+    if (activeTx.status === 'confirming' && !activeTx.startedAt) {
+      setActiveTx({ startedAt: Date.now() })
+    }
+  }, [activeTx.status, activeTx.startedAt, setActiveTx])
+
   // Step 2: When source tx is confirmed, extract nonce from event log and move to relaying
   useEffect(() => {
     if (isConfirmed && receipt && activeTx.status === 'confirming') {
@@ -72,7 +79,7 @@ export function useTransactionStatus() {
   // Step 4: When relay is confirmed on destination, mark as completed
   useEffect(() => {
     if (isProcessed === true && activeTx.status === 'relaying') {
-      setActiveTx({ status: 'completed' })
+      setActiveTx({ status: 'completed', completedAt: Date.now() })
     }
   }, [isProcessed, activeTx.status, setActiveTx])
 

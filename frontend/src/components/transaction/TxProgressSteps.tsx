@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { Wallet, Clock, ArrowLeftRight, Check } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -9,6 +10,23 @@ interface Step {
   label: string
   icon: React.ReactNode
   status: StepStatus
+}
+
+function ElapsedTimer({ startedAt }: { startedAt: number }) {
+  const [elapsed, setElapsed] = useState(Math.floor((Date.now() - startedAt) / 1000))
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setElapsed(Math.floor((Date.now() - startedAt) / 1000))
+    }, 1000)
+    return () => clearInterval(interval)
+  }, [startedAt])
+
+  return (
+    <span className="ml-auto text-xs font-mono text-muted-foreground">
+      {elapsed}s
+    </span>
+  )
 }
 
 export function TxProgressSteps() {
@@ -64,13 +82,21 @@ export function TxProgressSteps() {
     },
   ]
 
+  // Calculate total time when completed
+  const totalTime = activeTx.startedAt && activeTx.completedAt
+    ? Math.floor((activeTx.completedAt - activeTx.startedAt) / 1000)
+    : null
+
+  // Show live timer when confirming or relaying
+  const showTimer = activeTx.startedAt && (activeTx.status === 'confirming' || activeTx.status === 'relaying')
+
   return (
     <div className="space-y-3">
       {steps.map((step, i) => (
         <div key={i} className="flex items-center gap-3">
           <div
             className={cn(
-              'h-8 w-8 rounded-full flex items-center justify-center border-2 transition-colors',
+              'h-8 w-8 rounded-full flex items-center justify-center border-2 transition-colors shrink-0',
               step.status === 'done' && 'bg-green-500/20 border-green-500 text-green-500',
               step.status === 'active' && 'border-blue-500 text-blue-500',
               step.status === 'pending' && 'border-muted-foreground/30 text-muted-foreground/30'
@@ -99,7 +125,21 @@ export function TxProgressSteps() {
           >
             {step.label}
           </span>
-          {step.status === 'active' && (
+
+          {/* Live timer on active step (confirming or relaying) */}
+          {step.status === 'active' && showTimer && activeTx.startedAt && (
+            <ElapsedTimer startedAt={activeTx.startedAt} />
+          )}
+
+          {/* Total time on Complete step */}
+          {i === 3 && step.status === 'done' && totalTime !== null && (
+            <span className="ml-auto text-xs font-mono text-green-400">
+              {totalTime}s
+            </span>
+          )}
+
+          {/* Pulsing dot for active step (only if no timer shown) */}
+          {step.status === 'active' && !showTimer && (
             <motion.div
               className="ml-auto h-2 w-2 rounded-full bg-blue-500"
               animate={{ opacity: [1, 0.3, 1] }}
