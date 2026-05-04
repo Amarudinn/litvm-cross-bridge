@@ -13,8 +13,9 @@ export interface BridgeTransaction {
   destTxHash: `0x${string}` | null
   sourceChainId: number
   destChainId: number
-  status: 'completed' | 'pending_relay'
+  status: 'completed' | 'pending_relay' | 'failed'
   sourceBlockNumber: bigint
+  createdAt: string
 }
 
 export interface BridgeStats {
@@ -70,8 +71,9 @@ function mapTransaction(row: SupabaseTransaction): BridgeTransaction {
     destTxHash: row.dest_tx_hash ? (row.dest_tx_hash as `0x${string}`) : null,
     sourceChainId: row.source_chain_id,
     destChainId: row.dest_chain_id,
-    status: row.status === 'completed' ? 'completed' : 'pending_relay',
+    status: row.status === 'completed' ? 'completed' : row.status === 'failed' ? 'failed' : 'pending_relay',
     sourceBlockNumber: BigInt(row.source_block),
+    createdAt: row.created_at,
   }
 }
 

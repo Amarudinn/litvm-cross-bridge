@@ -1,9 +1,9 @@
 import { useState, useMemo } from 'react'
-import { ArrowRight, ExternalLink, Clock, CheckCircle2, Search, ChevronLeft, ChevronRight } from 'lucide-react'
+import { ArrowRight, ExternalLink, Clock, CheckCircle2, XCircle, Search, ChevronLeft, ChevronRight } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { formatAmount, shortenTxHash, shortenAddress, getExplorerUrl } from '@/lib/format'
+import { formatAmount, shortenTxHash, shortenAddress, getExplorerUrl, timeAgo } from '@/lib/format'
 import { cn } from '@/lib/utils'
 import type { BridgeTransaction } from '@/hooks/useBridgeEvents'
 
@@ -40,6 +40,14 @@ function StatusBadge({ status }: { status: BridgeTransaction['status'] }) {
       <Badge className="bg-green-500/20 text-green-400 border-green-500/30 hover:bg-green-500/30">
         <CheckCircle2 className="h-3 w-3 mr-1" />
         Completed
+      </Badge>
+    )
+  }
+  if (status === 'failed') {
+    return (
+      <Badge className="bg-red-500/20 text-red-400 border-red-500/30 hover:bg-red-500/30">
+        <XCircle className="h-3 w-3 mr-1" />
+        Failed
       </Badge>
     )
   }
@@ -181,9 +189,8 @@ export function ExplorerTable({ transactions }: ExplorerTableProps) {
                     </span>
                   </span>
                 </div>
-                {/* Row 3: Tx Hash */}
+                {/* Row 3: Tx Hash + Time */}
                 <div className="flex items-center justify-between pt-1 border-t border-border/20">
-                  <span className="text-xs text-muted-foreground">Source Tx</span>
                   <a
                     href={getExplorerUrl(tx.sourceChainId, 'tx', tx.sourceTxHash)}
                     target="_blank"
@@ -193,6 +200,7 @@ export function ExplorerTable({ transactions }: ExplorerTableProps) {
                     {shortenTxHash(tx.sourceTxHash)}
                     <ExternalLink className="h-3 w-3" />
                   </a>
+                  <span className="text-xs text-muted-foreground">{timeAgo(tx.createdAt)}</span>
                 </div>
               </div>
             ))}
@@ -217,6 +225,9 @@ export function ExplorerTable({ transactions }: ExplorerTableProps) {
                   </th>
                   <th className="text-left py-3 px-4 text-xs font-medium text-muted-foreground uppercase tracking-wider">
                     Source Tx
+                  </th>
+                  <th className="text-left py-3 px-4 text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                    Time
                   </th>
                 </tr>
               </thead>
@@ -257,6 +268,9 @@ export function ExplorerTable({ transactions }: ExplorerTableProps) {
                         {shortenTxHash(tx.sourceTxHash)}
                         <ExternalLink className="h-3 w-3" />
                       </a>
+                    </td>
+                    <td className="py-3 px-4">
+                      <span className="text-sm text-muted-foreground">{timeAgo(tx.createdAt)}</span>
                     </td>
                   </tr>
                 ))}

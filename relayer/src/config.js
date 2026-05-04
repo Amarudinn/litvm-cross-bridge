@@ -1,5 +1,14 @@
 import 'dotenv/config';
 
+/**
+ * Parse comma-separated RPC URLs, with fallback to legacy single URL env var.
+ */
+function parseRpcUrls(multiEnv, singleEnv, defaults) {
+  const raw = process.env[multiEnv] || process.env[singleEnv] || '';
+  const urls = raw.split(',').map(u => u.trim()).filter(Boolean);
+  return urls.length > 0 ? urls : defaults;
+}
+
 export const config = {
   // Relayer wallet
   relayerPrivateKey: process.env.RELAYER_PRIVATE_KEY,
@@ -8,7 +17,7 @@ export const config = {
   liteforge: {
     name: 'LiteForge',
     chainId: parseInt(process.env.LITEFORGE_CHAIN_ID || '4441'),
-    rpcUrl: process.env.LITEFORGE_RPC_URL || 'https://liteforge.rpc.caldera.xyz/http',
+    rpcUrls: parseRpcUrls('LITEFORGE_RPC_URLS', 'LITEFORGE_RPC_URL', ['https://liteforge.rpc.caldera.xyz/http']),
     explorerUrl: 'https://liteforge.explorer.caldera.xyz',
     bridgeVaultAddress: process.env.BRIDGE_VAULT_ADDRESS,
   },
@@ -17,7 +26,7 @@ export const config = {
   sepolia: {
     name: 'Sepolia',
     chainId: parseInt(process.env.SEPOLIA_CHAIN_ID || '11155111'),
-    rpcUrl: process.env.SEPOLIA_RPC_URL,
+    rpcUrls: parseRpcUrls('SEPOLIA_RPC_URLS', 'SEPOLIA_RPC_URL', []),
     explorerUrl: 'https://sepolia.etherscan.io',
     wrappedZkLTCAddress: process.env.WRAPPED_ZKLTC_ADDRESS,
   },
@@ -45,8 +54,8 @@ export const config = {
 export function validateConfig() {
   const required = [
     ['RELAYER_PRIVATE_KEY', config.relayerPrivateKey],
-    ['LITEFORGE_RPC_URL', config.liteforge.rpcUrl],
-    ['SEPOLIA_RPC_URL', config.sepolia.rpcUrl],
+    ['LITEFORGE_RPC_URLS', config.liteforge.rpcUrls.length > 0],
+    ['SEPOLIA_RPC_URLS', config.sepolia.rpcUrls.length > 0],
     ['BRIDGE_VAULT_ADDRESS', config.liteforge.bridgeVaultAddress],
     ['WRAPPED_ZKLTC_ADDRESS', config.sepolia.wrappedZkLTCAddress],
   ];

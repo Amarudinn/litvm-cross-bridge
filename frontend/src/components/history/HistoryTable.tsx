@@ -1,6 +1,6 @@
-import { ArrowRight, ExternalLink, Clock, CheckCircle2 } from 'lucide-react'
+import { ArrowRight, ExternalLink, Clock, CheckCircle2, XCircle } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
-import { formatAmount, shortenTxHash, getExplorerUrl } from '@/lib/format'
+import { formatAmount, shortenTxHash, getExplorerUrl, timeAgo } from '@/lib/format'
 import type { BridgeTransaction } from '@/hooks/useBridgeEvents'
 
 interface HistoryTableProps {
@@ -32,6 +32,14 @@ function StatusBadge({ status }: { status: BridgeTransaction['status'] }) {
       <Badge className="bg-green-500/20 text-green-400 border-green-500/30 hover:bg-green-500/30">
         <CheckCircle2 className="h-3 w-3 mr-1" />
         Completed
+      </Badge>
+    )
+  }
+  if (status === 'failed') {
+    return (
+      <Badge className="bg-red-500/20 text-red-400 border-red-500/30 hover:bg-red-500/30">
+        <XCircle className="h-3 w-3 mr-1" />
+        Failed
       </Badge>
     )
   }
@@ -69,9 +77,8 @@ function TransactionCard({ tx }: { tx: BridgeTransaction }) {
           </span>
         </div>
       </div>
-      {/* Row 3: Tx Hash */}
+      {/* Row 3: Tx Hash + Time */}
       <div className="flex items-center justify-between pt-1 border-t border-border/20">
-        <span className="text-xs text-muted-foreground">Source Tx</span>
         <a
           href={getExplorerUrl(tx.sourceChainId, 'tx', tx.sourceTxHash)}
           target="_blank"
@@ -81,6 +88,7 @@ function TransactionCard({ tx }: { tx: BridgeTransaction }) {
           {shortenTxHash(tx.sourceTxHash)}
           <ExternalLink className="h-3 w-3" />
         </a>
+        <span className="text-xs text-muted-foreground">{timeAgo(tx.createdAt)}</span>
       </div>
     </div>
   )
@@ -128,6 +136,9 @@ export function HistoryTable({ transactions }: HistoryTableProps) {
               <th className="text-left py-3 px-4 text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 Source Tx
               </th>
+              <th className="text-left py-3 px-4 text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                Time
+              </th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border/30">
@@ -162,6 +173,9 @@ export function HistoryTable({ transactions }: HistoryTableProps) {
                     {shortenTxHash(tx.sourceTxHash)}
                     <ExternalLink className="h-3 w-3" />
                   </a>
+                </td>
+                <td className="py-3 px-4">
+                  <span className="text-sm text-muted-foreground">{timeAgo(tx.createdAt)}</span>
                 </td>
               </tr>
             ))}

@@ -1,6 +1,6 @@
 import { ethers } from 'ethers';
 import { config } from '../config.js';
-import { getLiteforgeProvider } from '../utils/provider.js';
+import { getLiteforgeProvider, getLiteforgeRpc } from '../utils/provider.js';
 import { logger } from '../utils/logger.js';
 import { saveBridgeTransaction } from '../utils/supabase.js';
 import BridgeVaultABI from '../abi/BridgeVault.json' with { type: 'json' };
@@ -13,14 +13,18 @@ import BridgeVaultABI from '../abi/BridgeVault.json' with { type: 'json' };
 export class LiteforgeListener {
   constructor(txQueue) {
     this.txQueue = txQueue;
-    this.provider = getLiteforgeProvider();
-    this.contract = new ethers.Contract(
-      config.liteforge.bridgeVaultAddress,
-      BridgeVaultABI,
-      this.provider
-    );
+    this.rpc = getLiteforgeRpc();
     this.running = false;
     this.pollTimer = null;
+  }
+
+  /** Get a fresh contract instance using the current active provider */
+  _getContract() {
+    return new ethers.Contract(
+      config.liteforge.bridgeVaultAddress,
+      BridgeVaultABI,
+      this.rpc.getProvider()
+    );
   }
 
   /**
@@ -32,7 +36,7 @@ export class LiteforgeListener {
     // Get last processed block from DB, or start from current block
     let fromBlock = this.txQueue.getCheckpoint('liteforge');
     if (!fromBlock) {
-      fromBlock = await this.provider.getBlockNumber();
+      fromBlock = await this.rpc.withFallback(p => p.getBlockNumber());
       this.txQueue.setCheckpoint('liteforge', fromBlock);
       logger.info(`LiteForge listener starting from current block: ${fromBlock}`);
     } else {
@@ -61,7 +65,7 @@ export class LiteforgeListener {
     if (!this.running) return;
 
     try {
-      const currentBlock = await this.provider.getBlockNumber();
+      const currentBlock = await this.rpc.withFallback(p => p.getBlockNumber());
       const safeBlock = currentBlock - config.confirmationBlocks;
 
       if (fromBlock > safeBlock) {
@@ -75,11 +79,10 @@ export class LiteforgeListener {
 
       logger.debug(`LiteForge: scanning blocks ${fromBlock} - ${toBlock}`);
 
-      const events = await this.contract.queryFilter(
-        this.contract.filters.Locked(),
-        fromBlock,
-        toBlock
-      );
+      const contract = this._getContract();
+      const events = await this.rpc.withFallback(async () => {
+        return contract.queryFilter(contract.filters.Locked(), fromBlock, toBlock);
+      });
 
       for (const event of events) {
         await this._handleLockedEvent(event);

@@ -15,12 +15,17 @@ import WrappedZkLTCABI from '../abi/WrappedZkLTC.json' with { type: 'json' };
 export class MintExecutor {
   constructor(txQueue) {
     this.txQueue = txQueue;
-    this.wallet = getSepoliaWallet();
-    this.contract = new ethers.Contract(
+  }
+
+  /** Get fresh wallet & contract (picks up RPC rotation automatically) */
+  _getWalletAndContract() {
+    const wallet = getSepoliaWallet();
+    const contract = new ethers.Contract(
       config.sepolia.wrappedZkLTCAddress,
       WrappedZkLTCABI,
-      this.wallet
+      wallet
     );
+    return { wallet, contract };
   }
 
   /**
@@ -30,8 +35,10 @@ export class MintExecutor {
   async executeBatch(txs) {
     if (!txs.length) return;
 
+    const { wallet } = this._getWalletAndContract();
+
     // Get base nonce once for the whole batch
-    const baseNonce = await this.wallet.getNonce('pending');
+    const baseNonce = await wallet.getNonce('pending');
 
     logger.info(`[MINT Worker] Processing batch of ${txs.length} transactions (baseNonce: ${baseNonce})`);
 
@@ -51,6 +58,7 @@ export class MintExecutor {
    */
   async _executeSingle(tx, nonce) {
     const { id, source_tx_hash, source_nonce, recipient, amount } = tx;
+    const { contract } = this._getWalletAndContract();
 
     logger.info(`Executing MINT`, {
       id,
@@ -61,7 +69,7 @@ export class MintExecutor {
 
     try {
       // Pre-flight check: verify not already processed on-chain
-      const isProcessed = await this.contract.isProcessed(source_tx_hash, source_nonce);
+      const isProcessed = await contract.isProcessed(source_tx_hash, source_nonce);
       if (isProcessed) {
         logger.warn(`Mint already processed on-chain, marking completed`, { id });
         this.txQueue.markCompleted(id, 'already_processed');
@@ -73,7 +81,7 @@ export class MintExecutor {
       this.txQueue.markExecuting(id);
 
       // Execute mint transaction with manual nonce
-      const mintTx = await this.contract.mint(
+      const mintTx = await contract.mint(
         recipient,
         amount,
         source_tx_hash,
@@ -113,7 +121,8 @@ export class MintExecutor {
    * Backward-compatible single execute method
    */
   async execute(tx) {
-    const nonce = await this.wallet.getNonce('pending');
+    const { wallet } = this._getWalletAndContract();
+    const nonce = await wallet.getNonce('pending');
     return this._executeSingle(tx, nonce);
   }
 }

@@ -15,12 +15,17 @@ import BridgeVaultABI from '../abi/BridgeVault.json' with { type: 'json' };
 export class UnlockExecutor {
   constructor(txQueue) {
     this.txQueue = txQueue;
-    this.wallet = getLiteforgeWallet();
-    this.contract = new ethers.Contract(
+  }
+
+  /** Get fresh wallet & contract (picks up RPC rotation automatically) */
+  _getWalletAndContract() {
+    const wallet = getLiteforgeWallet();
+    const contract = new ethers.Contract(
       config.liteforge.bridgeVaultAddress,
       BridgeVaultABI,
-      this.wallet
+      wallet
     );
+    return { wallet, contract };
   }
 
   /**
@@ -30,8 +35,10 @@ export class UnlockExecutor {
   async executeBatch(txs) {
     if (!txs.length) return;
 
+    const { wallet } = this._getWalletAndContract();
+
     // Get base nonce once for the whole batch
-    const baseNonce = await this.wallet.getNonce('pending');
+    const baseNonce = await wallet.getNonce('pending');
 
     logger.info(`[UNLOCK Worker] Processing batch of ${txs.length} transactions (baseNonce: ${baseNonce})`);
 
@@ -51,6 +58,7 @@ export class UnlockExecutor {
    */
   async _executeSingle(tx, nonce) {
     const { id, source_tx_hash, source_nonce, recipient, amount } = tx;
+    const { contract } = this._getWalletAndContract();
 
     logger.info(`Executing UNLOCK`, {
       id,
@@ -61,7 +69,7 @@ export class UnlockExecutor {
 
     try {
       // Pre-flight check: verify not already processed on-chain
-      const isProcessed = await this.contract.isProcessed(source_tx_hash, source_nonce);
+      const isProcessed = await contract.isProcessed(source_tx_hash, source_nonce);
       if (isProcessed) {
         logger.warn(`Unlock already processed on-chain, marking completed`, { id });
         this.txQueue.markCompleted(id, 'already_processed');
@@ -70,7 +78,7 @@ export class UnlockExecutor {
       }
 
       // Pre-flight check: verify vault has enough balance
-      const available = await this.contract.availableBalance();
+      const available = await contract.availableBalance();
       if (BigInt(amount) > available) {
         throw new Error(`Insufficient vault balance: need ${ethers.formatEther(amount)}, available ${ethers.formatEther(available)}`);
       }
@@ -79,7 +87,7 @@ export class UnlockExecutor {
       this.txQueue.markExecuting(id);
 
       // Execute unlock transaction with manual nonce
-      const unlockTx = await this.contract.unlock(
+      const unlockTx = await contract.unlock(
         recipient,
         amount,
         source_tx_hash,
@@ -119,7 +127,8 @@ export class UnlockExecutor {
    * Backward-compatible single execute method
    */
   async execute(tx) {
-    const nonce = await this.wallet.getNonce('pending');
+    const { wallet } = this._getWalletAndContract();
+    const nonce = await wallet.getNonce('pending');
     return this._executeSingle(tx, nonce);
   }
 }

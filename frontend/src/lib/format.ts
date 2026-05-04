@@ -66,3 +66,19 @@ export function getExplorerUrl(chainId: number, type: 'tx' | 'address', value: s
 
   return `${baseUrl}/${type}/${value}`
 }
+
+/**
+ * Format a date string to relative time (e.g. "5s ago", "2m ago", "1h ago", "3d ago").
+ */
+export function timeAgo(dateString: string): string {
+  const now = Date.now()
+  const date = new Date(dateString).getTime()
+  const diff = Math.floor((now - date) / 1000)
+
+  if (diff < 5) return 'just now'
+  if (diff < 60) return `${diff}s ago`
+  if (diff < 3600) return `${Math.floor(diff / 60)}m ago`
+  if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`
+  if (diff < 2592000) return `${Math.floor(diff / 86400)}d ago`
+  return `${Math.floor(diff / 2592000)}mo ago`
+}

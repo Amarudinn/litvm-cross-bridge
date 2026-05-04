@@ -1,6 +1,6 @@
 import { ethers } from 'ethers';
 import { config } from '../config.js';
-import { getSepoliaProvider } from '../utils/provider.js';
+import { getSepoliaProvider, getSepoliaRpc } from '../utils/provider.js';
 import { logger } from '../utils/logger.js';
 import { saveBridgeTransaction } from '../utils/supabase.js';
 import WrappedZkLTCABI from '../abi/WrappedZkLTC.json' with { type: 'json' };
@@ -13,14 +13,18 @@ import WrappedZkLTCABI from '../abi/WrappedZkLTC.json' with { type: 'json' };
 export class SepoliaListener {
   constructor(txQueue) {
     this.txQueue = txQueue;
-    this.provider = getSepoliaProvider();
-    this.contract = new ethers.Contract(
-      config.sepolia.wrappedZkLTCAddress,
-      WrappedZkLTCABI,
-      this.provider
-    );
+    this.rpc = getSepoliaRpc();
     this.running = false;
     this.pollTimer = null;
+  }
+
+  /** Get a fresh contract instance using the current active provider */
+  _getContract() {
+    return new ethers.Contract(
+      config.sepolia.wrappedZkLTCAddress,
+      WrappedZkLTCABI,
+      this.rpc.getProvider()
+    );
   }
 
   /**
@@ -32,7 +36,7 @@ export class SepoliaListener {
     // Get last processed block from DB, or start from current block
     let fromBlock = this.txQueue.getCheckpoint('sepolia');
     if (!fromBlock) {
-      fromBlock = await this.provider.getBlockNumber();
+      fromBlock = await this.rpc.withFallback(p => p.getBlockNumber());
       this.txQueue.setCheckpoint('sepolia', fromBlock);
       logger.info(`Sepolia listener starting from current block: ${fromBlock}`);
     } else {
@@ -61,7 +65,7 @@ export class SepoliaListener {
     if (!this.running) return;
 
     try {
-      const currentBlock = await this.provider.getBlockNumber();
+      const currentBlock = await this.rpc.withFallback(p => p.getBlockNumber());
       const safeBlock = currentBlock - config.confirmationBlocks;
 
       if (fromBlock > safeBlock) {
@@ -75,11 +79,10 @@ export class SepoliaListener {
 
       logger.debug(`Sepolia: scanning blocks ${fromBlock} - ${toBlock}`);
 
-      const events = await this.contract.queryFilter(
-        this.contract.filters.Burned(),
-        fromBlock,
-        toBlock
-      );
+      const contract = this._getContract();
+      const events = await this.rpc.withFallback(async () => {
+        return contract.queryFilter(contract.filters.Burned(), fromBlock, toBlock);
+      });
 
       for (const event of events) {
         await this._handleBurnedEvent(event);

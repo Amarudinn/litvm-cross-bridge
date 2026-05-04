@@ -15,7 +15,7 @@ export default function ExplorerPage() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
-        className="w-full max-w-3xl mx-auto"
+        className="w-full max-w-4xl mx-auto"
       >
         {/* Header */}
         <div className="flex items-center gap-2.5 mb-1">
