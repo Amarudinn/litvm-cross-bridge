@@ -1,7 +1,11 @@
 const STORAGE_KEY = 'litvm-admin-key'
 
 export const adminConfig = {
-  apiUrl: import.meta.env.VITE_ADMIN_API_URL || 'http://localhost:3001',
+  // In production (Vercel): use /api proxy to avoid mixed content
+  // In development: use direct URL to VPS
+  apiUrl: import.meta.env.VITE_ADMIN_API_URL || '',
+  // Prefix for API calls — maps to /admin on the relayer
+  apiPrefix: import.meta.env.VITE_ADMIN_API_URL ? '/admin' : '/api/admin',
 }
 
 /**
@@ -48,7 +52,18 @@ export function extractTxHash(input: string): string {
  * Fetch helper for admin API with auth from localStorage
  */
 export async function adminFetch(endpoint: string, options: RequestInit = {}) {
-  const url = `${adminConfig.apiUrl}${endpoint}`
+  // endpoint comes as "/admin/health", "/admin/queue", etc.
+  // In dev (VITE_ADMIN_API_URL set): call VPS directly → http://VPS:3001/admin/health
+  // In prod (no VITE_ADMIN_API_URL): use Vercel proxy → /api/admin/health
+  let url: string
+  if (adminConfig.apiUrl) {
+    // Development: direct to VPS
+    url = `${adminConfig.apiUrl}${endpoint}`
+  } else {
+    // Production: proxy via Vercel (/admin/health → /api/admin/health)
+    url = `/api${endpoint}`
+  }
+
   const res = await fetch(url, {
     ...options,
     headers: {
