@@ -1,6 +1,6 @@
 {
   "rewrites": [
     { "source": "/api/admin/:path*", "destination": "http://217.216.59.121:3001/admin/:path*" },
-    { "source": "/(.*)", "destination": "/index.html" }
+    { "source": "/((?!api/).*)", "destination": "/index.html" }
   ]
 }

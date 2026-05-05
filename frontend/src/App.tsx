@@ -12,6 +12,7 @@ import ExplorerPage from './pages/ExplorerPage'
 import AdminPage from './pages/AdminPage'
 import DocsPage from './pages/DocsPage'
 import Header from './components/layout/Header'
+import { SupportWidget } from './components/support/SupportWidget'
 
 const queryClient = new QueryClient()
 
@@ -36,6 +37,7 @@ function App() {
               </main>
             </div>
             <Toaster theme="dark" position="bottom-right" />
+            <SupportWidget />
           </BrowserRouter>
         </RainbowKitProvider>
       </QueryClientProvider>
