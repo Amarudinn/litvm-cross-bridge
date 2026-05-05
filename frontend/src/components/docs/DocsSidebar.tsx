@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { ChevronDown, ChevronRight, BookOpen, Layers, FileCode, Compass, ArrowRightLeft, Map, Coins, X } from 'lucide-react'
+import { ChevronDown, ChevronRight, BookOpen, Layers, ArrowRightLeft, Map, Coins, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 interface SidebarItem {
