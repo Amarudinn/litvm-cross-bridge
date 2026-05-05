@@ -54,15 +54,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     : `https://sepolia.etherscan.io/tx/${txHash}`
 
   const telegramMessage = [
-    '*Bridge Support Report*',
+    '🚨 *Bridge Support Report*',
     '',
-    `Wallet: \`${walletAddress}\``,
-    `TX Hash: \`${txHash}\``,
-    `Explorer: [View Transaction](${explorerUrl})`,
-    network ? `Network: ${network}` : '',
-    message ? `Message: ${message}` : '',
+    `👤 Wallet: \`${walletAddress}\``,
+    `🔗 TX Hash: \`${txHash}\``,
+    `🌐 Network: ${network || 'Unknown'}`,
+    `📋 Explorer: \`${explorerUrl}\``,
+    message ? `💬 Message: ${message}` : '',
     '',
-    `Time: ${timestamp}`,
+    `🕐 Time: ${timestamp}`,
   ].filter(Boolean).join('\n')
 
   try {
