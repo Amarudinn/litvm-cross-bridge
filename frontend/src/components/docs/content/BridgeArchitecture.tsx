@@ -60,7 +60,7 @@ export function BridgeArchitecture() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
         <div className="rounded-lg border border-border/50 bg-muted/20 p-4">
-          <div className="text-xs font-semibold uppercase tracking-wider text-foreground mb-3">LiteForge (L2)</div>
+          <div className="text-xs font-semibold uppercase tracking-wider text-foreground mb-3">LiteForge (L1)</div>
           <div className="space-y-2">
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 rounded-full bg-primary/70" />
