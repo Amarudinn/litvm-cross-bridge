@@ -109,6 +109,19 @@ export function SupportWidget() {
     return `${minutes}:${seconds.toString().padStart(2, '0')}`
   }
 
+  // Extract tx hash from explorer URL or raw hash
+  const parseTxInput = (input: string): string => {
+    const trimmed = input.trim()
+    // Match explorer URL pattern: .../tx/0x...
+    const urlMatch = trimmed.match(/\/tx\/(0x[a-fA-F0-9]{64})/)
+    if (urlMatch) return urlMatch[1]
+    return trimmed
+  }
+
+  const handleTxHashChange = (value: string) => {
+    setTxHash(parseTxInput(value))
+  }
+
   const isValidTxHash = /^0x[a-fA-F0-9]{64}$/.test(txHash.trim())
   const canSubmit = isValidTxHash && address && !isSubmitting && cooldownRemaining === 0
 
@@ -246,13 +259,13 @@ export function SupportWidget() {
                           )}
 
                           <div>
-                            <label className="text-xs text-muted-foreground mb-1 block">TX Hash *</label>
+                            <label className="text-xs text-muted-foreground mb-1 block">TX Hash or Explorer Link *</label>
                             <input
                               type="text"
                               value={txHash}
-                              onChange={(e) => setTxHash(e.target.value)}
-                              placeholder="0x..."
-                              className="w-full px-3 py-2 rounded-lg bg-muted/50 border border-border/50 text-xs text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-1 focus:ring-primary/50 font-mono"
+                              onChange={(e) => handleTxHashChange(e.target.value)}
+                              placeholder="0x... or paste explorer link"
+                              className="w-full px-3 py-2 rounded-lg bg-muted/30 border border-border/40 text-xs text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-primary/40 focus:bg-muted/50 transition-colors font-mono"
                             />
                             {txHash && !isValidTxHash && (
                               <p className="text-[10px] text-destructive mt-1">Invalid TX hash format (0x + 64 hex chars)</p>
@@ -266,7 +279,7 @@ export function SupportWidget() {
                               onChange={(e) => setMessage(e.target.value)}
                               placeholder="Describe the issue..."
                               rows={2}
-                              className="w-full px-3 py-2 rounded-lg bg-muted/50 border border-border/50 text-xs text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-1 focus:ring-primary/50 resize-none"
+                              className="w-full px-3 py-2 rounded-lg bg-muted/30 border border-border/40 text-xs text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-primary/40 focus:bg-muted/50 transition-colors resize-none"
                             />
                           </div>
 
