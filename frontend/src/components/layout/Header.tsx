@@ -13,11 +13,11 @@ export default function Header() {
     { path: '#', label: 'Swap', soon: true },
     { path: '/history', label: 'History', soon: false },
     { path: '/explorer', label: 'Explorer', soon: false },
-    { path: '#', label: 'Docs', soon: true },
+    { path: '/docs', label: 'Docs', soon: false },
   ]
 
   return (
-    <header className="border-b border-border/40 backdrop-blur-sm sticky top-0 z-50 bg-background/80">
+    <header className="border-b border-border/40 backdrop-blur-sm fixed top-0 left-0 right-0 z-50 bg-background/80">
       <div className="container mx-auto px-4 h-14 flex items-center justify-between">
         {/* Logo - Left */}
         <Link to="/" className="flex items-center gap-2">
@@ -46,7 +46,7 @@ export default function Header() {
                 to={item.path}
                 className={cn(
                   'px-2.5 md:px-3 py-1.5 rounded-lg text-xs md:text-sm font-medium transition-colors',
-                  location.pathname === item.path
+                  (location.pathname === item.path || (item.path !== '/' && location.pathname.startsWith(item.path)))
                     ? 'bg-primary/10 text-primary'
                     : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
                 )}
@@ -97,7 +97,7 @@ export default function Header() {
                   onClick={() => setIsMenuOpen(false)}
                   className={cn(
                     'px-3 py-2 rounded-lg text-sm font-medium transition-colors',
-                    location.pathname === item.path
+                    (location.pathname === item.path || (item.path !== '/' && location.pathname.startsWith(item.path)))
                       ? 'bg-primary/10 text-primary'
                       : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
                   )}

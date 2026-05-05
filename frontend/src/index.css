@@ -102,3 +102,102 @@
     background-position: 100% 50%;
   }
 }
+
+/* Documentation prose styles */
+@layer components {
+  .prose-docs {
+    @apply text-foreground;
+  }
+
+  .prose-docs h1 {
+    @apply text-2xl md:text-3xl font-bold text-foreground mb-4 mt-0;
+  }
+
+  .prose-docs h2 {
+    @apply text-xl md:text-2xl font-semibold text-foreground mt-10 mb-4 pb-2 border-b border-border/50;
+  }
+
+  .prose-docs h3 {
+    @apply text-lg font-medium text-foreground mt-8 mb-3;
+  }
+
+  .prose-docs h4 {
+    @apply text-base font-medium text-foreground mt-6 mb-2;
+  }
+
+  .prose-docs p {
+    @apply text-sm leading-relaxed text-muted-foreground mb-4;
+  }
+
+  .prose-docs strong {
+    @apply text-foreground font-semibold;
+  }
+
+  .prose-docs a {
+    @apply text-primary hover:underline;
+  }
+
+  .prose-docs ul {
+    @apply list-disc pl-6 mb-4 space-y-1.5;
+  }
+
+  .prose-docs ol {
+    @apply list-decimal pl-6 mb-4 space-y-1.5;
+  }
+
+  .prose-docs li {
+    @apply text-sm text-muted-foreground;
+  }
+
+  .prose-docs code {
+    @apply bg-muted/70 text-foreground rounded px-1.5 py-0.5 font-mono text-xs;
+  }
+
+  .prose-docs pre {
+    @apply bg-muted/50 border border-border/50 rounded-lg p-4 mb-4 overflow-x-auto;
+  }
+
+  .prose-docs pre code {
+    @apply bg-transparent p-0 rounded-none text-xs leading-relaxed;
+  }
+
+  .prose-docs table {
+    @apply w-full text-sm mb-4 border-collapse;
+  }
+
+  .prose-docs thead {
+    @apply border-b border-border;
+  }
+
+  .prose-docs th {
+    @apply text-left text-xs font-semibold text-foreground uppercase tracking-wider px-3 py-2;
+  }
+
+  .prose-docs td {
+    @apply text-sm text-muted-foreground px-3 py-2.5 border-b border-border/30;
+  }
+
+  .prose-docs tbody tr:hover {
+    @apply bg-muted/20;
+  }
+
+  .prose-docs blockquote {
+    @apply border-l-2 border-primary/50 pl-4 py-1 mb-4 italic text-muted-foreground;
+  }
+
+  .prose-docs hr {
+    @apply border-border/50 my-8;
+  }
+
+  .prose-docs .callout {
+    @apply rounded-lg border border-border/50 bg-muted/20 p-4 mb-4;
+  }
+
+  .prose-docs .callout-title {
+    @apply text-sm font-semibold text-foreground mb-1 flex items-center gap-2;
+  }
+
+  .prose-docs .callout-content {
+    @apply text-sm text-muted-foreground;
+  }
+}

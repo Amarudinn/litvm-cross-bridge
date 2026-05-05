@@ -10,6 +10,7 @@ import BridgePage from './pages/BridgePage'
 import HistoryPage from './pages/HistoryPage'
 import ExplorerPage from './pages/ExplorerPage'
 import AdminPage from './pages/AdminPage'
+import DocsPage from './pages/DocsPage'
 import Header from './components/layout/Header'
 
 const queryClient = new QueryClient()
@@ -22,12 +23,15 @@ function App() {
           <BrowserRouter>
             <div className="min-h-screen bg-background text-foreground flex flex-col">
               <Header />
-              <main className="flex-1 flex flex-col">
+              <main className="flex-1 flex flex-col pt-14">
                 <Routes>
                   <Route path="/" element={<BridgePage />} />
                   <Route path="/history" element={<HistoryPage />} />
                   <Route path="/explorer" element={<ExplorerPage />} />
                   <Route path="/admin" element={<AdminPage />} />
+                  <Route path="/docs" element={<DocsPage />} />
+                  <Route path="/docs/:section" element={<DocsPage />} />
+                  <Route path="/docs/:section/:subsection" element={<DocsPage />} />
                 </Routes>
               </main>
             </div>
