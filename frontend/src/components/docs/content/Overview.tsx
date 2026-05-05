@@ -3,7 +3,7 @@ export function Overview() {
     <div className="prose-docs">
       <h1>Multyra Bridge</h1>
       <p>
-        Multyra Bridge is a cross-chain bridge connecting <strong>LiteForge</strong> (Layer 2) and <strong>Sepolia</strong> (Ethereum Testnet) using a secure <strong>Lock & Mint</strong> mechanism with an automated Relayer service.
+        Multyra Bridge is a cross-chain bridge connecting <strong>LiteForge</strong> and <strong>Sepolia</strong> (Ethereum Testnet) using a secure <strong>Lock & Mint</strong> mechanism with an automated Relayer service.
       </p>
 
       <div className="callout">
@@ -33,7 +33,7 @@ export function Overview() {
           </tr>
           <tr>
             <td>Type</td>
-            <td>Layer 2 (Caldera)</td>
+            <td>Layer 1</td>
             <td>Ethereum Testnet</td>
           </tr>
           <tr>
@@ -58,7 +58,7 @@ export function Overview() {
 
       <ul>
         <li><strong>1:1 Backing</strong> &mdash; Every wzkLTC in circulation is backed by an equal amount of zkLTC locked in the BridgeVault</li>
-        <li><strong>Low Fee</strong> &mdash; Only 0.3% per transaction (configurable up to 5% max)</li>
+        <li><strong>Low Fee</strong> &mdash; Only 0.3% per transaction</li>
         <li><strong>Fast Bridging</strong> &mdash; LiteForge to Sepolia in ~20 seconds, Sepolia to LiteForge in ~45 seconds</li>
         <li><strong>Automated Relayer</strong> &mdash; Transactions are processed automatically with retry logic and error recovery</li>
         <li><strong>Replay Protection</strong> &mdash; Double-layer protection (on-chain + database) prevents duplicate processing</li>

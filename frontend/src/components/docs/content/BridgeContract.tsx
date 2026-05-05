@@ -58,70 +58,6 @@ export function BridgeContract() {
         <li><strong>Emits</strong>: <code>Unlocked(recipient, amount, processId)</code></li>
       </ul>
 
-      <h3>Admin Functions</h3>
-      <table>
-        <thead>
-          <tr>
-            <th>Function</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><code>setRelayer(address)</code></td>
-            <td>Update the authorized relayer address</td>
-          </tr>
-          <tr>
-            <td><code>setFeePercent(uint256)</code></td>
-            <td>Change fee (max 500 = 5%)</td>
-          </tr>
-          <tr>
-            <td><code>setMinLockAmount(uint256)</code></td>
-            <td>Change minimum lock amount</td>
-          </tr>
-          <tr>
-            <td><code>withdrawFees()</code></td>
-            <td>Withdraw accumulated fees to owner</td>
-          </tr>
-          <tr>
-            <td><code>pause() / unpause()</code></td>
-            <td>Emergency pause/unpause</td>
-          </tr>
-        </tbody>
-      </table>
-
-      <h3>View Functions</h3>
-      <table>
-        <thead>
-          <tr>
-            <th>Function</th>
-            <th>Returns</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><code>availableBalance()</code></td>
-            <td>Balance available for unlocks (total - accumulated fees)</td>
-          </tr>
-          <tr>
-            <td><code>isProcessed(bytes32, uint256)</code></td>
-            <td>Whether an unlock has already been processed</td>
-          </tr>
-          <tr>
-            <td><code>feePercent()</code></td>
-            <td>Current fee in basis points</td>
-          </tr>
-          <tr>
-            <td><code>nonce()</code></td>
-            <td>Current lock nonce counter</td>
-          </tr>
-          <tr>
-            <td><code>accumulatedFees()</code></td>
-            <td>Total fees available for withdrawal</td>
-          </tr>
-        </tbody>
-      </table>
-
       <hr />
 
       <h2>WrappedZkLTC (Sepolia)</h2>
@@ -175,66 +111,6 @@ export function BridgeContract() {
         <li><strong>Minimum</strong>: 0.001 wzkLTC</li>
         <li><strong>Emits</strong>: <code>Burned(sender, recipient, netAmount, fee, nonce)</code></li>
       </ul>
-
-      <h3>Admin Functions</h3>
-      <table>
-        <thead>
-          <tr>
-            <th>Function</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><code>setRelayer(address)</code></td>
-            <td>Update the authorized relayer address</td>
-          </tr>
-          <tr>
-            <td><code>setFeePercent(uint256)</code></td>
-            <td>Change fee (max 500 = 5%)</td>
-          </tr>
-          <tr>
-            <td><code>setMinBurnAmount(uint256)</code></td>
-            <td>Change minimum burn amount</td>
-          </tr>
-          <tr>
-            <td><code>pause() / unpause()</code></td>
-            <td>Emergency pause/unpause</td>
-          </tr>
-        </tbody>
-      </table>
-
-      <h3>View Functions</h3>
-      <table>
-        <thead>
-          <tr>
-            <th>Function</th>
-            <th>Returns</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><code>isProcessed(bytes32, uint256)</code></td>
-            <td>Whether a mint has already been processed</td>
-          </tr>
-          <tr>
-            <td><code>feePercent()</code></td>
-            <td>Current fee in basis points</td>
-          </tr>
-          <tr>
-            <td><code>nonce()</code></td>
-            <td>Current burn nonce counter</td>
-          </tr>
-          <tr>
-            <td><code>totalSupply()</code></td>
-            <td>Total wzkLTC in circulation</td>
-          </tr>
-          <tr>
-            <td><code>balanceOf(address)</code></td>
-            <td>wzkLTC balance of an address</td>
-          </tr>
-        </tbody>
-      </table>
 
       <hr />
 

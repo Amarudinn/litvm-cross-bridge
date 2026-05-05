@@ -58,39 +58,66 @@ export function BridgeArchitecture() {
 
       <h2>High-Level Architecture</h2>
 
-      <pre><code>{`
-  LiteForge Chain                    Sepolia Chain
-  ┌─────────────────┐                ┌──────────────────┐
-  │   BridgeVault   │                │  WrappedZkLTC    │
-  │                 │                │  (ERC-20)        │
-  │  lock()  ──────────┐        ┌──────  mint()        │
-  │  unlock() ◄────────┼────┐   │   │   burn() ───────────┐
-  └─────────────────┘   │    │   │   └──────────────────┘  │
-                        │    │   │                          │
-                        ▼    │   ▼                          ▼
-                 ┌──────────────────────────────────────────────┐
-                 │              RELAYER SERVICE                  │
-                 │                                              │
-                 │  ┌────────────┐      ┌─────────────────┐    │
-                 │  │ LiteForge  │      │    Sepolia      │    │
-                 │  │ Listener   │      │    Listener     │    │
-                 │  │ (Locked)   │      │    (Burned)     │    │
-                 │  └─────┬──────┘      └───────┬─────────┘    │
-                 │        │                     │              │
-                 │        ▼                     ▼              │
-                 │  ┌──────────────────────────────────┐       │
-                 │  │       Transaction Queue           │       │
-                 │  │          (SQLite)                 │       │
-                 │  └──────────┬───────────────────────┘       │
-                 │             │                               │
-                 │    ┌────────┴────────┐                      │
-                 │    ▼                 ▼                      │
-                 │  ┌──────────┐  ┌──────────────┐            │
-                 │  │  Mint    │  │   Unlock     │            │
-                 │  │ Executor │  │   Executor   │            │
-                 │  └──────────┘  └──────────────┘            │
-                 └─────────────────────���────────────────────────┘
-`}</code></pre>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+        <div className="rounded-lg border border-border/50 bg-muted/20 p-4">
+          <div className="text-xs font-semibold uppercase tracking-wider text-foreground mb-3">LiteForge (L2)</div>
+          <div className="space-y-2">
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 rounded-full bg-primary/70" />
+              <code className="text-xs">BridgeVault</code>
+            </div>
+            <div className="text-xs text-muted-foreground pl-4 space-y-1">
+              <p className="mb-0">&rarr; <code>lock()</code> &mdash; User locks zkLTC</p>
+              <p className="mb-0">&larr; <code>unlock()</code> &mdash; Relayer releases zkLTC</p>
+            </div>
+          </div>
+        </div>
+        <div className="rounded-lg border border-border/50 bg-muted/20 p-4">
+          <div className="text-xs font-semibold uppercase tracking-wider text-foreground mb-3">Sepolia (L1)</div>
+          <div className="space-y-2">
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 rounded-full bg-primary/70" />
+              <code className="text-xs">WrappedZkLTC (ERC-20)</code>
+            </div>
+            <div className="text-xs text-muted-foreground pl-4 space-y-1">
+              <p className="mb-0">&larr; <code>mint()</code> &mdash; Relayer mints wzkLTC</p>
+              <p className="mb-0">&rarr; <code>burn()</code> &mdash; User burns wzkLTC</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="rounded-lg border border-border/50 bg-muted/20 p-4 mb-6">
+        <div className="text-xs font-semibold uppercase tracking-wider text-foreground mb-3 text-center">Relayer Service (Off-chain)</div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div className="rounded-md border border-border/30 bg-muted/30 p-3">
+            <div className="text-xs font-semibold text-foreground mb-1">Listeners</div>
+            <div className="text-xs text-muted-foreground space-y-0.5">
+              <p className="mb-0">LiteForge &rarr; detects <code>Locked</code> events</p>
+              <p className="mb-0">Sepolia &rarr; detects <code>Burned</code> events</p>
+            </div>
+          </div>
+          <div className="rounded-md border border-border/30 bg-muted/30 p-3">
+            <div className="text-xs font-semibold text-foreground mb-1">Executors</div>
+            <div className="text-xs text-muted-foreground space-y-0.5">
+              <p className="mb-0">Mint Executor &rarr; mints wzkLTC on Sepolia</p>
+              <p className="mb-0">Unlock Executor &rarr; unlocks zkLTC on LiteForge</p>
+            </div>
+          </div>
+        </div>
+        <div className="mt-3 rounded-md border border-border/30 bg-muted/30 p-3 text-center">
+          <div className="text-xs font-semibold text-foreground mb-0.5">Transaction Queue</div>
+          <div className="text-xs text-muted-foreground">SQLite &mdash; PENDING &rarr; EXECUTING &rarr; COMPLETED</div>
+        </div>
+      </div>
+
+      <div className="callout">
+        <div className="callout-title">Flow Summary</div>
+        <div className="callout-content space-y-1">
+          <p className="mb-0"><strong>Lock:</strong> User &rarr; BridgeVault.lock() &rarr; Relayer detects &rarr; WrappedZkLTC.mint() &rarr; User gets wzkLTC</p>
+          <p className="mb-0"><strong>Burn:</strong> User &rarr; WrappedZkLTC.burn() &rarr; Relayer detects &rarr; BridgeVault.unlock() &rarr; User gets zkLTC</p>
+        </div>
+      </div>
 
       <h2>Lock Flow (LiteForge &rarr; Sepolia)</h2>
 
@@ -204,7 +231,7 @@ export function BridgeArchitecture() {
           </tr>
           <tr>
             <td>Fee Cap</td>
-            <td>Maximum 5% (500 basis points), enforced on-chain</td>
+            <td>Maximum 0.3% (30 basis points), enforced on-chain</td>
           </tr>
           <tr>
             <td>Dust Prevention</td>
