@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { MessageCircleQuestion, X, ChevronDown, ChevronRight, Send, Loader2, CheckCircle2, AlertCircle } from 'lucide-react'
-import { useAccount } from 'wagmi'
+import { useAccount, useChainId } from 'wagmi'
 import { cn } from '@/lib/utils'
 
 interface FaqItem {
@@ -43,6 +43,18 @@ export function SupportWidget() {
   const [cooldownRemaining, setCooldownRemaining] = useState(0)
 
   const { address } = useAccount()
+  const chainId = useChainId()
+
+  const getNetworkName = () => {
+    switch (chainId) {
+      case 4441:
+        return 'LiteForge'
+      case 11155111:
+        return 'Sepolia'
+      default:
+        return `Unknown (${chainId})`
+    }
+  }
 
   // Cooldown timer
   useEffect(() => {
@@ -79,7 +91,7 @@ export function SupportWidget() {
           txHash: txHash.trim(),
           message: message.trim() || undefined,
           walletAddress: address,
-          network: 'Multyra Bridge',
+          network: getNetworkName(),
         }),
       })
 

@@ -46,20 +46,23 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   // Format message for Telegram
-  const shortWallet = `${walletAddress.slice(0, 6)}...${walletAddress.slice(-4)}`
-  const shortTxHash = `${txHash.slice(0, 10)}...${txHash.slice(-8)}`
-  const timestamp = new Date().toISOString().replace('T', ' ').slice(0, 19) + ' UTC'
+  const timestamp = new Date().toLocaleString('id-ID', { timeZone: 'Asia/Jakarta', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false }) + ' WIB'
+
+  // Determine explorer link based on network
+  const explorerUrl = network === 'LiteForge'
+    ? `https://liteforge.explorer.caldera.xyz/tx/${txHash}`
+    : `https://sepolia.etherscan.io/tx/${txHash}`
 
   const telegramMessage = [
-    '🚨 *Bridge Support Report*',
+    '*Bridge Support Report*',
     '',
-    `👤 Wallet: \`${shortWallet}\``,
-    `🔗 TX Hash: \`${shortTxHash}\``,
-    `📋 Full TX: \`${txHash}\``,
-    network ? `🌐 Network: ${network}` : '',
-    message ? `💬 Message: ${message}` : '',
+    `Wallet: \`${walletAddress}\``,
+    `TX Hash: \`${txHash}\``,
+    `Explorer: [View Transaction](${explorerUrl})`,
+    network ? `Network: ${network}` : '',
+    message ? `Message: ${message}` : '',
     '',
-    `🕐 Time: ${timestamp}`,
+    `Time: ${timestamp}`,
   ].filter(Boolean).join('\n')
 
   try {
