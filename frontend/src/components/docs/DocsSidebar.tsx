@@ -19,7 +19,7 @@ const sidebarItems: SidebarItem[] = [
   },
   {
     label: 'Bridge',
-    icon: <ArrowRightLeft className="h-4 w-4" />,
+    icon: <Layers className="h-4 w-4" />,
     children: [
       { label: 'Architecture', path: '/docs/bridge/architecture' },
       { label: 'Contract', path: '/docs/bridge/contract' },
@@ -28,7 +28,7 @@ const sidebarItems: SidebarItem[] = [
   },
   {
     label: 'Swap',
-    icon: <Layers className="h-4 w-4" />,
+    icon: <ArrowRightLeft className="h-4 w-4" />,
     soon: true,
     children: [
       { label: 'Architecture', path: '#', soon: true },
@@ -136,7 +136,7 @@ export function DocsSidebar({ isOpen, onClose }: DocsSidebarProps) {
                   className={cn(
                     'flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors',
                     (itemActive || defaultActive)
-                      ? 'text-primary bg-primary/10 border-l-2 border-primary'
+                      ? 'text-primary bg-primary/10'
                       : 'text-foreground hover:bg-muted/50'
                   )}
                 >
@@ -202,20 +202,36 @@ export function DocsSidebar({ isOpen, onClose }: DocsSidebarProps) {
       </aside>
 
       {/* Mobile sidebar overlay */}
-      {isOpen && (
-        <div className="lg:hidden fixed inset-0 z-50">
-          <div className="absolute inset-0 bg-background/80 backdrop-blur-sm" onClick={onClose} />
-          <aside className="absolute left-0 top-0 bottom-0 w-72 bg-card border-r border-border/40 overflow-y-auto shadow-xl">
-            <div className="flex items-center justify-between px-4 py-3 border-b border-border/40">
-              <span className="text-sm font-semibold">Documentation</span>
-              <button onClick={onClose} className="p-1 rounded-md hover:bg-muted/50 transition-colors">
-                <X className="h-4 w-4" />
-              </button>
-            </div>
-            {sidebarContent}
-          </aside>
-        </div>
-      )}
+      <div
+        className={cn(
+          'lg:hidden fixed top-[3.6rem] left-0 right-0 bottom-0 z-50 transition-all duration-300 ease-in-out',
+          isOpen ? 'visible' : 'invisible pointer-events-none'
+        )}
+      >
+        {/* Backdrop - no blur, just dim */}
+        <div
+          className={cn(
+            'absolute inset-0 bg-background/60 transition-opacity duration-300 ease-in-out',
+            isOpen ? 'opacity-100' : 'opacity-0'
+          )}
+          onClick={onClose}
+        />
+        {/* Sidebar panel */}
+        <aside
+          className={cn(
+            'absolute left-0 top-0 bottom-0 w-72 bg-background/80 backdrop-blur-sm border-r border-border/40 overflow-y-auto shadow-xl transition-transform duration-300 ease-in-out',
+            isOpen ? 'translate-x-0' : '-translate-x-full'
+          )}
+        >
+          <div className="flex items-center justify-between px-4 py-3 border-b border-border/40">
+            <span className="text-sm font-semibold">Documentation</span>
+            <button onClick={onClose} className="p-1.5 rounded-md hover:bg-muted/50 transition-colors">
+              <X className="h-4 w-4" />
+            </button>
+          </div>
+          {sidebarContent}
+        </aside>
+      </div>
     </>
   )
 }

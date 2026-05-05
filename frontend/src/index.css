@@ -162,7 +162,7 @@
   }
 
   .prose-docs table {
-    @apply w-full text-sm mb-4 border-collapse;
+    @apply w-full text-sm mb-4 border-collapse block overflow-x-auto md:table;
   }
 
   .prose-docs thead {
