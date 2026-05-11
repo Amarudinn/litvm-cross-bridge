@@ -59,7 +59,6 @@ export function WalletButton() {
   const currentChain = CHAINS.find(c => c.id === chainId)
   const chainName = currentChain?.name ?? `Chain ${chainId}`
   const chainIcon = currentChain?.icon ?? '/eth.png'
-  const chainColor = currentChain?.color ?? 'from-gray-500 to-gray-400'
 
   return (
     <div ref={ref} className="relative">

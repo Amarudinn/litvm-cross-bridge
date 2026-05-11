@@ -49,6 +49,8 @@ export interface VerifyResult {
     lockedEvent?: { sender: string; recipient: string; amount: string; fee: string; nonce: string }
     burnedEvent?: { sender: string; recipient: string; amount: string; fee: string; nonce: string }
     mintedOnSepolia?: boolean
+    mintedOnDest?: boolean
+    mintedOnBaseSepolia?: boolean
     unlockedOnLiteforge?: boolean
   }
   summary: string

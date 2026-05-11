@@ -1,7 +1,7 @@
 import { useReadContract } from 'wagmi'
 import { WRAPPED_ZKLTC_ADDRESS, WRAPPED_ZKLTC_BASE_SEPOLIA_ADDRESS, SEPOLIA_CHAIN_ID, BASE_SEPOLIA_CHAIN_ID } from '@/config/contracts'
 import { wrappedZkLTCAbi } from '@/abi/WrappedZkLTC'
-import { useBridgeStore, type DestChain } from '@/stores/bridgeStore'
+import { useBridgeStore } from '@/stores/bridgeStore'
 
 function useWrappedOnChain(contractAddress: `0x${string}`, chainId: number, userAddress?: `0x${string}`) {
   const { data: balance, isLoading: balanceLoading } = useReadContract({
