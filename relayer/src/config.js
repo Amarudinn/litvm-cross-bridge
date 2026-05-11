@@ -31,6 +31,15 @@ export const config = {
     wrappedZkLTCAddress: process.env.WRAPPED_ZKLTC_ADDRESS,
   },
 
+  // Chain: Base Sepolia
+  baseSepolia: {
+    name: 'Base Sepolia',
+    chainId: parseInt(process.env.BASE_SEPOLIA_CHAIN_ID || '84532'),
+    rpcUrls: parseRpcUrls('BASE_SEPOLIA_RPC_URLS', 'BASE_SEPOLIA_RPC_URL', ['https://sepolia.base.org']),
+    explorerUrl: 'https://sepolia.basescan.org',
+    wrappedZkLTCAddress: process.env.WRAPPED_ZKLTC_BASE_SEPOLIA_ADDRESS,
+  },
+
   // Relayer settings
   pollIntervalMs: parseInt(process.env.POLL_INTERVAL_MS || '5000'),
   confirmationBlocks: parseInt(process.env.CONFIRMATION_BLOCKS || '3'),
@@ -38,6 +47,7 @@ export const config = {
 
   // Concurrency settings
   mintConcurrency: parseInt(process.env.MINT_CONCURRENCY || '3'),
+  mintBaseSepoliaConcurrency: parseInt(process.env.MINT_BASE_SEPOLIA_CONCURRENCY || '3'),
   unlockConcurrency: parseInt(process.env.UNLOCK_CONCURRENCY || '3'),
 
   // Supabase (optional - for indexing)
@@ -62,6 +72,8 @@ export function validateConfig() {
     ['SEPOLIA_RPC_URLS', config.sepolia.rpcUrls.length > 0],
     ['BRIDGE_VAULT_ADDRESS', config.liteforge.bridgeVaultAddress],
     ['WRAPPED_ZKLTC_ADDRESS', config.sepolia.wrappedZkLTCAddress],
+    ['BASE_SEPOLIA_RPC_URLS', config.baseSepolia.rpcUrls.length > 0],
+    ['WRAPPED_ZKLTC_BASE_SEPOLIA_ADDRESS', config.baseSepolia.wrappedZkLTCAddress],
   ];
 
   const missing = required.filter(([, value]) => !value).map(([name]) => name);

@@ -23,7 +23,7 @@ export default function ExplorerPage() {
           <h1 className="text-xl md:text-2xl font-bold">Bridge Explorer</h1>
         </div>
         <p className="text-xs md:text-sm text-muted-foreground mb-5">
-          All bridge transactions across LiteForge and Sepolia
+          All bridge transactions across LiteForge, Sepolia, and Base Sepolia
         </p>
 
         {/* Stats */}

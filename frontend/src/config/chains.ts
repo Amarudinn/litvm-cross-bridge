@@ -1,5 +1,5 @@
 import { defineChain } from 'viem'
-import { sepolia } from 'viem/chains'
+import { sepolia, baseSepolia } from 'viem/chains'
 
 export const liteforge = defineChain({
   id: 4441,
@@ -9,4 +9,4 @@ export const liteforge = defineChain({
   blockExplorers: { default: { name: 'LiteForge Explorer', url: 'https://liteforge.explorer.caldera.xyz' } },
 })
 
-export { sepolia }
+export { sepolia, baseSepolia }

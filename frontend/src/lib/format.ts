@@ -60,6 +60,9 @@ export function getExplorerUrl(chainId: number, type: 'tx' | 'address', value: s
     case sepolia.id:
       baseUrl = sepolia.blockExplorers?.default.url ?? 'https://sepolia.etherscan.io'
       break
+    case 84532:
+      baseUrl = 'https://sepolia.basescan.org'
+      break
     default:
       baseUrl = 'https://etherscan.io'
   }

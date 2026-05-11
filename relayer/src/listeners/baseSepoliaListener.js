@@ -1,19 +1,19 @@
 import { ethers } from 'ethers';
 import { config } from '../config.js';
-import { getSepoliaProvider, getSepoliaRpc } from '../utils/provider.js';
+import { getBaseSepoliaProvider, getBaseSepoliaRpc } from '../utils/provider.js';
 import { logger } from '../utils/logger.js';
 import { saveBridgeTransaction } from '../utils/supabase.js';
 import WrappedZkLTCABI from '../abi/WrappedZkLTC.json' with { type: 'json' };
 
 /**
- * Sepolia Listener
- * Polls for Burned events on WrappedZkLTC contract.
+ * Base Sepolia Listener
+ * Polls for Burned events on WrappedZkLTC contract on Base Sepolia.
  * When a Burned event is detected, it queues an unlock operation on LiteForge.
  */
-export class SepoliaListener {
+export class BaseSepoliaListener {
   constructor(txQueue) {
     this.txQueue = txQueue;
-    this.rpc = getSepoliaRpc();
+    this.rpc = getBaseSepoliaRpc();
     this.running = false;
     this.pollTimer = null;
   }
@@ -21,7 +21,7 @@ export class SepoliaListener {
   /** Get a fresh contract instance using the current active provider */
   _getContract() {
     return new ethers.Contract(
-      config.sepolia.wrappedZkLTCAddress,
+      config.baseSepolia.wrappedZkLTCAddress,
       WrappedZkLTCABI,
       this.rpc.getProvider()
     );
@@ -33,14 +33,13 @@ export class SepoliaListener {
   async start() {
     this.running = true;
 
-    // Get last processed block from DB, or start from current block
-    let fromBlock = this.txQueue.getCheckpoint('sepolia');
+    let fromBlock = this.txQueue.getCheckpoint('basesepolia');
     if (!fromBlock) {
       fromBlock = await this.rpc.withFallback(p => p.getBlockNumber());
-      this.txQueue.setCheckpoint('sepolia', fromBlock);
-      logger.info(`Sepolia listener starting from current block: ${fromBlock}`);
+      this.txQueue.setCheckpoint('basesepolia', fromBlock);
+      logger.info(`Base Sepolia listener starting from current block: ${fromBlock}`);
     } else {
-      logger.info(`Sepolia listener resuming from block: ${fromBlock}`);
+      logger.info(`Base Sepolia listener resuming from block: ${fromBlock}`);
     }
 
     this._poll(fromBlock);
@@ -55,7 +54,7 @@ export class SepoliaListener {
       clearTimeout(this.pollTimer);
       this.pollTimer = null;
     }
-    logger.info('Sepolia listener stopped');
+    logger.info('Base Sepolia listener stopped');
   }
 
   /**
@@ -75,7 +74,7 @@ export class SepoliaListener {
 
       const toBlock = Math.min(fromBlock + 1000, safeBlock);
 
-      logger.debug(`Sepolia: scanning blocks ${fromBlock} - ${toBlock}`);
+      logger.debug(`Base Sepolia: scanning blocks ${fromBlock} - ${toBlock}`);
 
       const contract = this._getContract();
       const events = await this.rpc.withFallback(async () => {
@@ -87,11 +86,11 @@ export class SepoliaListener {
       }
 
       const nextBlock = toBlock + 1;
-      this.txQueue.setCheckpoint('sepolia', nextBlock);
+      this.txQueue.setCheckpoint('basesepolia', nextBlock);
 
       this.pollTimer = setTimeout(() => this._poll(nextBlock), config.pollIntervalMs);
     } catch (error) {
-      logger.error(`Sepolia listener error: ${error.message}`);
+      logger.error(`Base Sepolia listener error: ${error.message}`);
       this.pollTimer = setTimeout(() => this._poll(fromBlock), config.pollIntervalMs * 3);
     }
   }
@@ -104,7 +103,7 @@ export class SepoliaListener {
     const txHash = event.transactionHash;
     const blockNumber = event.blockNumber;
 
-    logger.info(`Burned event detected`, {
+    logger.info(`Base Sepolia Burned event detected`, {
       txHash,
       blockNumber,
       sender,
@@ -118,7 +117,7 @@ export class SepoliaListener {
     this.txQueue.addTransaction({
       type: 'UNLOCK',
       sourceTxHash: txHash,
-      sourceChain: 'sepolia',
+      sourceChain: 'basesepolia',
       sourceBlock: blockNumber,
       sourceNonce: Number(nonce),
       recipient,
@@ -127,9 +126,9 @@ export class SepoliaListener {
 
     // Save to Supabase as pending
     await saveBridgeTransaction({
-      direction: 'sepolia_to_liteforge',
+      direction: 'basesepolia_to_liteforge',
       source_tx_hash: txHash,
-      source_chain_id: 11155111,
+      source_chain_id: 84532,
       source_block: blockNumber,
       source_nonce: Number(nonce),
       dest_chain_id: 4441,

@@ -4,7 +4,9 @@ import { checkBalances } from './utils/provider.js';
 import { TxQueue } from './queue/txQueue.js';
 import { LiteforgeListener } from './listeners/liteforgeListener.js';
 import { SepoliaListener } from './listeners/sepoliaListener.js';
+import { BaseSepoliaListener } from './listeners/baseSepoliaListener.js';
 import { MintExecutor } from './executors/mintExecutor.js';
+import { MintBaseSepoliaExecutor } from './executors/mintBaseSepoliaExecutor.js';
 import { UnlockExecutor } from './executors/unlockExecutor.js';
 import { startAdminApi } from './admin/adminApi.js';
 
@@ -21,7 +23,9 @@ import { startAdminApi } from './admin/adminApi.js';
 let txQueue;
 let liteforgeListener;
 let sepoliaListener;
+let baseSepoliaListener;
 let mintExecutor;
+let mintBaseSepoliaExecutor;
 let unlockExecutor;
 let adminServer;
 let retryTimer;
@@ -29,8 +33,7 @@ let statsTimer;
 let shuttingDown = false;
 
 /**
- * MINT Worker Loop - processes MINT queue independently
- * Runs in parallel with UNLOCK worker
+ * MINT Worker Loop (Sepolia) - processes MINT queue independently
  */
 async function mintWorkerLoop() {
   logger.info(`[MINT Worker] Started (concurrency: ${config.mintConcurrency})`);
@@ -51,8 +54,29 @@ async function mintWorkerLoop() {
 }
 
 /**
+ * MINT Base Sepolia Worker Loop - processes MINT queue for Base Sepolia
+ */
+async function mintBaseSepoliaWorkerLoop() {
+  logger.info(`[MINT-BS Worker] Started (concurrency: ${config.mintBaseSepoliaConcurrency})`);
+
+  while (!shuttingDown) {
+    try {
+      const pending = txQueue.getPendingMintBaseSepolia(config.mintBaseSepoliaConcurrency);
+      if (pending.length > 0) {
+        await mintBaseSepoliaExecutor.executeBatch(pending);
+      }
+    } catch (error) {
+      logger.error(`[MINT-BS Worker] Error: ${error.message}`);
+    }
+    await sleep(config.pollIntervalMs);
+  }
+
+  logger.info('[MINT-BS Worker] Stopped');
+}
+
+/**
  * UNLOCK Worker Loop - processes UNLOCK queue independently
- * Runs in parallel with MINT worker
+ * Runs in parallel with MINT workers
  */
 async function unlockWorkerLoop() {
   logger.info(`[UNLOCK Worker] Started (concurrency: ${config.unlockConcurrency})`);
@@ -125,6 +149,7 @@ async function shutdown(signal) {
   // Stop listeners
   if (liteforgeListener) liteforgeListener.stop();
   if (sepoliaListener) sepoliaListener.stop();
+  if (baseSepoliaListener) baseSepoliaListener.stop();
 
   // Clear timers
   if (retryTimer) clearInterval(retryTimer);
@@ -145,10 +170,10 @@ async function shutdown(signal) {
  */
 async function main() {
   console.log(`
-  ╔═══════════════════════════════════════════╗
-  ║         Multyra Bridge Relayer              ║
-  ║   LiteForge (zkLTC) ↔ Sepolia (wzkLTC)   ║
-  ╚═══════════════════════════════════════════╝
+  ╔═══════════════════════════════════════════════════════╗
+  ║              Multyra Bridge Relayer v2                ║
+  ║  LiteForge ↔ Sepolia + Base Sepolia (Multi-Chain)     ║
+  ╚═══════════════════════════════════════════════════════╝
   `);
 
   // Validate configuration
@@ -176,9 +201,11 @@ async function main() {
   // Initialize listeners
   liteforgeListener = new LiteforgeListener(txQueue);
   sepoliaListener = new SepoliaListener(txQueue);
+  baseSepoliaListener = new BaseSepoliaListener(txQueue);
 
   // Initialize executors
   mintExecutor = new MintExecutor(txQueue);
+  mintBaseSepoliaExecutor = new MintBaseSepoliaExecutor(txQueue);
   unlockExecutor = new UnlockExecutor(txQueue);
 
   // Start listeners
@@ -186,10 +213,12 @@ async function main() {
   await Promise.all([
     liteforgeListener.start(),
     sepoliaListener.start(),
+    baseSepoliaListener.start(),
   ]);
 
-  // Start parallel workers (MINT and UNLOCK run independently)
+  // Start parallel workers (MINT-Sepolia, MINT-BaseSepolia, UNLOCK run independently)
   mintWorkerLoop();
+  mintBaseSepoliaWorkerLoop();
   unlockWorkerLoop();
 
   // Start retry processor (every 30 seconds)
@@ -205,7 +234,8 @@ async function main() {
   logger.info(`Poll interval: ${config.pollIntervalMs}ms`);
   logger.info(`Confirmation blocks: ${config.confirmationBlocks}`);
   logger.info(`Max retries: ${config.maxRetries}`);
-  logger.info(`MINT concurrency: ${config.mintConcurrency}`);
+  logger.info(`MINT concurrency (Sepolia): ${config.mintConcurrency}`);
+  logger.info(`MINT concurrency (Base Sepolia): ${config.mintBaseSepoliaConcurrency}`);
   logger.info(`UNLOCK concurrency: ${config.unlockConcurrency}`);
   logger.info(`Supabase: ${config.supabaseUrl ? 'enabled' : 'disabled'}`);
 }

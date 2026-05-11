@@ -1,14 +1,15 @@
 import { useReadContract } from 'wagmi'
-import { WRAPPED_ZKLTC_ADDRESS } from '@/config/contracts'
+import { WRAPPED_ZKLTC_ADDRESS, WRAPPED_ZKLTC_BASE_SEPOLIA_ADDRESS, SEPOLIA_CHAIN_ID, BASE_SEPOLIA_CHAIN_ID } from '@/config/contracts'
 import { wrappedZkLTCAbi } from '@/abi/WrappedZkLTC'
+import { useBridgeStore, type DestChain } from '@/stores/bridgeStore'
 
-export function useWrappedZkLTC(userAddress?: `0x${string}`) {
+function useWrappedOnChain(contractAddress: `0x${string}`, chainId: number, userAddress?: `0x${string}`) {
   const { data: balance, isLoading: balanceLoading } = useReadContract({
-    address: WRAPPED_ZKLTC_ADDRESS,
+    address: contractAddress,
     abi: wrappedZkLTCAbi,
     functionName: 'balanceOf',
     args: [userAddress!],
-    chainId: 11155111,
+    chainId,
     query: {
       enabled: !!userAddress,
       refetchInterval: 15000,
@@ -16,34 +17,34 @@ export function useWrappedZkLTC(userAddress?: `0x${string}`) {
   })
 
   const { data: feePercent, isLoading: feeLoading } = useReadContract({
-    address: WRAPPED_ZKLTC_ADDRESS,
+    address: contractAddress,
     abi: wrappedZkLTCAbi,
     functionName: 'feePercent',
-    chainId: 11155111,
+    chainId,
   })
 
   const { data: minBurnAmount, isLoading: minLoading } = useReadContract({
-    address: WRAPPED_ZKLTC_ADDRESS,
+    address: contractAddress,
     abi: wrappedZkLTCAbi,
     functionName: 'minBurnAmount',
-    chainId: 11155111,
+    chainId,
   })
 
   const { data: totalSupply, isLoading: supplyLoading } = useReadContract({
-    address: WRAPPED_ZKLTC_ADDRESS,
+    address: contractAddress,
     abi: wrappedZkLTCAbi,
     functionName: 'totalSupply',
-    chainId: 11155111,
+    chainId,
     query: {
       refetchInterval: 30000,
     },
   })
 
   const { data: nonce, isLoading: nonceLoading } = useReadContract({
-    address: WRAPPED_ZKLTC_ADDRESS,
+    address: contractAddress,
     abi: wrappedZkLTCAbi,
     functionName: 'nonce',
-    chainId: 11155111,
+    chainId,
   })
 
   return {
@@ -54,4 +55,17 @@ export function useWrappedZkLTC(userAddress?: `0x${string}`) {
     nonce: nonce as bigint | undefined,
     isLoading: balanceLoading || feeLoading || minLoading || supplyLoading || nonceLoading,
   }
+}
+
+/**
+ * Hook to read WrappedZkLTC data based on current destChain selection
+ */
+export function useWrappedZkLTC(userAddress?: `0x${string}`) {
+  const destChain = useBridgeStore((s) => s.destChain)
+  const isBaseSepolia = destChain === 'baseSepolia'
+
+  const contractAddress = isBaseSepolia ? WRAPPED_ZKLTC_BASE_SEPOLIA_ADDRESS : WRAPPED_ZKLTC_ADDRESS
+  const chainId = isBaseSepolia ? BASE_SEPOLIA_CHAIN_ID : SEPOLIA_CHAIN_ID
+
+  return useWrappedOnChain(contractAddress, chainId, userAddress)
 }

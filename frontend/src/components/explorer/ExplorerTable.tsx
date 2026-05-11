@@ -2,6 +2,7 @@ import { useState, useMemo } from 'react'
 import { ArrowRight, ExternalLink, Clock, CheckCircle2, XCircle, Search, ChevronLeft, ChevronRight } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
+import { RouteFilterDropdown, type RouteFilterValue } from '@/components/ui/RouteFilterDropdown'
 import { formatAmount, shortenTxHash, shortenAddress, getExplorerUrl, timeAgo } from '@/lib/format'
 import { cn } from '@/lib/utils'
 import type { BridgeTransaction } from '@/hooks/useBridgeEvents'
@@ -10,25 +11,21 @@ interface ExplorerTableProps {
   transactions: BridgeTransaction[]
 }
 
-type DirectionFilter = 'all' | 'liteforge_to_sepolia' | 'sepolia_to_liteforge'
-
 const PAGE_SIZE = 10
 
 function DirectionLabel({ direction }: { direction: BridgeTransaction['direction'] }) {
-  if (direction === 'liteforge_to_sepolia') {
-    return (
-      <span className="inline-flex items-center gap-1 text-sm">
-        <span className="font-medium text-blue-400">LiteForge</span>
-        <ArrowRight className="h-3 w-3 text-muted-foreground" />
-        <span className="font-medium text-purple-400">Sepolia</span>
-      </span>
-    )
+  const dirMap: Record<string, { from: string; fromColor: string; to: string; toColor: string }> = {
+    liteforge_to_sepolia: { from: 'LiteForge', fromColor: 'text-blue-400', to: 'Sepolia', toColor: 'text-purple-400' },
+    sepolia_to_liteforge: { from: 'Sepolia', fromColor: 'text-purple-400', to: 'LiteForge', toColor: 'text-blue-400' },
+    liteforge_to_basesepolia: { from: 'LiteForge', fromColor: 'text-blue-400', to: 'Base', toColor: 'text-sky-400' },
+    basesepolia_to_liteforge: { from: 'Base', fromColor: 'text-sky-400', to: 'LiteForge', toColor: 'text-blue-400' },
   }
+  const d = dirMap[direction] || dirMap['liteforge_to_sepolia']
   return (
     <span className="inline-flex items-center gap-1 text-sm">
-      <span className="font-medium text-purple-400">Sepolia</span>
+      <span className={cn('font-medium', d.fromColor)}>{d.from}</span>
       <ArrowRight className="h-3 w-3 text-muted-foreground" />
-      <span className="font-medium text-blue-400">LiteForge</span>
+      <span className={cn('font-medium', d.toColor)}>{d.to}</span>
     </span>
   )
 }
@@ -59,7 +56,7 @@ function StatusBadge({ status }: { status: BridgeTransaction['status'] }) {
 }
 
 export function ExplorerTable({ transactions }: ExplorerTableProps) {
-  const [directionFilter, setDirectionFilter] = useState<DirectionFilter>('all')
+  const [directionFilter, setDirectionFilter] = useState<RouteFilterValue>('all')
   const [searchAddress, setSearchAddress] = useState('')
   const [page, setPage] = useState(0)
 
@@ -89,7 +86,7 @@ export function ExplorerTable({ transactions }: ExplorerTableProps) {
   )
 
   // Reset page when filters change
-  const handleFilterChange = (filter: DirectionFilter) => {
+  const handleFilterChange = (filter: RouteFilterValue) => {
     setDirectionFilter(filter)
     setPage(0)
   }
@@ -112,41 +109,7 @@ export function ExplorerTable({ transactions }: ExplorerTableProps) {
             className="pl-9 focus-visible:ring-0 focus-visible:ring-offset-0"
           />
         </div>
-        <div className="flex gap-1 bg-muted/30 rounded-xl p-1 w-fit self-start">
-          <button
-            onClick={() => handleFilterChange('all')}
-            className={cn(
-              'px-3 py-1.5 rounded-lg text-xs md:text-sm font-medium transition-all cursor-pointer whitespace-nowrap',
-              directionFilter === 'all'
-                ? 'bg-primary/15 text-primary shadow-sm'
-                : 'text-muted-foreground hover:text-foreground'
-            )}
-          >
-            All
-          </button>
-          <button
-            onClick={() => handleFilterChange('liteforge_to_sepolia')}
-            className={cn(
-              'px-3 py-1.5 rounded-lg text-xs md:text-sm font-medium transition-all cursor-pointer whitespace-nowrap',
-              directionFilter === 'liteforge_to_sepolia'
-                ? 'bg-primary/15 text-primary shadow-sm'
-                : 'text-muted-foreground hover:text-foreground'
-            )}
-          >
-            LF &rarr; Sep
-          </button>
-          <button
-            onClick={() => handleFilterChange('sepolia_to_liteforge')}
-            className={cn(
-              'px-3 py-1.5 rounded-lg text-xs md:text-sm font-medium transition-all cursor-pointer whitespace-nowrap',
-              directionFilter === 'sepolia_to_liteforge'
-                ? 'bg-primary/15 text-primary shadow-sm'
-                : 'text-muted-foreground hover:text-foreground'
-            )}
-          >
-            Sep &rarr; LF
-          </button>
-        </div>
+        <RouteFilterDropdown value={directionFilter} onChange={handleFilterChange} />
       </div>
 
       {/* Table / Cards */}
@@ -184,7 +147,7 @@ export function ExplorerTable({ transactions }: ExplorerTableProps) {
                   <span className="font-mono text-sm font-medium">
                     {formatAmount(tx.amount)}{' '}
                     <span className="text-muted-foreground text-xs">
-                      {tx.direction === 'liteforge_to_sepolia' ? 'zkLTC' : 'wzkLTC'}
+                      {tx.direction.startsWith('liteforge_to_') ? 'zkLTC' : 'wzkLTC'}
                     </span>
                   </span>
                 </div>
@@ -250,7 +213,7 @@ export function ExplorerTable({ transactions }: ExplorerTableProps) {
                       <span className="font-mono text-sm">
                         {formatAmount(tx.amount)}{' '}
                         <span className="text-muted-foreground text-xs">
-                          {tx.direction === 'liteforge_to_sepolia' ? 'zkLTC' : 'wzkLTC'}
+                          {tx.direction.startsWith('liteforge_to_') ? 'zkLTC' : 'wzkLTC'}
                         </span>
                       </span>
                     </td>

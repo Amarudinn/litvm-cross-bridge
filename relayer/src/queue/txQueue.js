@@ -35,9 +35,14 @@ export class TxQueue {
         source_nonce INTEGER NOT NULL,
         recipient TEXT NOT NULL,
         amount TEXT NOT NULL,
+        dest_chain TEXT,
         dest_tx_hash TEXT,
         retries INTEGER DEFAULT 0,
         error TEXT,
+        is_hop INTEGER DEFAULT 0,
+        hop_dest_chain TEXT,
+        hop_source_tx TEXT,
+        original_recipient TEXT,
         created_at TEXT DEFAULT (datetime('now')),
         updated_at TEXT DEFAULT (datetime('now')),
         UNIQUE(source_tx_hash, source_nonce)
@@ -53,6 +58,37 @@ export class TxQueue {
       CREATE INDEX IF NOT EXISTS idx_tx_source ON transactions(source_tx_hash, source_nonce);
     `);
 
+    // Migration: add dest_chain column if missing (for existing DBs)
+    try {
+      this.db.exec(`ALTER TABLE transactions ADD COLUMN dest_chain TEXT`);
+      logger.info('Migration: added dest_chain column');
+      this.db.exec(`UPDATE transactions SET dest_chain = 'sepolia' WHERE type = 'MINT' AND dest_chain IS NULL`);
+      this.db.exec(`UPDATE transactions SET dest_chain = 'liteforge' WHERE type = 'UNLOCK' AND dest_chain IS NULL`);
+      logger.info('Migration: backfilled dest_chain for existing transactions');
+    } catch {
+      // Column already exists — fine
+    }
+
+    // Migration: add hop columns if missing (Phase 2)
+    const hopColumns = [
+      ['is_hop', 'INTEGER DEFAULT 0'],
+      ['hop_dest_chain', 'TEXT'],
+      ['hop_source_tx', 'TEXT'],
+      ['original_recipient', 'TEXT'],
+    ];
+    for (const [col, type] of hopColumns) {
+      try {
+        this.db.exec(`ALTER TABLE transactions ADD COLUMN ${col} ${type}`);
+        logger.info(`Migration: added ${col} column`);
+      } catch {
+        // Column already exists — fine
+      }
+    }
+
+    // Create indexes
+    this.db.exec(`CREATE INDEX IF NOT EXISTS idx_tx_dest_chain ON transactions(dest_chain);`);
+    this.db.exec(`CREATE INDEX IF NOT EXISTS idx_tx_hop ON transactions(is_hop) WHERE is_hop = 1;`);
+
     logger.info('Database initialized');
   }
 
@@ -64,19 +100,26 @@ export class TxQueue {
    * Add a new transaction to the queue
    * Returns false if already exists (dedup)
    */
-  addTransaction({ type, sourceTxHash, sourceChain, sourceBlock, sourceNonce, recipient, amount }) {
+  addTransaction({ type, sourceTxHash, sourceChain, sourceBlock, sourceNonce, recipient, amount, destChain }) {
     try {
+      // Determine dest_chain if not provided
+      const resolvedDestChain = destChain || (type === 'MINT' ? 'sepolia' : 'liteforge');
+
       const stmt = this.db.prepare(`
-        INSERT INTO transactions (type, source_tx_hash, source_chain, source_block, source_nonce, recipient, amount)
-        VALUES (?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO transactions (type, source_tx_hash, source_chain, source_block, source_nonce, recipient, amount, dest_chain, is_hop, hop_dest_chain, original_recipient)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, 0, NULL, NULL)
       `);
 
-      stmt.run(type, sourceTxHash, sourceChain, sourceBlock, sourceNonce, recipient, amount);
+      stmt.run(
+        type, sourceTxHash, sourceChain, sourceBlock, sourceNonce,
+        recipient, amount, resolvedDestChain
+      );
 
       logger.info(`Queued ${type} transaction`, {
         sourceTxHash: sourceTxHash.slice(0, 10) + '...',
         sourceNonce,
         recipient: recipient.slice(0, 10) + '...',
+        destChain: resolvedDestChain,
       });
 
       return true;
@@ -102,13 +145,29 @@ export class TxQueue {
   }
 
   /**
-   * Get pending MINT transactions (for Sepolia execution)
+   * Get pending MINT transactions for Sepolia
    * @param {number} limit - Max number of transactions to return
    */
   getPendingMint(limit = 3) {
     const stmt = this.db.prepare(`
       SELECT * FROM transactions
       WHERE type = 'MINT' AND status IN ('PENDING', 'RETRYING')
+        AND (dest_chain = 'sepolia' OR dest_chain IS NULL)
+      ORDER BY created_at ASC
+      LIMIT ?
+    `);
+    return stmt.all(limit);
+  }
+
+  /**
+   * Get pending MINT transactions for Base Sepolia
+   * @param {number} limit - Max number of transactions to return
+   */
+  getPendingMintBaseSepolia(limit = 3) {
+    const stmt = this.db.prepare(`
+      SELECT * FROM transactions
+      WHERE type = 'MINT' AND status IN ('PENDING', 'RETRYING')
+        AND dest_chain = 'basesepolia'
       ORDER BY created_at ASC
       LIMIT ?
     `);

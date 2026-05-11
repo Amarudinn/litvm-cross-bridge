@@ -8,7 +8,7 @@ import { extractTxHash } from '@/config/admin'
 
 export function InjectForm() {
   const [txHash, setTxHash] = useState('')
-  const [chain, setChain] = useState<'liteforge' | 'sepolia'>('liteforge')
+  const [chain, setChain] = useState<'liteforge' | 'sepolia' | 'basesepolia'>('liteforge')
   const inject = useAdminInject()
 
   const handleInject = () => {
@@ -37,6 +37,15 @@ export function InjectForm() {
           )}
         >
           Sepolia
+        </button>
+        <button
+          onClick={() => setChain('basesepolia')}
+          className={cn(
+            'px-2.5 py-1 rounded-lg text-xs font-medium transition-all cursor-pointer whitespace-nowrap',
+            chain === 'basesepolia' ? 'bg-primary/15 text-primary shadow-sm' : 'text-muted-foreground hover:text-foreground'
+          )}
+        >
+          Base Sepolia
         </button>
       </div>
 

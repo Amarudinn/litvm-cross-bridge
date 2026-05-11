@@ -9,7 +9,7 @@ import { extractTxHash } from '@/config/admin'
 
 export function VerifyForm() {
   const [txHash, setTxHash] = useState('')
-  const [chain, setChain] = useState<'liteforge' | 'sepolia'>('liteforge')
+  const [chain, setChain] = useState<'liteforge' | 'sepolia' | 'basesepolia'>('liteforge')
   const verify = useAdminVerify()
 
   const handleVerify = () => {
@@ -38,6 +38,15 @@ export function VerifyForm() {
           )}
         >
           Sepolia
+        </button>
+        <button
+          onClick={() => setChain('basesepolia')}
+          className={cn(
+            'px-2.5 py-1 rounded-lg text-xs font-medium transition-all cursor-pointer whitespace-nowrap',
+            chain === 'basesepolia' ? 'bg-primary/15 text-primary shadow-sm' : 'text-muted-foreground hover:text-foreground'
+          )}
+        >
+          Base Sepolia
         </button>
       </div>
 
@@ -137,11 +146,11 @@ export function VerifyForm() {
                 {verify.data.chain === 'liteforge' ? 'Minted' : 'Unlocked'}
               </span>
               <Badge className={cn('text-[10px]',
-                (verify.data.steps.mintedOnSepolia || verify.data.steps.unlockedOnLiteforge)
+                (verify.data.steps.mintedOnDest || verify.data.steps.mintedOnSepolia || verify.data.steps.unlockedOnLiteforge)
                   ? 'bg-green-500/20 text-green-400 border-green-500/30'
                   : 'bg-red-500/20 text-red-400 border-red-500/30'
               )}>
-                {(verify.data.steps.mintedOnSepolia || verify.data.steps.unlockedOnLiteforge) ? 'Yes' : 'No'}
+                {(verify.data.steps.mintedOnDest || verify.data.steps.mintedOnSepolia || verify.data.steps.unlockedOnLiteforge) ? 'Yes' : 'No'}
               </Badge>
             </div>
           </div>

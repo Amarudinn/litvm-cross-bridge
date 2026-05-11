@@ -32,9 +32,13 @@ function ElapsedTimer({ startedAt }: { startedAt: number }) {
 export function TxProgressSteps() {
   const activeTx = useBridgeStore((s) => s.activeTx)
   const direction = useBridgeStore((s) => s.direction)
+  const destChainStore = useBridgeStore((s) => s.destChain)
 
-  const sourceChain = direction === 'lock' ? 'LiteForge' : 'Sepolia'
-  const destChain = direction === 'lock' ? 'Sepolia' : 'LiteForge'
+  const destChainName = destChainStore === 'baseSepolia' ? 'Base Sepolia' : 'Sepolia'
+
+  // lock: LiteForge → destChain, burn: destChain → LiteForge
+  const sourceChain = direction === 'lock' ? 'LiteForge' : destChainName
+  const destChain = direction === 'lock' ? destChainName : 'LiteForge'
 
   const getStepStatus = (step: number): StepStatus => {
     const { status } = activeTx

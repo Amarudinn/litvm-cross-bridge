@@ -19,8 +19,7 @@ export function TxStatusModal() {
 
   const { sourceChainId } = useTransactionStatus()
 
-  const isOpen =
-    activeTx.status !== 'idle'
+  const isOpen = activeTx.status !== 'idle'
 
   const handleClose = () => {
     if (activeTx.status === 'completed' || activeTx.status === 'failed') {
@@ -76,11 +75,13 @@ export function TxStatusModal() {
               </div>
             )}
 
-            {activeTx.status === 'completed' && (
-              <Button className="w-full" onClick={handleClose}>
-                Done
-              </Button>
-            )}
+            <Button
+              variant={activeTx.status === 'completed' ? 'default' : 'outline'}
+              className="w-full"
+              onClick={handleClose}
+            >
+              {activeTx.status === 'completed' ? 'Done' : 'Close'}
+            </Button>
           </div>
         )}
       </DialogContent>

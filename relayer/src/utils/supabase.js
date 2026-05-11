@@ -64,3 +64,4 @@ export async function completeBridgeTransaction(sourceTxHash, sourceNonce, destT
     logger.error(`Supabase update error: ${err.message}`);
   }
 }
+

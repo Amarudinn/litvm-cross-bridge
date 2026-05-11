@@ -7,6 +7,7 @@ import { useBridgeVault } from '@/hooks/useBridgeVault'
 import { useWrappedZkLTC } from '@/hooks/useWrappedZkLTC'
 import { useLock } from '@/hooks/useLock'
 import { useBurn } from '@/hooks/useBurn'
+import { LITEFORGE_CHAIN_ID, SEPOLIA_CHAIN_ID, BASE_SEPOLIA_CHAIN_ID } from '@/config/contracts'
 import { cn } from '@/lib/utils'
 
 function BridgeBtn({
@@ -42,6 +43,7 @@ function BridgeBtn({
 
 export function BridgeButton() {
   const direction = useBridgeStore((s) => s.direction)
+  const destChain = useBridgeStore((s) => s.destChain)
   const amount = useBridgeStore((s) => s.amount)
   const activeTx = useBridgeStore((s) => s.activeTx)
 
@@ -55,7 +57,7 @@ export function BridgeButton() {
 
   const { data: nativeBalance } = useBalance({
     address,
-    chainId: 4441,
+    chainId: LITEFORGE_CHAIN_ID,
     query: { enabled: !!address },
   })
 
@@ -63,8 +65,16 @@ export function BridgeButton() {
   const { burn } = useBurn()
 
   const isLock = direction === 'lock'
-  const requiredChainId = isLock ? 4441 : 11155111
-  const chainName = isLock ? 'LiteForge' : 'Sepolia'
+
+  // Determine required chain based on direction
+  const requiredChainId = isLock
+    ? LITEFORGE_CHAIN_ID
+    : (destChain === 'baseSepolia' ? BASE_SEPOLIA_CHAIN_ID : SEPOLIA_CHAIN_ID)
+
+  const chainName = isLock
+    ? 'LiteForge'
+    : (destChain === 'baseSepolia' ? 'Base Sepolia' : 'Sepolia')
+
   const token = isLock ? 'zkLTC' : 'wzkLTC'
 
   // Parse amount
@@ -79,7 +89,6 @@ export function BridgeButton() {
     validAmount = false
   }
 
-  // Determine balance
   const userBalance = isLock ? nativeBalance?.value : wrappedBalance
   const minAmount = isLock ? minLockAmount : minBurnAmount
 

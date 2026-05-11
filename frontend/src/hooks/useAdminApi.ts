@@ -6,10 +6,11 @@ import { adminFetch } from '@/config/admin'
 export interface HealthData {
   status: string
   uptime: number
-  balances: { liteforge: string; sepolia: string } | { error: string }
+  balances: { liteforge: string; sepolia: string; baseSepolia: string } | { error: string }
   rpc: {
     liteforge: { active: string; total: number }
     sepolia: { active: string; total: number }
+    baseSepolia: { active: string; total: number }
   }
   queue: Record<string, number>
   config: {

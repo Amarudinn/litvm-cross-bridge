@@ -14,6 +14,7 @@ export function FeeBreakdown() {
   const { feePercent: wrappedFee, minBurnAmount, isLoading: wrappedLoading } = useWrappedZkLTC()
 
   const isLock = direction === 'lock'
+
   const feePercent = isLock ? vaultFee : wrappedFee
   const minAmount = isLock ? minLockAmount : minBurnAmount
   const isLoading = isLock ? vaultLoading : wrappedLoading
@@ -90,11 +91,11 @@ export function FeeBreakdown() {
   )
 }
 
-function Row({ label, value }: { label: string; value: string }) {
+function Row({ label, value, highlight }: { label: string; value: string; highlight?: boolean }) {
   return (
     <div className="flex items-center justify-between">
-      <span className="text-muted-foreground">{label}</span>
-      <span className="text-foreground/80">{value}</span>
+      <span className={highlight ? 'text-amber-500 font-medium' : 'text-muted-foreground'}>{label}</span>
+      <span className={highlight ? 'text-amber-500 font-medium' : 'text-foreground/80'}>{value}</span>
     </div>
   )
 }

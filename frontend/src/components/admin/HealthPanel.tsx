@@ -49,7 +49,7 @@ export function HealthPanel({ data, isLoading, isError }: HealthPanelProps) {
   }
 
   const balances = 'error' in data.balances
-    ? { liteforge: 'Error', sepolia: 'Error' }
+    ? { liteforge: 'Error', sepolia: 'Error', baseSepolia: 'Error' }
     : data.balances
 
   const queueTotal = Object.values(data.queue).reduce((a, b) => a + b, 0)
@@ -89,6 +89,7 @@ export function HealthPanel({ data, isLoading, isError }: HealthPanelProps) {
             <div className="mt-2 space-y-0.5">
               <p className="text-xs font-medium truncate">{balances.liteforge}</p>
               <p className="text-xs font-medium truncate">{balances.sepolia}</p>
+              <p className="text-xs font-medium truncate">{balances.baseSepolia}</p>
             </div>
           </CardContent>
         </Card>
@@ -107,6 +108,7 @@ export function HealthPanel({ data, isLoading, isError }: HealthPanelProps) {
             <div className="mt-2 space-y-0.5">
               <p className="text-xs">LiteForge: <span className="font-medium">{data.rpc.liteforge.total}</span></p>
               <p className="text-xs">Sepolia: <span className="font-medium">{data.rpc.sepolia.total}</span></p>
+              <p className="text-xs">Base Sepolia: <span className="font-medium">{data.rpc.baseSepolia?.total ?? 0}</span></p>
             </div>
           </CardContent>
         </Card>

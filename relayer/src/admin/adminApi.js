@@ -2,9 +2,9 @@ import express from 'express';
 import { ethers } from 'ethers';
 import { config } from '../config.js';
 import { logger } from '../utils/logger.js';
-import { getLiteforgeRpc, getSepoliaRpc, checkBalances } from '../utils/provider.js';
+import { getLiteforgeRpc, getSepoliaRpc, getBaseSepoliaRpc, checkBalances } from '../utils/provider.js';
 import { saveBridgeTransaction } from '../utils/supabase.js';
-import BridgeVaultABI from '../abi/BridgeVault.json' with { type: 'json' };
+import BridgeVaultV2ABI from '../abi/BridgeVaultV2.json' with { type: 'json' };
 import WrappedZkLTCABI from '../abi/WrappedZkLTC.json' with { type: 'json' };
 
 /**
@@ -57,6 +57,7 @@ export function startAdminApi(txQueue) {
         balances = {
           liteforge: ethers.formatEther(balances.liteforge) + ' zkLTC',
           sepolia: ethers.formatEther(balances.sepolia) + ' ETH',
+          baseSepolia: ethers.formatEther(balances.baseSepolia) + ' ETH',
         };
       } catch (e) {
         balances = { error: e.message };
@@ -64,6 +65,7 @@ export function startAdminApi(txQueue) {
 
       const lfRpc = getLiteforgeRpc();
       const sepRpc = getSepoliaRpc();
+      const bsRpc = getBaseSepoliaRpc();
 
       res.json({
         status: 'running',
@@ -72,6 +74,7 @@ export function startAdminApi(txQueue) {
         rpc: {
           liteforge: { active: lfRpc.getCurrentUrl(), total: lfRpc.rpcUrls.length },
           sepolia: { active: sepRpc.getCurrentUrl(), total: sepRpc.rpcUrls.length },
+          baseSepolia: { active: bsRpc.getCurrentUrl(), total: bsRpc.rpcUrls.length },
         },
         queue: stats,
         config: {
@@ -115,7 +118,7 @@ export function startAdminApi(txQueue) {
     try {
       const { txHash, chain } = req.body;
       if (!txHash || !chain) {
-        return res.status(400).json({ error: 'Required: txHash, chain (liteforge|sepolia)' });
+        return res.status(400).json({ error: 'Required: txHash, chain (liteforge|sepolia|basesepolia)' });
       }
 
       const result = { txHash, chain, steps: {} };
@@ -139,7 +142,7 @@ export function startAdminApi(txQueue) {
 
         if (receipt && receipt.status === 1) {
           // Parse Locked event
-          const iface = new ethers.Interface(BridgeVaultABI);
+          const iface = new ethers.Interface(BridgeVaultV2ABI);
           const lockedEvents = receipt.logs
             .map(log => { try { return iface.parseLog(log); } catch { return null; } })
             .filter(e => e && e.name === 'Locked');
@@ -154,32 +157,39 @@ export function startAdminApi(txQueue) {
               nonce: ev.args.nonce.toString(),
             };
 
-            // Step 3: Check if mint was processed on Sepolia
-            const sepRpc = getSepoliaRpc();
+            // Step 3: Check if mint was processed on destination chain
+            const destChainIdNum = ev.args.destChainId ? Number(ev.args.destChainId) : 11155111;
+            const isBaseSepolia = destChainIdNum === 84532;
+            const destRpc = isBaseSepolia ? getBaseSepoliaRpc() : getSepoliaRpc();
+            const destWrappedAddr = isBaseSepolia
+              ? config.baseSepolia.wrappedZkLTCAddress
+              : config.sepolia.wrappedZkLTCAddress;
             const wrappedContract = new ethers.Contract(
-              config.sepolia.wrappedZkLTCAddress,
+              destWrappedAddr,
               WrappedZkLTCABI,
-              sepRpc.getProvider()
+              destRpc.getProvider()
             );
             const nonce = Number(ev.args.nonce);
-            const isProcessed = await sepRpc.withFallback(async () => {
+            const isProcessed = await destRpc.withFallback(async () => {
               return wrappedContract.isProcessed(txHash, nonce);
             });
-            result.steps.mintedOnSepolia = isProcessed;
+            result.steps.mintedOnDest = isProcessed;
+            result.steps.destChain = isBaseSepolia ? 'Base Sepolia' : 'Sepolia';
           }
         }
 
-        result.summary = result.steps.mintedOnSepolia
-          ? 'COMPLETED — mint sudah diproses di Sepolia'
+        result.summary = result.steps.mintedOnDest
+          ? `COMPLETED — mint sudah diproses di ${result.steps.destChain}`
           : result.steps.inQueue
             ? `IN QUEUE — status: ${queueTxs[0]?.status}`
             : 'MISSED — lock valid tapi tidak ada di queue, gunakan /admin/inject';
 
-      } else if (chain === 'sepolia') {
-        const sepRpc = getSepoliaRpc();
+      } else if (chain === 'sepolia' || chain === 'basesepolia') {
+        const isBS = chain === 'basesepolia';
+        const srcRpc = isBS ? getBaseSepoliaRpc() : getSepoliaRpc();
 
-        // Get tx receipt from Sepolia
-        const receipt = await sepRpc.withFallback(p => p.getTransactionReceipt(txHash));
+        // Get tx receipt from source chain
+        const receipt = await srcRpc.withFallback(p => p.getTransactionReceipt(txHash));
         result.steps.sourceReceipt = receipt ? {
           status: receipt.status === 1 ? 'success' : 'reverted',
           blockNumber: receipt.blockNumber,
@@ -207,7 +217,7 @@ export function startAdminApi(txQueue) {
             const lfRpc = getLiteforgeRpc();
             const vaultContract = new ethers.Contract(
               config.liteforge.bridgeVaultAddress,
-              BridgeVaultABI,
+              BridgeVaultV2ABI,
               lfRpc.getProvider()
             );
             const nonce = Number(ev.args.nonce);
@@ -225,7 +235,7 @@ export function startAdminApi(txQueue) {
             : 'MISSED — burn valid tapi tidak ada di queue, gunakan /admin/inject';
 
       } else {
-        return res.status(400).json({ error: 'chain must be "liteforge" or "sepolia"' });
+        return res.status(400).json({ error: 'chain must be "liteforge", "sepolia", or "basesepolia"' });
       }
 
       res.json(result);
@@ -281,7 +291,7 @@ export function startAdminApi(txQueue) {
           return res.status(400).json({ error: 'Transaction not found or reverted on LiteForge' });
         }
 
-        const iface = new ethers.Interface(BridgeVaultABI);
+        const iface = new ethers.Interface(BridgeVaultV2ABI);
         const lockedEvents = receipt.logs
           .map(log => { try { return iface.parseLog(log); } catch { return null; } })
           .filter(e => e && e.name === 'Locked');
@@ -293,15 +303,25 @@ export function startAdminApi(txQueue) {
         const ev = lockedEvents[0];
         const nonce = Number(ev.args.nonce);
 
+        // Determine destination chain from event
+        const destChainIdNum = ev.args.destChainId ? Number(ev.args.destChainId) : 11155111;
+        const isBS = destChainIdNum === 84532;
+        const destRpc = isBS ? getBaseSepoliaRpc() : getSepoliaRpc();
+        const destWrappedAddr = isBS
+          ? config.baseSepolia.wrappedZkLTCAddress
+          : config.sepolia.wrappedZkLTCAddress;
+
         // Check if already processed on-chain
-        const sepRpc = getSepoliaRpc();
         const wrappedContract = new ethers.Contract(
-          config.sepolia.wrappedZkLTCAddress, WrappedZkLTCABI, sepRpc.getProvider()
+          destWrappedAddr, WrappedZkLTCABI, destRpc.getProvider()
         );
-        const isProcessed = await sepRpc.withFallback(() => wrappedContract.isProcessed(txHash, nonce));
+        const isProcessed = await destRpc.withFallback(() => wrappedContract.isProcessed(txHash, nonce));
         if (isProcessed) {
-          return res.status(400).json({ error: 'Already minted on Sepolia — no action needed' });
+          return res.status(400).json({ error: `Already minted on ${isBS ? 'Base Sepolia' : 'Sepolia'} — no action needed` });
         }
+
+        const destChain = isBS ? 'basesepolia' : 'sepolia';
+        const direction = isBS ? 'liteforge_to_basesepolia' : 'liteforge_to_sepolia';
 
         // Inject into queue
         const added = txQueue.addTransaction({
@@ -312,16 +332,17 @@ export function startAdminApi(txQueue) {
           sourceNonce: nonce,
           recipient: ev.args.recipient,
           amount: ev.args.amount.toString(),
+          destChain,
         });
 
         // Also save to Supabase
         await saveBridgeTransaction({
-          direction: 'liteforge_to_sepolia',
+          direction,
           source_tx_hash: txHash,
           source_chain_id: 4441,
           source_block: receipt.blockNumber,
           source_nonce: nonce,
-          dest_chain_id: 11155111,
+          dest_chain_id: destChainIdNum,
           sender: ev.args.sender,
           recipient: ev.args.recipient,
           amount: ev.args.amount.toString(),
@@ -341,12 +362,17 @@ export function startAdminApi(txQueue) {
           },
         });
 
-      } else if (chain === 'sepolia') {
-        // Fetch and parse Burned event from Sepolia
-        const sepRpc = getSepoliaRpc();
-        const receipt = await sepRpc.withFallback(p => p.getTransactionReceipt(txHash));
+      } else if (chain === 'sepolia' || chain === 'basesepolia') {
+        const isBS = chain === 'basesepolia';
+        const chainLabel = isBS ? 'Base Sepolia' : 'Sepolia';
+        const srcChainId = isBS ? 84532 : 11155111;
+        const srcRpc = isBS ? getBaseSepoliaRpc() : getSepoliaRpc();
+        const direction = isBS ? 'basesepolia_to_liteforge' : 'sepolia_to_liteforge';
+
+        // Fetch and parse Burned event
+        const receipt = await srcRpc.withFallback(p => p.getTransactionReceipt(txHash));
         if (!receipt || receipt.status !== 1) {
-          return res.status(400).json({ error: 'Transaction not found or reverted on Sepolia' });
+          return res.status(400).json({ error: `Transaction not found or reverted on ${chainLabel}` });
         }
 
         const iface = new ethers.Interface(WrappedZkLTCABI);
@@ -364,7 +390,7 @@ export function startAdminApi(txQueue) {
         // Check if already processed on-chain
         const lfRpc = getLiteforgeRpc();
         const vaultContract = new ethers.Contract(
-          config.liteforge.bridgeVaultAddress, BridgeVaultABI, lfRpc.getProvider()
+          config.liteforge.bridgeVaultAddress, BridgeVaultV2ABI, lfRpc.getProvider()
         );
         const isProcessed = await lfRpc.withFallback(() => vaultContract.isProcessed(txHash, nonce));
         if (isProcessed) {
@@ -375,7 +401,7 @@ export function startAdminApi(txQueue) {
         const added = txQueue.addTransaction({
           type: 'UNLOCK',
           sourceTxHash: txHash,
-          sourceChain: 'sepolia',
+          sourceChain: chain,
           sourceBlock: receipt.blockNumber,
           sourceNonce: nonce,
           recipient: ev.args.recipient,
@@ -384,9 +410,9 @@ export function startAdminApi(txQueue) {
 
         // Also save to Supabase
         await saveBridgeTransaction({
-          direction: 'sepolia_to_liteforge',
+          direction,
           source_tx_hash: txHash,
-          source_chain_id: 11155111,
+          source_chain_id: srcChainId,
           source_block: receipt.blockNumber,
           source_nonce: nonce,
           dest_chain_id: 4441,
@@ -397,9 +423,9 @@ export function startAdminApi(txQueue) {
           status: 'pending',
         });
 
-        logger.info(`[Admin] Injected UNLOCK transaction`, { txHash, nonce });
+        logger.info(`[Admin] Injected UNLOCK transaction from ${chainLabel}`, { txHash, nonce });
         res.json({
-          message: 'UNLOCK transaction injected into queue',
+          message: `UNLOCK transaction injected into queue (from ${chainLabel})`,
           event: {
             sender: ev.args.sender,
             recipient: ev.args.recipient,
@@ -410,7 +436,7 @@ export function startAdminApi(txQueue) {
         });
 
       } else {
-        return res.status(400).json({ error: 'chain must be "liteforge" or "sepolia"' });
+        return res.status(400).json({ error: 'chain must be "liteforge", "sepolia", or "basesepolia"' });
       }
     } catch (error) {
       res.status(500).json({ error: error.message });

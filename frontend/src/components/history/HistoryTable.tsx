@@ -12,20 +12,18 @@ interface HistoryTableProps {
 const PAGE_SIZE = 10
 
 function DirectionLabel({ direction }: { direction: BridgeTransaction['direction'] }) {
-  if (direction === 'liteforge_to_sepolia') {
-    return (
-      <span className="inline-flex items-center gap-1 text-sm">
-        <span className="font-medium text-blue-400">LiteForge</span>
-        <ArrowRight className="h-3 w-3 text-muted-foreground" />
-        <span className="font-medium text-purple-400">Sepolia</span>
-      </span>
-    )
+  const dirMap: Record<string, { from: string; fromColor: string; to: string; toColor: string }> = {
+    liteforge_to_sepolia: { from: 'LiteForge', fromColor: 'text-blue-400', to: 'Sepolia', toColor: 'text-purple-400' },
+    sepolia_to_liteforge: { from: 'Sepolia', fromColor: 'text-purple-400', to: 'LiteForge', toColor: 'text-blue-400' },
+    liteforge_to_basesepolia: { from: 'LiteForge', fromColor: 'text-blue-400', to: 'Base', toColor: 'text-sky-400' },
+    basesepolia_to_liteforge: { from: 'Base', fromColor: 'text-sky-400', to: 'LiteForge', toColor: 'text-blue-400' },
   }
+  const d = dirMap[direction] || dirMap['liteforge_to_sepolia']
   return (
     <span className="inline-flex items-center gap-1 text-sm">
-      <span className="font-medium text-purple-400">Sepolia</span>
+      <span className={cn('font-medium', d.fromColor)}>{d.from}</span>
       <ArrowRight className="h-3 w-3 text-muted-foreground" />
-      <span className="font-medium text-blue-400">LiteForge</span>
+      <span className={cn('font-medium', d.toColor)}>{d.to}</span>
     </span>
   )
 }
@@ -70,7 +68,7 @@ function TransactionCard({ tx }: { tx: BridgeTransaction }) {
           <span className="font-mono text-sm font-medium">
             {formatAmount(tx.amount)}{' '}
             <span className="text-muted-foreground text-xs">
-              {tx.direction === 'liteforge_to_sepolia' ? 'zkLTC' : 'wzkLTC'}
+              {tx.direction.startsWith('liteforge_to_') ? 'zkLTC' : 'wzkLTC'}
             </span>
           </span>
         </div>
@@ -198,7 +196,7 @@ export function HistoryTable({ transactions }: HistoryTableProps) {
                   <span className="font-mono text-sm">
                     {formatAmount(tx.amount)}{' '}
                     <span className="text-muted-foreground text-xs">
-                      {tx.direction === 'liteforge_to_sepolia' ? 'zkLTC' : 'wzkLTC'}
+                      {tx.direction.startsWith('liteforge_to_') ? 'zkLTC' : 'wzkLTC'}
                     </span>
                   </span>
                 </td>

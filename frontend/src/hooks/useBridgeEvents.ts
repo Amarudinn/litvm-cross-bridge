@@ -1,9 +1,15 @@
 import { useQuery } from '@tanstack/react-query'
 import { supabase } from '@/config/supabase'
 
+export type BridgeDirection =
+  | 'liteforge_to_sepolia'
+  | 'sepolia_to_liteforge'
+  | 'liteforge_to_basesepolia'
+  | 'basesepolia_to_liteforge'
+
 export interface BridgeTransaction {
   id: string
-  direction: 'liteforge_to_sepolia' | 'sepolia_to_liteforge'
+  direction: BridgeDirection
   sender: string
   recipient: string
   amount: bigint
@@ -28,7 +34,7 @@ export interface BridgeStats {
 
 interface SupabaseTransaction {
   id: number
-  direction: 'liteforge_to_sepolia' | 'sepolia_to_liteforge'
+  direction: BridgeDirection
   source_tx_hash: string
   source_chain_id: number
   source_block: number
@@ -59,8 +65,9 @@ interface SupabaseStats {
  * Keeps the same interface so HistoryTable/ExplorerTable don't need changes
  */
 function mapTransaction(row: SupabaseTransaction): BridgeTransaction {
+  const isLock = row.direction.startsWith('liteforge_to_')
   return {
-    id: `${row.direction === 'liteforge_to_sepolia' ? 'lock' : 'burn'}-${row.source_nonce}`,
+    id: `${isLock ? 'lock' : 'burn'}-${row.source_nonce}`,
     direction: row.direction,
     sender: row.sender,
     recipient: row.recipient,

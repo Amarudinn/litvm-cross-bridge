@@ -1,21 +1,31 @@
 import { useEffect } from 'react'
 import { useWaitForTransactionReceipt, useReadContract } from 'wagmi'
 import { useBridgeStore } from '@/stores/bridgeStore'
-import { WRAPPED_ZKLTC_ADDRESS, BRIDGE_VAULT_ADDRESS } from '@/config/contracts'
+import { WRAPPED_ZKLTC_ADDRESS, WRAPPED_ZKLTC_BASE_SEPOLIA_ADDRESS, BRIDGE_VAULT_ADDRESS, LITEFORGE_CHAIN_ID, SEPOLIA_CHAIN_ID, BASE_SEPOLIA_CHAIN_ID } from '@/config/contracts'
 import { wrappedZkLTCAbi } from '@/abi/WrappedZkLTC'
-import { bridgeVaultAbi } from '@/abi/BridgeVault'
+import { bridgeVaultV2Abi } from '@/abi/BridgeVaultV2'
 
 export function useTransactionStatus() {
   const activeTx = useBridgeStore((s) => s.activeTx)
   const direction = useBridgeStore((s) => s.direction)
+  const destChain = useBridgeStore((s) => s.destChain)
   const setActiveTx = useBridgeStore((s) => s.setActiveTx)
 
-  const sourceChainId = direction === 'lock' ? 4441 : 11155111
+  const isBaseSepolia = destChain === 'baseSepolia'
+
+  // Source chain depends on direction:
+  // lock: source = LiteForge
+  // burn: source = Sepolia/BaseSepolia (based on destChain)
+  const sourceChainId = direction === 'lock'
+    ? LITEFORGE_CHAIN_ID
+    : (isBaseSepolia ? BASE_SEPOLIA_CHAIN_ID : SEPOLIA_CHAIN_ID)
 
   // Step 1: Wait for source chain confirmation
   const { data: receipt, isSuccess: isConfirmed } = useWaitForTransactionReceipt({
     hash: activeTx.hash ?? undefined,
     chainId: sourceChainId,
+    confirmations: 1,
+    pollingInterval: 3_000,
     query: {
       enabled: !!activeTx.hash && activeTx.status === 'confirming',
     },
@@ -33,16 +43,20 @@ export function useTransactionStatus() {
     if (isConfirmed && receipt && activeTx.status === 'confirming') {
       const logs = receipt.logs
       if (logs.length > 0) {
-        // Find the Locked or Burned event log (last log from our contract)
         const lastLog = logs[logs.length - 1]
         const data = lastLog.data
         if (data && data.length >= 66) {
-          // Both Locked and Burned events have nonce as the last uint256 in data
-          // Locked(sender, recipient, amount, fee, nonce) → data = amount(32) + fee(32) + nonce(32)
-          // Burned(sender, recipient, amount, fee, nonce) → data = amount(32) + fee(32) + nonce(32)
-          const nonceHex = ('0x' + data.slice(-64)) as `0x${string}`
-          const sourceNonce = BigInt(nonceHex)
-          setActiveTx({ status: 'relaying', sourceNonce })
+          if (direction === 'lock') {
+            // V2 Locked has 4 non-indexed fields: amount, fee, nonce, destChainId
+            const nonceHex = ('0x' + data.slice(130, 194)) as `0x${string}`
+            const sourceNonce = BigInt(nonceHex)
+            setActiveTx({ status: 'relaying', sourceNonce })
+          } else {
+            // Burned has 3 non-indexed fields: amount, fee, nonce
+            const nonceHex = ('0x' + data.slice(-64)) as `0x${string}`
+            const sourceNonce = BigInt(nonceHex)
+            setActiveTx({ status: 'relaying', sourceNonce })
+          }
         } else {
           setActiveTx({ status: 'relaying' })
         }
@@ -50,14 +64,18 @@ export function useTransactionStatus() {
         setActiveTx({ status: 'relaying' })
       }
     }
-  }, [isConfirmed, receipt, activeTx.status, setActiveTx])
+  }, [isConfirmed, receipt, activeTx.status, direction, setActiveTx])
 
   // Step 3: Poll destination chain isProcessed(sourceTxHash, sourceNonce)
-  // The contract's isProcessed() takes the SOURCE tx hash and SOURCE nonce,
-  // then internally computes processId = keccak256(abi.encodePacked(txHash, nonce))
-  const destChainId = direction === 'lock' ? 11155111 : 4441
-  const destAddress = direction === 'lock' ? WRAPPED_ZKLTC_ADDRESS : BRIDGE_VAULT_ADDRESS
-  const destAbi = direction === 'lock' ? wrappedZkLTCAbi : bridgeVaultAbi
+  const destChainId = direction === 'lock'
+    ? (isBaseSepolia ? BASE_SEPOLIA_CHAIN_ID : SEPOLIA_CHAIN_ID)
+    : LITEFORGE_CHAIN_ID
+
+  const destAddress = direction === 'lock'
+    ? (isBaseSepolia ? WRAPPED_ZKLTC_BASE_SEPOLIA_ADDRESS : WRAPPED_ZKLTC_ADDRESS)
+    : BRIDGE_VAULT_ADDRESS
+
+  const destAbi = direction === 'lock' ? wrappedZkLTCAbi : bridgeVaultV2Abi
 
   const canPoll =
     activeTx.status === 'relaying' &&

@@ -3,12 +3,12 @@ import { config } from '../config.js';
 import { getLiteforgeProvider, getLiteforgeRpc } from '../utils/provider.js';
 import { logger } from '../utils/logger.js';
 import { saveBridgeTransaction } from '../utils/supabase.js';
-import BridgeVaultABI from '../abi/BridgeVault.json' with { type: 'json' };
+import BridgeVaultV2ABI from '../abi/BridgeVaultV2.json' with { type: 'json' };
 
 /**
  * LiteForge Listener
- * Polls for Locked events on BridgeVault contract.
- * When a Locked event is detected, it queues a mint operation on Sepolia.
+ * Polls for Locked events on BridgeVaultV2 contract.
+ * When a Locked event is detected, it queues a mint operation on the appropriate destination chain.
  */
 export class LiteforgeListener {
   constructor(txQueue) {
@@ -22,7 +22,7 @@ export class LiteforgeListener {
   _getContract() {
     return new ethers.Contract(
       config.liteforge.bridgeVaultAddress,
-      BridgeVaultABI,
+      BridgeVaultV2ABI,
       this.rpc.getProvider()
     );
   }
@@ -102,12 +102,27 @@ export class LiteforgeListener {
   }
 
   /**
-   * Handle a Locked event - queue a mint operation
+   * Handle a Locked event - queue a mint operation on the appropriate destination chain
    */
   async _handleLockedEvent(event) {
-    const { sender, recipient, amount, fee, nonce } = event.args;
+    const { sender, recipient, amount, fee, nonce, destChainId } = event.args;
     const txHash = event.transactionHash;
     const blockNumber = event.blockNumber;
+
+    // Determine destination chain from event
+    const destChainIdNum = Number(destChainId);
+    let destChain, direction, destChainIdForDb;
+
+    if (destChainIdNum === 84532) {
+      destChain = 'basesepolia';
+      direction = 'liteforge_to_basesepolia';
+      destChainIdForDb = 84532;
+    } else {
+      // Default to Sepolia (11155111)
+      destChain = 'sepolia';
+      direction = 'liteforge_to_sepolia';
+      destChainIdForDb = 11155111;
+    }
 
     logger.info(`Locked event detected`, {
       txHash,
@@ -117,9 +132,10 @@ export class LiteforgeListener {
       amount: ethers.formatEther(amount),
       fee: ethers.formatEther(fee),
       nonce: nonce.toString(),
+      destChain,
     });
 
-    // Queue mint operation
+    // Queue mint operation with destination chain
     this.txQueue.addTransaction({
       type: 'MINT',
       sourceTxHash: txHash,
@@ -128,16 +144,17 @@ export class LiteforgeListener {
       sourceNonce: Number(nonce),
       recipient,
       amount: amount.toString(),
+      destChain,
     });
 
     // Save to Supabase as pending
     await saveBridgeTransaction({
-      direction: 'liteforge_to_sepolia',
+      direction,
       source_tx_hash: txHash,
       source_chain_id: 4441,
       source_block: blockNumber,
       source_nonce: Number(nonce),
-      dest_chain_id: 11155111,
+      dest_chain_id: destChainIdForDb,
       sender: sender,
       recipient: recipient,
       amount: amount.toString(),

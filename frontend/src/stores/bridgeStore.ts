@@ -1,7 +1,10 @@
 import { create } from 'zustand'
 
+export type DestChain = 'sepolia' | 'baseSepolia'
+
 export interface BridgeStore {
   direction: 'lock' | 'burn'
+  destChain: DestChain
   amount: string
   recipient: string
 
@@ -16,6 +19,7 @@ export interface BridgeStore {
 
   setDirection: (d: 'lock' | 'burn') => void
   toggleDirection: () => void
+  setDestChain: (c: DestChain) => void
   setAmount: (a: string) => void
   setRecipient: (r: string) => void
   setActiveTx: (tx: Partial<BridgeStore['activeTx']>) => void
@@ -25,6 +29,7 @@ export interface BridgeStore {
 
 export const useBridgeStore = create<BridgeStore>((set) => ({
   direction: 'lock',
+  destChain: 'sepolia',
   amount: '',
   recipient: '',
 
@@ -39,6 +44,7 @@ export const useBridgeStore = create<BridgeStore>((set) => ({
       direction: state.direction === 'lock' ? 'burn' : 'lock',
       amount: '',
     })),
+  setDestChain: (c) => set({ destChain: c }),
   setAmount: (a) => set({ amount: a }),
   setRecipient: (r) => set({ recipient: r }),
   setActiveTx: (tx) =>

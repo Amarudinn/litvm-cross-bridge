@@ -6,29 +6,21 @@ import { Wallet, History } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
 import { HistoryTable } from '@/components/history/HistoryTable'
+import { RouteFilterDropdown, type RouteFilterValue } from '@/components/ui/RouteFilterDropdown'
 import { useBridgeEvents } from '@/hooks/useBridgeEvents'
-import { cn } from '@/lib/utils'
-
-type FilterTab = 'all' | 'liteforge_to_sepolia' | 'sepolia_to_liteforge'
-
-const tabs: { key: FilterTab; label: string }[] = [
-  { key: 'all', label: 'All' },
-  { key: 'liteforge_to_sepolia', label: 'LF → Sepolia' },
-  { key: 'sepolia_to_liteforge', label: 'Sepolia → LF' },
-]
 
 export default function HistoryPage() {
   const { address, isConnected } = useAccount()
   const { openConnectModal } = useConnectModal()
-  const [activeTab, setActiveTab] = useState<FilterTab>('all')
+  const [activeFilter, setActiveFilter] = useState<RouteFilterValue>('all')
 
   const { data, isLoading, isError } = useBridgeEvents(
     isConnected ? (address as `0x${string}`) : undefined
   )
 
   const filteredTransactions = data?.transactions.filter((tx) => {
-    if (activeTab === 'all') return true
-    return tx.direction === activeTab
+    if (activeFilter === 'all') return true
+    return tx.direction === activeFilter
   }) ?? []
 
   if (!isConnected) {
@@ -67,33 +59,18 @@ export default function HistoryPage() {
         transition={{ duration: 0.4 }}
         className="w-full max-w-4xl mx-auto"
       >
-        {/* Header */}
-        <div className="flex items-center gap-2.5 mb-1">
-          <History className="h-5 w-5 text-primary" />
-          <h1 className="text-xl md:text-2xl font-bold">Transaction History</h1>
-        </div>
-        <p className="text-xs md:text-sm text-muted-foreground mb-5">
-          Your bridge transactions across chains
-        </p>
-
-        {/* Filter Tabs */}
-        <div className="overflow-x-auto mb-4 -mx-4 px-4">
-          <div className="flex gap-1 bg-muted/30 rounded-xl p-1 w-fit">
-            {tabs.map(tab => (
-              <button
-                key={tab.key}
-                onClick={() => setActiveTab(tab.key)}
-                className={cn(
-                  'px-3 py-1.5 rounded-lg text-xs md:text-sm font-medium transition-all cursor-pointer whitespace-nowrap',
-                  activeTab === tab.key
-                    ? 'bg-primary/15 text-primary shadow-sm'
-                    : 'text-muted-foreground hover:text-foreground'
-                )}
-              >
-                {tab.label}
-              </button>
-            ))}
+        {/* Header + Filter */}
+        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 mb-5">
+          <div>
+            <div className="flex items-center gap-2.5 mb-1">
+              <History className="h-5 w-5 text-primary" />
+              <h1 className="text-xl md:text-2xl font-bold">Transaction History</h1>
+            </div>
+            <p className="text-xs md:text-sm text-muted-foreground">
+              Your bridge transactions across chains
+            </p>
           </div>
+          <RouteFilterDropdown value={activeFilter} onChange={setActiveFilter} />
         </div>
 
         {/* Table Card */}
