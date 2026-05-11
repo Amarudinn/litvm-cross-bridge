@@ -93,7 +93,7 @@ export function useBridgeEvents(filterAddress?: `0x${string}`) {
         .from('bridge_transactions')
         .select('*')
         .order('created_at', { ascending: false })
-        .limit(200)
+        .limit(1000)
 
       // Filter by address (sender OR recipient)
       if (filterAddress) {

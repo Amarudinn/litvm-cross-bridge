@@ -26,3 +26,5 @@ relayer/data/*.log
 # OS
 .DS_Store
 Thumbs.db
+
+images
