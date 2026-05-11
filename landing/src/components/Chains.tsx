@@ -17,7 +17,7 @@ export function Chains() {
             Supported Chains
           </h2>
           <p className="text-muted-foreground text-lg max-w-xl mx-auto">
-            Seamlessly bridge between LiteForge Layer 1 and Ethereum Sepolia.
+            Seamlessly bridge between LiteForge Layer 2 and Ethereum Sepolia.
           </p>
         </motion.div>
 
@@ -35,7 +35,7 @@ export function Chains() {
               <img src="/litvm.png" alt="LiteForge" className="w-12 h-12 rounded-lg" />
             </div>
             <h3 className="text-lg font-semibold text-foreground mb-1">LiteForge</h3>
-            <p className="text-sm text-muted-foreground mb-3">Layer 1</p>
+            <p className="text-sm text-muted-foreground mb-3">Layer 2</p>
             <div className="space-y-1.5 text-xs text-muted-foreground">
               <div className="flex items-center justify-between px-3 py-1.5 rounded-lg bg-muted/30">
                 <span>Chain ID</span>

@@ -20,6 +20,7 @@ const sidebarItems: SidebarItem[] = [
   {
     label: 'Bridge',
     icon: <Layers className="h-4 w-4" />,
+    soon: true,
     children: [
       { label: 'Architecture', path: '/docs/bridge/architecture' },
       { label: 'Contract', path: '/docs/bridge/contract' },
@@ -40,12 +41,6 @@ const sidebarItems: SidebarItem[] = [
     label: 'Roadmap',
     path: '#',
     icon: <Map className="h-4 w-4" />,
-    soon: true,
-  },
-  {
-    label: 'Tokenomics',
-    path: '#',
-    icon: <Coins className="h-4 w-4" />,
     soon: true,
   },
 ]

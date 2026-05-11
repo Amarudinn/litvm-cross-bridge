@@ -118,7 +118,7 @@ export function BridgeContract() {
 
       <h3>Replay Protection (Double Layer)</h3>
       <p>
-        <strong>Layer 1 (On-chain):</strong> Each mint/unlock operation generates a unique <code>processId = keccak256(abi.encodePacked(txHash, nonce))</code>. The contract reverts if the same processId is used twice.
+        <strong>Layer 2 (On-chain):</strong> Each mint/unlock operation generates a unique <code>processId = keccak256(abi.encodePacked(txHash, nonce))</code>. The contract reverts if the same processId is used twice.
       </p>
       <p>
         <strong>Layer 2 (Database):</strong> The Relayer's SQLite database has a <code>UNIQUE(source_tx_hash, source_nonce)</code> constraint that prevents duplicate queue entries.

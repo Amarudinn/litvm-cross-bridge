@@ -33,7 +33,7 @@ export function Overview() {
           </tr>
           <tr>
             <td>Type</td>
-            <td>Layer 1</td>
+            <td>Layer 2</td>
             <td>Ethereum Testnet</td>
           </tr>
           <tr>
