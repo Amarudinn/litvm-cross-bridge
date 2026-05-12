@@ -3,18 +3,19 @@ export function BridgeGuide() {
     <div className="prose-docs">
       <h1>Bridge Guide</h1>
       <p>
-        This guide walks you through how to use Multyra Bridge to transfer tokens between LiteForge and Sepolia.
+        This guide walks you through how to use Multyra Bridge to transfer tokens between LiteForge and destination chains (Ethereum Sepolia or Base Sepolia).
       </p>
 
       <h2>Prerequisites</h2>
       <ul>
         <li>MetaMask or any injected wallet installed in your browser</li>
-        <li>zkLTC on LiteForge (for bridging to Sepolia) or wzkLTC on Sepolia (for bridging back)</li>
-        <li>A small amount of ETH on Sepolia for gas (if burning wzkLTC)</li>
+        <li>zkLTC on LiteForge (for bridging to Sepolia/Base Sepolia) or wzkLTC on a destination chain (for bridging back)</li>
+        <li>A small amount of ETH on the destination chain for gas (if burning wzkLTC)</li>
       </ul>
 
-      <h2>Add LiteForge Network to MetaMask</h2>
-      <p>If LiteForge is not already in your wallet, add it manually:</p>
+      <h2>Add Networks to MetaMask</h2>
+
+      <h3>LiteForge</h3>
       <table>
         <thead>
           <tr>
@@ -46,10 +47,42 @@ export function BridgeGuide() {
         </tbody>
       </table>
 
+      <h3>Base Sepolia</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Field</th>
+            <th>Value</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Network Name</td>
+            <td>Base Sepolia</td>
+          </tr>
+          <tr>
+            <td>RPC URL</td>
+            <td><code>https://sepolia.base.org</code></td>
+          </tr>
+          <tr>
+            <td>Chain ID</td>
+            <td><code>84532</code></td>
+          </tr>
+          <tr>
+            <td>Currency Symbol</td>
+            <td><code>ETH</code></td>
+          </tr>
+          <tr>
+            <td>Block Explorer</td>
+            <td><code>https://sepolia.basescan.org</code></td>
+          </tr>
+        </tbody>
+      </table>
+
       <hr />
 
-      <h2>Bridge zkLTC to Sepolia (Lock)</h2>
-      <p>Convert your native zkLTC on LiteForge into wzkLTC on Sepolia.</p>
+      <h2>Bridge zkLTC to Destination Chain (Lock)</h2>
+      <p>Convert your native zkLTC on LiteForge into wzkLTC on Ethereum Sepolia or Base Sepolia.</p>
 
       <h3>Step 1: Connect Wallet</h3>
       <ol>
@@ -58,10 +91,11 @@ export function BridgeGuide() {
         <li>Select MetaMask and approve the connection</li>
       </ol>
 
-      <h3>Step 2: Select Direction</h3>
+      <h3>Step 2: Select Direction & Destination</h3>
       <ol>
-        <li>Make sure the direction shows <strong>LiteForge &rarr; Sepolia</strong></li>
-        <li>If it shows the opposite, click the swap button (arrows icon) to toggle</li>
+        <li>Make sure the source shows <strong>LiteForge</strong></li>
+        <li>Select your destination chain: <strong>Ethereum Sepolia</strong> or <strong>Base Sepolia</strong></li>
+        <li>If you want to switch direction, click the swap button (arrows icon) to toggle</li>
       </ol>
 
       <h3>Step 3: Enter Amount</h3>
@@ -84,28 +118,30 @@ export function BridgeGuide() {
       <ol>
         <li><strong>Signing</strong> &mdash; Transaction confirmed in your wallet</li>
         <li><strong>Confirming on LiteForge</strong> &mdash; Waiting for block confirmation (~6 seconds)</li>
-        <li><strong>Relaying to Sepolia</strong> &mdash; Relayer is minting wzkLTC (~10-15 seconds)</li>
-        <li><strong>Complete</strong> &mdash; wzkLTC has been minted to your wallet on Sepolia</li>
+        <li><strong>Relaying to destination</strong> &mdash; Relayer is minting wzkLTC on your chosen chain</li>
+        <li><strong>Complete</strong> &mdash; wzkLTC has been minted to your wallet</li>
       </ol>
 
       <div className="callout">
         <div className="callout-title">
-          Total time: ~20 seconds
+          Estimated time
         </div>
         <div className="callout-content">
-          The entire process from lock to receiving wzkLTC typically takes about 20 seconds. A live timer shows elapsed time during the process.
+          <p className="mb-0">&bull; To Ethereum Sepolia: ~20 seconds</p>
+          <p className="mb-0">&bull; To Base Sepolia: ~15 seconds</p>
         </div>
       </div>
 
       <hr />
 
       <h2>Bridge wzkLTC back to LiteForge (Burn)</h2>
-      <p>Convert your wzkLTC on Sepolia back into native zkLTC on LiteForge.</p>
+      <p>Convert your wzkLTC on Ethereum Sepolia or Base Sepolia back into native zkLTC on LiteForge.</p>
 
       <h3>Step 1: Switch Direction</h3>
       <ol>
-        <li>Click the swap button to set direction to <strong>Sepolia &rarr; LiteForge</strong></li>
-        <li>If prompted, switch your wallet to the Sepolia network</li>
+        <li>Click the swap button to set direction to <strong>Sepolia/Base Sepolia &rarr; LiteForge</strong></li>
+        <li>Select which chain you're burning from</li>
+        <li>If prompted, switch your wallet to the correct network</li>
       </ol>
 
       <h3>Step 2: Enter Amount</h3>
@@ -123,10 +159,11 @@ export function BridgeGuide() {
 
       <div className="callout">
         <div className="callout-title">
-          Total time: ~45 seconds
+          Estimated time
         </div>
         <div className="callout-content">
-          Burning takes longer because Sepolia has a ~12 second block time (vs ~2 seconds on LiteForge). The 3 block confirmations alone take ~36 seconds.
+          <p className="mb-0">&bull; From Ethereum Sepolia: ~45 seconds (Sepolia has ~12s block time)</p>
+          <p className="mb-0">&bull; From Base Sepolia: ~20 seconds (Base has ~2s block time)</p>
         </div>
       </div>
 
@@ -146,7 +183,7 @@ export function BridgeGuide() {
         <li>Click <strong>"Explorer"</strong> in the navigation bar</li>
         <li>View aggregate stats: total locked, total burned, total transactions</li>
         <li>Browse all bridge transactions from all users</li>
-        <li>Search by address or filter by direction</li>
+        <li>Search by address or filter by direction and chain</li>
       </ol>
 
       <hr />
@@ -160,6 +197,12 @@ export function BridgeGuide() {
         <li>Ensure the Relayer service is running (check with admin if needed)</li>
       </ul>
 
+      <h3>"Unsupported Chain" error</h3>
+      <ul>
+        <li>The destination chain you selected is not currently registered in BridgeVaultV2</li>
+        <li>Currently supported: Ethereum Sepolia (11155111) and Base Sepolia (84532)</li>
+      </ul>
+
       <h3>"Below Minimum" error</h3>
       <ul>
         <li>Minimum lock amount: 0.001 zkLTC</li>
@@ -170,17 +213,17 @@ export function BridgeGuide() {
       <ul>
         <li>Make sure you have enough tokens on the source chain</li>
         <li>For lock: check your zkLTC balance on LiteForge</li>
-        <li>For burn: check your wzkLTC balance on Sepolia</li>
+        <li>For burn: check your wzkLTC balance on the destination chain</li>
       </ul>
 
       <h3>wzkLTC not showing in MetaMask</h3>
+      <p>You need to manually import the token in MetaMask:</p>
       <ul>
-        <li>You need to manually import the token in MetaMask</li>
-        <li>Switch to Sepolia network in MetaMask</li>
-        <li>Click "Import tokens" and enter: <code>0x4320BB234A76f94F9eeDD0E81968668C6d29c39f</code></li>
+        <li><strong>On Ethereum Sepolia:</strong> Import <code>0x4320BB234A76f94F9eeDD0E81968668C6d29c39f</code></li>
+        <li><strong>On Base Sepolia:</strong> Import <code>0xB378f0359815ECEC5Ae3c5aC4c49c12b70931688</code></li>
       </ul>
 
-      <h3>"Switch to LiteForge/Sepolia" button</h3>
+      <h3>"Switch Network" button</h3>
       <ul>
         <li>Your wallet is on the wrong network for the selected bridge direction</li>
         <li>Click the button to automatically switch networks</li>

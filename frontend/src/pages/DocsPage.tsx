@@ -7,6 +7,7 @@ import { Overview } from '@/components/docs/content/Overview'
 import { BridgeArchitecture } from '@/components/docs/content/BridgeArchitecture'
 import { BridgeContract } from '@/components/docs/content/BridgeContract'
 import { BridgeGuide } from '@/components/docs/content/BridgeGuide'
+import { BridgeMigration } from '@/components/docs/content/BridgeMigration'
 
 function getContent(section?: string, subsection?: string) {
   if (!section || section === 'overview') {
@@ -21,6 +22,8 @@ function getContent(section?: string, subsection?: string) {
         return <BridgeContract />
       case 'guide':
         return <BridgeGuide />
+      case 'migration':
+        return <BridgeMigration />
       default:
         return <BridgeArchitecture />
     }

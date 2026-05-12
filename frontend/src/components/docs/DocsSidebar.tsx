@@ -24,6 +24,7 @@ const sidebarItems: SidebarItem[] = [
       { label: 'Architecture', path: '/docs/bridge/architecture' },
       { label: 'Contract', path: '/docs/bridge/contract' },
       { label: 'Guide', path: '/docs/bridge/guide' },
+      { label: 'Migration V1 → V2', path: '/docs/bridge/migration' },
     ],
   },
   {
