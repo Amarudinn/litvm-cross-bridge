@@ -22,8 +22,8 @@ export function Hero() {
       <div className="absolute inset-0 dot-grid" />
       <ParticleField />
 
-      {/* Orbiting rings */}
-      <div className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+      {/* Orbiting rings - hidden on mobile to prevent overflow */}
+      <div className="pointer-events-none absolute left-1/2 top-1/2 hidden -translate-x-1/2 -translate-y-1/2 md:block">
         <motion.div
           className="absolute h-[500px] w-[500px] rounded-full border border-primary/[0.06]"
           style={{ marginLeft: -250, marginTop: -250 }}
