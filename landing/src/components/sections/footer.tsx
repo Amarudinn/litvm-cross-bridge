@@ -23,15 +23,15 @@ export function Footer() {
         className="mx-auto max-w-[1120px]"
       >
         {/* Main content */}
-        <div className="flex flex-col items-start gap-8 sm:flex-row sm:items-center sm:justify-between">
-          {/* Logo + links */}
+        <div className="flex flex-col items-center gap-6 text-center sm:flex-row sm:items-center sm:justify-between sm:text-left">
+          {/* Logo */}
           <div className="flex items-center gap-3">
             <Image src="/multyra.png" alt="Multyra" width={32} height={32} className="rounded-xl" />
             <span className="text-base font-semibold tracking-tight">Multyra</span>
           </div>
 
           {/* Nav links */}
-          <div className="flex flex-wrap items-center gap-4 sm:gap-6">
+          <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6">
             {links.map((link) => (
               <a
                 key={link.label}
@@ -45,7 +45,7 @@ export function Footer() {
           </div>
 
           {/* Social */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center justify-center gap-2">
             <a
               href="https://github.com/Amarudinn"
               target="_blank"
