@@ -67,10 +67,8 @@ export function Overview() {
         <li><strong>1:1 Backing</strong> &mdash; Every wzkLTC in circulation is backed by an equal amount of zkLTC locked in the BridgeVaultV2</li>
         <li><strong>Low Fee</strong> &mdash; Only 0.3% per transaction</li>
         <li><strong>Fast Bridging</strong> &mdash; LiteForge to destination in ~20-45 seconds depending on the chain</li>
-        <li><strong>Dynamic Chain Management</strong> &mdash; New destination chains can be added without redeploying contracts</li>
         <li><strong>Automated Relayer</strong> &mdash; Transactions are processed automatically with retry logic and error recovery</li>
         <li><strong>Replay Protection</strong> &mdash; Double-layer protection (on-chain + database) prevents duplicate processing</li>
-        <li><strong>Emergency Controls</strong> &mdash; Contracts can be paused instantly by the owner in case of emergency</li>
       </ul>
 
       <h2>Bridge Flow</h2>

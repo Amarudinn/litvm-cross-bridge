@@ -167,7 +167,7 @@ export function BridgeArchitecture() {
 
       <h3>Parallel Workers</h3>
       <p>
-        The Relayer runs two independent worker loops &mdash; one for MINT operations and one for UNLOCK operations. Each worker supports configurable concurrency (default: 3 transactions in parallel) with batch nonce management.
+        The Relayer runs two independent worker loops &mdash; one for MINT operations and one for UNLOCK operations. Each worker supports configurable concurrency with batch nonce management.
       </p>
 
       <h3>Transaction Queue States</h3>
