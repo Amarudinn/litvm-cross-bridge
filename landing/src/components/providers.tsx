@@ -10,7 +10,7 @@ export function Providers({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const lenis = new Lenis({
-      duration: 1.08,
+      duration: 1.0,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       smoothWheel: true,
     })
@@ -23,7 +23,7 @@ export function Providers({ children }: { children: ReactNode }) {
 
     rafId = requestAnimationFrame(raf)
 
-    const onScroll = () => setScrolled(window.scrollY > 24)
+    const onScroll = () => setScrolled(window.scrollY > 20)
     onScroll()
     window.addEventListener('scroll', onScroll, { passive: true })
 
@@ -35,7 +35,7 @@ export function Providers({ children }: { children: ReactNode }) {
   }, [setScrolled])
 
   return (
-    <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+    <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
       {children}
     </ThemeProvider>
   )

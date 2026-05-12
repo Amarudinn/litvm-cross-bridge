@@ -5,108 +5,171 @@ import { ArrowRight, BookOpen } from 'lucide-react'
 import Image from 'next/image'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { ThemeToggle } from '@/components/theme-toggle'
+import { TextReveal } from '@/components/text-reveal'
+import { ParticleField } from '@/components/particle-field'
 
 export function Hero() {
   const reduceMotion = useReducedMotion()
   const { scrollYProgress } = useScroll()
-  const y = useTransform(scrollYProgress, [0, 0.35], [0, reduceMotion ? 0 : 90])
-  const opacity = useTransform(scrollYProgress, [0, 0.26], [1, 0.15])
+  const y = useTransform(scrollYProgress, [0, 0.3], [0, reduceMotion ? 0 : 100])
+  const opacity = useTransform(scrollYProgress, [0, 0.25], [1, 0])
+  const scale = useTransform(scrollYProgress, [0, 0.3], [1, 0.95])
 
   return (
-    <section id="hero" className="relative min-h-screen overflow-hidden px-6 py-6 mesh-bg">
-      <div className="absolute inset-0 subtle-grid opacity-50" />
-      <div className="absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-background to-transparent" />
+    <section id="hero" className="relative min-h-screen overflow-hidden">
+      {/* Aurora background */}
+      <div className="absolute inset-0 mesh-bg" />
+      <div className="absolute inset-0 dot-grid" />
+      <ParticleField />
 
-      <motion.div style={{ y, opacity }} className="pointer-events-none absolute inset-0">
+      {/* Orbiting rings */}
+      <div className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
         <motion.div
-          className="absolute left-[13%] top-[18%] h-56 w-56 rounded-full bg-primary/15 blur-3xl"
-          animate={reduceMotion ? undefined : { x: [0, 18, 0], y: [0, -16, 0] }}
-          transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut' }}
+          className="absolute h-[500px] w-[500px] rounded-full border border-primary/[0.06]"
+          style={{ marginLeft: -250, marginTop: -250 }}
+          animate={reduceMotion ? undefined : { rotate: 360 }}
+          transition={{ duration: 30, repeat: Infinity, ease: 'linear' }}
         />
         <motion.div
-          className="absolute right-[14%] top-[20%] h-72 w-72 rounded-full bg-accent/12 blur-3xl"
-          animate={reduceMotion ? undefined : { x: [0, -20, 0], y: [0, 18, 0] }}
-          transition={{ duration: 11, repeat: Infinity, ease: 'easeInOut' }}
+          className="absolute h-[700px] w-[700px] rounded-full border border-accent/[0.04]"
+          style={{ marginLeft: -350, marginTop: -350 }}
+          animate={reduceMotion ? undefined : { rotate: -360 }}
+          transition={{ duration: 45, repeat: Infinity, ease: 'linear' }}
         />
-      </motion.div>
-
-      <div className="relative z-10 mx-auto flex min-h-[calc(100vh-3rem)] max-w-6xl flex-col">
-        <header className="flex items-center justify-between py-3">
-          <div className="flex items-center gap-3">
-            <Image src="/multyra.png" alt="Multyra" width={34} height={34} className="rounded-xl" priority />
-            <span className="text-sm font-bold tracking-tight">Multyra</span>
-          </div>
-          <ThemeToggle />
-        </header>
-
-        <div className="flex flex-1 items-center justify-center py-16 text-center">
-          <div className="max-w-4xl">
-            <motion.div
-              initial={{ opacity: 0, y: 18, filter: 'blur(8px)' }}
-              animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-              transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
-            >
-              <Badge className="mb-8">
-                <span className="relative flex h-2 w-2">
-                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-60" />
-                  <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
-                </span>
-                Live on LiteForge
-              </Badge>
-            </motion.div>
-
-            <motion.h1
-              initial={{ opacity: 0, y: 26, filter: 'blur(10px)' }}
-              animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-              transition={{ duration: 0.75, delay: 0.08, ease: [0.22, 1, 0.36, 1] }}
-              className="text-balance text-5xl font-bold tracking-[-0.04em] sm:text-6xl md:text-7xl lg:text-8xl"
-            >
-              Bridge zkLTC with calm, <span className="gradient-text">precise speed</span>
-            </motion.h1>
-
-            <motion.p
-              initial={{ opacity: 0, y: 22 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.65, delay: 0.18 }}
-              className="mx-auto mt-7 max-w-2xl text-balance text-lg leading-8 text-muted-foreground sm:text-xl"
-            >
-              A smooth 1:1 backed bridge for LiteForge, Ethereum Sepolia, and Base Sepolia — no slippage, no liquidity pool complexity.
-            </motion.p>
-
-            <motion.div
-              initial={{ opacity: 0, y: 18 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.28 }}
-              className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row"
-            >
-              <Button asChild size="lg">
-                <a href="https://app.multyra.xyz">
-                  Launch App <ArrowRight className="h-4 w-4" />
-                </a>
-              </Button>
-              <Button asChild size="lg" variant="outline">
-                <a href="https://app.multyra.xyz/docs">
-                  <BookOpen className="h-4 w-4" /> Read Docs
-                </a>
-              </Button>
-            </motion.div>
-          </div>
-        </div>
+        <motion.div
+          className="absolute h-[900px] w-[900px] rounded-full border border-primary/[0.03]"
+          style={{ marginLeft: -450, marginTop: -450 }}
+          animate={reduceMotion ? undefined : { rotate: 360 }}
+          transition={{ duration: 60, repeat: Infinity, ease: 'linear' }}
+        />
+        {/* Orbiting dots */}
+        <motion.div
+          className="absolute h-2 w-2 rounded-full bg-primary/60 shadow-glow-sm"
+          animate={reduceMotion ? undefined : { rotate: 360 }}
+          transition={{ duration: 30, repeat: Infinity, ease: 'linear' }}
+          style={{ ['--orbit-radius' as any]: '250px', marginLeft: -4, marginTop: -4, transformOrigin: '4px 4px' }}
+        >
+          <div style={{ transform: 'translateX(250px)' }} className="h-2 w-2 rounded-full bg-primary shadow-glow-sm" />
+        </motion.div>
+        <motion.div
+          className="absolute"
+          animate={reduceMotion ? undefined : { rotate: -360 }}
+          transition={{ duration: 45, repeat: Infinity, ease: 'linear' }}
+          style={{ marginLeft: -4, marginTop: -4 }}
+        >
+          <div style={{ transform: 'translateX(350px)' }} className="h-1.5 w-1.5 rounded-full bg-accent/60 shadow-glow-accent" />
+        </motion.div>
       </div>
 
+      {/* Main content with parallax */}
+      <motion.div
+        style={{ y, opacity, scale }}
+        className="relative z-10 mx-auto flex min-h-screen max-w-[1120px] flex-col items-center justify-center px-4 text-center sm:px-6"
+      >
+        {/* Badge */}
+        <motion.div
+          initial={{ opacity: 0, y: 20, scale: 0.9 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <Badge className="mb-6 gap-2 border-primary/20 bg-primary/5 px-3 py-1.5 backdrop-blur-xl sm:mb-8 sm:px-4 sm:py-2">
+            <span className="relative flex h-2 w-2">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-60" />
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
+            </span>
+            <span className="text-xs font-medium">Live on LiteForge</span>
+          </Badge>
+        </motion.div>
+
+        {/* Headline with text reveal */}
+        <TextReveal
+          text="Bridge zkLTC with calm, precise speed"
+          as="h1"
+          mode="word"
+          className="max-w-5xl text-balance text-4xl font-bold tracking-[-0.04em] sm:text-5xl md:text-7xl lg:text-8xl"
+        />
+
+        {/* Gradient underline accent */}
+        <motion.div
+          initial={{ scaleX: 0, opacity: 0 }}
+          animate={{ scaleX: 1, opacity: 1 }}
+          transition={{ duration: 1, delay: 0.8, ease: [0.22, 1, 0.36, 1] }}
+          className="mt-4 h-1 w-24 origin-center rounded-full bg-gradient-to-r from-primary via-accent to-primary shadow-glow-sm sm:w-32"
+        />
+
+        {/* Subheadline */}
+        <motion.p
+          initial={{ opacity: 0, y: 20, filter: 'blur(6px)' }}
+          animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+          transition={{ duration: 0.7, delay: 0.5 }}
+          className="mx-auto mt-6 max-w-[560px] text-balance text-base leading-relaxed text-muted-foreground sm:mt-8 sm:text-lg md:text-xl"
+        >
+          A smooth 1:1 backed bridge for LiteForge, Ethereum Sepolia, and Base Sepolia — no slippage, no complexity.
+        </motion.p>
+
+        {/* CTA */}
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.7 }}
+          className="mt-8 flex flex-col items-center gap-3 sm:mt-10 sm:flex-row sm:gap-4"
+        >
+          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.97 }}>
+            <Button asChild size="lg" variant="glow">
+              <a href="https://app.multyra.xyz" className="gap-2">
+                Launch Bridge <ArrowRight className="h-4 w-4" />
+              </a>
+            </Button>
+          </motion.div>
+          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.97 }}>
+            <Button asChild size="lg" variant="outline">
+              <a href="https://app.multyra.xyz/docs" className="gap-2">
+                <BookOpen className="h-4 w-4" /> Read Docs
+              </a>
+            </Button>
+          </motion.div>
+        </motion.div>
+
+        {/* Floating chain logos */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1.2, duration: 1 }}
+          className="mt-12 flex items-center gap-3 sm:mt-16 sm:gap-4"
+        >
+          {['/litvm.png', '/eth.png', '/base.jpeg'].map((src, i) => (
+            <motion.div
+              key={i}
+              animate={reduceMotion ? undefined : { y: [0, -6, 0] }}
+              transition={{ duration: 3, delay: i * 0.4, repeat: Infinity, ease: 'easeInOut' }}
+              className="flex h-10 w-10 items-center justify-center rounded-xl border border-border/30 bg-card/50 backdrop-blur-xl sm:h-12 sm:w-12 sm:rounded-2xl"
+            >
+              <Image src={src} alt="" width={28} height={28} className="rounded-lg" />
+            </motion.div>
+          ))}
+        </motion.div>
+      </motion.div>
+
+      {/* Scroll indicator */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 1.1 }}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2"
+        transition={{ delay: 1.5 }}
+        className="absolute bottom-6 left-1/2 z-10 -translate-x-1/2 sm:bottom-8"
       >
         <motion.div
           animate={reduceMotion ? undefined : { y: [0, 8, 0] }}
-          transition={{ duration: 2.2, repeat: Infinity, ease: 'easeInOut' }}
-          className="flex h-10 w-6 justify-center rounded-full border border-muted-foreground/30 p-1.5"
+          transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+          className="flex flex-col items-center gap-2"
         >
-          <span className="h-2.5 w-1 rounded-full bg-muted-foreground/55" />
+          <span className="text-[10px] font-medium uppercase tracking-widest text-muted-foreground/60">Scroll</span>
+          <div className="flex h-10 w-6 justify-center rounded-full border border-muted-foreground/20 p-1.5">
+            <motion.span
+              animate={{ y: [0, 8, 0], opacity: [1, 0.3, 1] }}
+              transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
+              className="h-2 w-1 rounded-full bg-primary/70"
+            />
+          </div>
         </motion.div>
       </motion.div>
     </section>

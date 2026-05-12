@@ -4,19 +4,20 @@ import { cva, type VariantProps } from 'class-variance-authority'
 import { cn } from '@/lib/utils'
 
 const buttonVariants = cva(
-  'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-semibold transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50',
+  'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-semibold transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50',
   {
     variants: {
       variant: {
-        default: 'bg-primary text-primary-foreground shadow-glow hover:-translate-y-0.5 hover:bg-primary/92',
-        secondary: 'bg-secondary text-secondary-foreground hover:-translate-y-0.5 hover:bg-secondary/80',
-        outline: 'border border-border/70 bg-card/55 text-foreground backdrop-blur-xl hover:-translate-y-0.5 hover:bg-card',
-        ghost: 'text-foreground hover:bg-muted/70',
+        default: 'bg-primary text-primary-foreground shadow-glow-sm hover:shadow-glow hover:brightness-110',
+        secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80',
+        outline: 'border border-border/60 bg-card/30 text-foreground backdrop-blur-xl hover:border-primary/30 hover:bg-card/60 hover:shadow-glow-sm',
+        ghost: 'text-foreground hover:bg-muted/50',
+        glow: 'bg-primary text-primary-foreground shadow-glow hover:shadow-glow-lg hover:brightness-110 hover:scale-[1.02]',
       },
       size: {
-        default: 'h-11 px-6',
+        default: 'h-10 px-5',
         sm: 'h-9 px-4 text-xs',
-        lg: 'h-12 px-7',
+        lg: 'h-12 px-8 text-base',
         icon: 'h-10 w-10',
       },
     },

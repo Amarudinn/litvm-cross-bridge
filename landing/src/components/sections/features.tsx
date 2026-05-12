@@ -2,87 +2,100 @@
 
 import { motion } from 'motion/react'
 import { Coins, Layers3, LockKeyhole, RadioTower } from 'lucide-react'
-import { Card, CardContent } from '@/components/ui/card'
 import { cn } from '@/lib/utils'
 
 const features = [
   {
     icon: RadioTower,
-    eyebrow: 'Live relay',
     title: 'Event-driven bridge engine',
-    description: 'Locks, burns, mints, and unlocks are tracked through a relayer flow that feels instant and predictable for users.',
-    gradient: 'from-blue-500/30 via-cyan-400/10 to-transparent',
+    description: 'Relayers listen to on-chain events and move each bridge request through a clear execution path.',
   },
   {
     icon: LockKeyhole,
-    eyebrow: 'Protected path',
-    title: 'Replay-safe by design',
-    description: 'Processed transaction IDs, nonce checks, and guarded contracts reduce duplicate execution risk across every route.',
-    gradient: 'from-violet-500/30 via-fuchsia-400/10 to-transparent',
+    title: 'Replay protection built in',
+    description: 'Nonce-based process IDs and guarded contracts keep duplicate execution out of the bridge flow.',
   },
   {
     icon: Coins,
-    eyebrow: 'Clear accounting',
-    title: '1:1 liquidity model',
-    description: 'No pool math. No price movement. Wrapped zkLTC represents native zkLTC locked in the vault with transparent fees.',
-    gradient: 'from-emerald-500/30 via-cyan-400/10 to-transparent',
+    title: '1:1 backed representation',
+    description: 'Wrapped zkLTC maps cleanly to native zkLTC locked in the vault without pool complexity.',
   },
   {
     icon: Layers3,
-    eyebrow: 'Multi-chain ready',
-    title: 'Built to expand cleanly',
-    description: 'LiteForge, Sepolia, and Base Sepolia share one refined experience while the system stays ready for more routes.',
-    gradient: 'from-amber-500/30 via-orange-400/10 to-transparent',
+    title: 'Multi-chain interface ready',
+    description: 'The interface is shaped for LiteForge today and additional supported destinations tomorrow.',
   },
 ]
 
 export function Features() {
   return (
-    <section className="section-shell">
+    <section id="features" className="section-shell">
+      {/* Background */}
+      <div className="pointer-events-none absolute inset-0 -z-10">
+        <div className="absolute left-1/4 top-1/2 h-[400px] w-[400px] -translate-y-1/2 rounded-full bg-primary/[0.03] blur-[100px]" />
+      </div>
+
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: 24 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: '-80px' }}
-        transition={{ duration: 0.55 }}
-        className="mx-auto mb-14 max-w-3xl text-center"
+        transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+        className="mx-auto mb-16 max-w-2xl text-center"
       >
-        <p className="mb-3 text-sm font-semibold uppercase tracking-[0.24em] text-primary">Why Multyra</p>
-        <h2 className="text-balance text-4xl font-bold tracking-tight md:text-6xl">Bridge technology that looks as sharp as it works.</h2>
-        <p className="mx-auto mt-5 max-w-2xl text-lg leading-8 text-muted-foreground">Every card, animation, and metric is designed to make the bridge feel premium without hiding the mechanics.</p>
+        <motion.p
+          initial={{ opacity: 0, scale: 0.9 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true }}
+          className="mb-4 inline-block rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-primary"
+        >
+          Why Multyra
+        </motion.p>
+        <h2 className="text-balance text-3xl font-bold tracking-tight md:text-5xl">
+          A premium bridge surface for{' '}
+          <span className="gradient-text">serious infrastructure.</span>
+        </h2>
+        <p className="mx-auto mt-5 max-w-lg text-base leading-relaxed text-muted-foreground">
+          Clean visuals, sharp interaction, and mechanics that match the LiteForge bridge architecture.
+        </p>
       </motion.div>
 
       <motion.div
         initial="hidden"
         whileInView="show"
-        viewport={{ once: true, margin: '-80px' }}
+        viewport={{ once: true, margin: '-60px' }}
         variants={{ show: { transition: { staggerChildren: 0.1 } } }}
-        className="grid grid-cols-1 gap-5 md:grid-cols-2"
+        className="grid grid-cols-1 gap-4 md:grid-cols-2"
       >
         {features.map((feature, index) => {
           const Icon = feature.icon
           return (
             <motion.div
               key={feature.title}
-              variants={{ hidden: { opacity: 0, y: 34, scale: 0.96 }, show: { opacity: 1, y: 0, scale: 1 } }}
-              transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
-              whileHover={{ y: -8, rotateX: 2, rotateY: index % 2 === 0 ? -2 : 2 }}
-              className="perspective-1000"
+              variants={{
+                hidden: { opacity: 0, y: 30 },
+                show: { opacity: 1, y: 0 },
+              }}
+              transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+              whileHover={{ y: -4, transition: { duration: 0.25 } }}
+              className="group relative overflow-hidden rounded-2xl border border-border/40 bg-card/60 p-6 backdrop-blur-xl transition-all duration-300 hover:border-primary/20 hover:bg-card/80 hover:shadow-glow-sm md:p-7"
             >
-              <Card className="group relative h-full overflow-hidden rounded-[2rem] border-white/10 bg-card/60 shadow-[0_28px_90px_hsl(var(--primary)/0.10)]">
-                <div className={cn('absolute inset-0 bg-gradient-to-br opacity-70 transition-opacity duration-500 group-hover:opacity-100', feature.gradient)} />
-                <div className="absolute -right-14 -top-14 h-36 w-36 rounded-full border border-white/10 bg-white/10 blur-sm transition-transform duration-700 group-hover:scale-125 dark:bg-white/5" />
-                <div className="absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-white/60 to-transparent opacity-40" />
-                <CardContent className="relative p-7 md:p-8">
-                  <div className="mb-8 flex items-start justify-between gap-4">
-                    <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-background/70 text-primary shadow-soft ring-1 ring-border/70 backdrop-blur-xl transition-transform duration-500 group-hover:scale-110 group-hover:rotate-3">
-                      <Icon className="h-7 w-7" />
-                    </div>
-                    <span className="rounded-full border border-border/70 bg-background/50 px-3 py-1 text-xs font-medium text-muted-foreground backdrop-blur-xl">{feature.eyebrow}</span>
-                  </div>
-                  <h3 className="mb-3 max-w-md text-2xl font-bold tracking-tight">{feature.title}</h3>
-                  <p className="max-w-xl leading-7 text-muted-foreground">{feature.description}</p>
-                </CardContent>
-              </Card>
+              {/* Subtle hover gradient overlay */}
+              <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-primary/[0.02] via-transparent to-accent/[0.02] opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+
+              <div className="relative">
+                {/* Icon */}
+                <motion.div
+                  className="mb-5 flex h-11 w-11 items-center justify-center rounded-xl bg-primary/[0.08] text-primary ring-1 ring-primary/10"
+                  whileHover={{ scale: 1.1 }}
+                  transition={{ type: 'spring', stiffness: 300 }}
+                >
+                  <Icon className="h-5 w-5" strokeWidth={1.8} />
+                </motion.div>
+
+                {/* Content */}
+                <h3 className="mb-2 text-lg font-semibold tracking-tight">{feature.title}</h3>
+                <p className="text-sm leading-relaxed text-muted-foreground">{feature.description}</p>
+              </div>
             </motion.div>
           )
         })}
