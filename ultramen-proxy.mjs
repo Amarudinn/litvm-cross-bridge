@@ -25,15 +25,15 @@ const CLEAN_SYSTEM_PROMPT = `You are an expert software engineer and coding assi
 
 // Model mapping: Claude Code model names → Ultramen model names
 const MODEL_MAP = {
-  'claude-opus-4-7': 'claude-opus-4.6',
-  'claude-opus-4.7': 'claude-opus-4.6',
-  'claude-sonnet-4-7': 'claude-opus-4.6',
-  'claude-sonnet-4.7': 'claude-opus-4.6',
-  'claude-opus-4': 'claude-opus-4.6',
-  'claude-sonnet-4': 'claude-opus-4.6',
-  'claude-3-5-sonnet': 'claude-opus-4.6',
-  'claude-3-opus': 'claude-opus-4.6',
-  'claude-3.5-sonnet': 'claude-opus-4.6',
+  'claude-opus-4-7': 'gpt-5.5',
+  'claude-opus-4.7': 'gpt-5.5',
+  'claude-sonnet-4-7': 'gpt-5.5',
+  'claude-sonnet-4.7': 'gpt-5.5',
+  'claude-opus-4': 'gpt-5.5',
+  'claude-sonnet-4': 'gpt-5.5',
+  'claude-3-5-sonnet': 'gpt-5.5',
+  'claude-3-opus': 'gpt-5.5',
+  'claude-3.5-sonnet': 'gpt-5.5',
 };
 
 function mapModel(model) {

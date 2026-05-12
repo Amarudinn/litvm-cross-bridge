@@ -1,0 +1,106 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 220 35% 98%;
+    --foreground: 222 48% 9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222 48% 9%;
+    --primary: 227 74% 58%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 220 24% 94%;
+    --secondary-foreground: 222 45% 12%;
+    --muted: 220 24% 94%;
+    --muted-foreground: 220 12% 43%;
+    --accent: 260 70% 62%;
+    --accent-foreground: 210 40% 98%;
+    --border: 220 18% 86%;
+    --input: 220 18% 86%;
+    --ring: 227 74% 58%;
+    --radius: 1rem;
+  }
+
+  .dark {
+    --background: 224 28% 5%;
+    --foreground: 213 31% 91%;
+    --card: 224 25% 7%;
+    --card-foreground: 213 31% 91%;
+    --primary: 225 73% 57%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 223 20% 12%;
+    --secondary-foreground: 213 31% 91%;
+    --muted: 223 20% 14%;
+    --muted-foreground: 215 20% 62%;
+    --accent: 262 72% 62%;
+    --accent-foreground: 210 40% 98%;
+    --border: 223 18% 16%;
+    --input: 223 18% 16%;
+    --ring: 225 73% 57%;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  html {
+    scroll-behavior: auto;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background: hsl(var(--primary) / 0.22);
+  }
+
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: hsl(var(--background));
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: hsl(var(--muted-foreground) / 0.35);
+    border-radius: 999px;
+  }
+}
+
+@layer utilities {
+  .gradient-text {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-blue-500 via-violet-500 to-cyan-500 dark:from-blue-300 dark:via-violet-300 dark:to-cyan-300;
+    background-size: 200% 200%;
+    animation: gradient-shift 9s ease infinite;
+  }
+
+  .mesh-bg {
+    background:
+      radial-gradient(circle at 20% 15%, hsl(var(--primary) / 0.16), transparent 28%),
+      radial-gradient(circle at 80% 12%, hsl(var(--accent) / 0.13), transparent 30%),
+      radial-gradient(circle at 55% 78%, hsl(190 85% 55% / 0.10), transparent 32%);
+  }
+
+  .subtle-grid {
+    background-image:
+      linear-gradient(to right, hsl(var(--border) / 0.42) 1px, transparent 1px),
+      linear-gradient(to bottom, hsl(var(--border) / 0.42) 1px, transparent 1px);
+    background-size: 48px 48px;
+    mask-image: radial-gradient(ellipse at center, black 0%, transparent 72%);
+  }
+
+  .glass-card {
+    @apply border border-border/70 bg-card/70 shadow-soft backdrop-blur-xl dark:bg-card/55;
+  }
+
+  .section-shell {
+    @apply container relative py-20 md:py-28;
+  }
+}

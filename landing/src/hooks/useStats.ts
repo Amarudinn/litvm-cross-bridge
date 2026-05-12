@@ -1,5 +1,7 @@
+'use client'
+
 import { useEffect, useState } from 'react'
-import { supabase } from '@/config/supabase'
+import { isSupabaseConfigured, supabase } from '@/config/supabase'
 
 interface BridgeStats {
   totalTransactions: number
@@ -19,12 +21,14 @@ export function useStats(): BridgeStats {
   })
 
   useEffect(() => {
+    if (!isSupabaseConfigured) {
+      setStats((prev) => ({ ...prev, isLoading: false }))
+      return
+    }
+
     const fetchStats = async () => {
       try {
-        const { data, error } = await supabase
-          .from('bridge_stats')
-          .select('*')
-          .single()
+        const { data, error } = await supabase.from('bridge_stats').select('*').single()
 
         if (error) throw error
 
@@ -32,7 +36,6 @@ export function useStats(): BridgeStats {
           const totalLockedWei = BigInt(data.total_locked_wei || '0')
           const totalBurnedWei = BigInt(data.total_burned_wei || '0')
           const totalVolumeWei = totalLockedWei + totalBurnedWei
-          // Convert from wei (18 decimals) to human-readable
           const totalVolume = Number(totalVolumeWei) / 1e18
 
           setStats({
@@ -45,12 +48,12 @@ export function useStats(): BridgeStats {
         }
       } catch (err) {
         console.error('Failed to fetch bridge stats:', err)
-        setStats(prev => ({ ...prev, isLoading: false }))
+        setStats((prev) => ({ ...prev, isLoading: false }))
       }
     }
 
     fetchStats()
-    const interval = setInterval(fetchStats, 30000) // Poll every 30s
+    const interval = setInterval(fetchStats, 30000)
     return () => clearInterval(interval)
   }, [])
 
