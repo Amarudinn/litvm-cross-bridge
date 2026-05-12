@@ -12,11 +12,11 @@ interface FaqItem {
 const faqItems: FaqItem[] = [
   {
     question: 'Bridge transaction not arriving?',
-    answer: 'Lock (LiteForge → Sepolia) takes ~20 seconds. Burn (Sepolia → LiteForge) takes ~45 seconds. If it\'s been more than 2 minutes, check the History page for status. The Relayer may be processing a queue.',
+    answer: 'Lock (LiteForge → Sepolia/Base Sepolia) takes ~15-20 seconds. Burn (Sepolia → LiteForge) takes ~45 seconds, Burn (Base Sepolia → LiteForge) takes ~20 seconds. If it\'s been more than 2 minutes, check the History page for status. The Relayer may be processing a queue.',
   },
   {
     question: 'How to import wzkLTC to MetaMask?',
-    answer: 'Switch to Sepolia network in MetaMask → Click "Import tokens" → Paste contract address: 0x4320BB234A76f94F9eeDD0E81968668C6d29c39f → Symbol: wzkLTC, Decimals: 18.',
+    answer: 'On Ethereum Sepolia: Import 0x4320BB234A76f94F9eeDD0E81968668C6d29c39f. On Base Sepolia: Import 0xB378f0359815ECEC5Ae3c5aC4c49c12b70931688. Symbol: wzkLTC, Decimals: 18.',
   },
   {
     question: 'What\'s the minimum amount?',
@@ -24,7 +24,11 @@ const faqItems: FaqItem[] = [
   },
   {
     question: 'How long does bridging take?',
-    answer: 'LiteForge → Sepolia (Lock): ~20 seconds. Sepolia → LiteForge (Burn): ~45 seconds. Sepolia has longer block times (~12s vs ~2s on LiteForge).',
+    answer: 'LiteForge → Ethereum Sepolia: ~20s. LiteForge → Base Sepolia: ~15s. Ethereum Sepolia → LiteForge: ~45s (Sepolia has ~12s block time). Base Sepolia → LiteForge: ~20s.',
+  },
+  {
+    question: 'Which chains are supported?',
+    answer: 'BridgeVaultV2 supports LiteForge (Chain ID: 4441) as source, with Ethereum Sepolia (11155111) and Base Sepolia (84532) as destination chains. You choose the destination when locking.',
   },
 ]
 
@@ -50,7 +54,9 @@ export function SupportWidget() {
       case 4441:
         return 'LiteForge'
       case 11155111:
-        return 'Sepolia'
+        return 'Ethereum Sepolia'
+      case 84532:
+        return 'Base Sepolia'
       default:
         return `Unknown (${chainId})`
     }
