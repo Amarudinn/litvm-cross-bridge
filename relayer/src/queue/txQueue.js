@@ -258,8 +258,8 @@ export class TxQueue {
 
     let retried = 0;
     for (const tx of failed) {
-      // Exponential backoff: 10s * 2^retries
-      const backoffMs = 10000 * Math.pow(2, tx.retries);
+      // Reduced backoff: 5s * 1.5^retries (faster retry cycle)
+      const backoffMs = 5000 * Math.pow(1.5, tx.retries);
       const failedAt = new Date(tx.updated_at).getTime();
       const now = Date.now();
 

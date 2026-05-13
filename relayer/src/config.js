@@ -41,14 +41,14 @@ export const config = {
   },
 
   // Relayer settings
-  pollIntervalMs: parseInt(process.env.POLL_INTERVAL_MS || '5000'),
+  pollIntervalMs: parseInt(process.env.POLL_INTERVAL_MS || '2000'),
   confirmationBlocks: parseInt(process.env.CONFIRMATION_BLOCKS || '3'),
-  maxRetries: parseInt(process.env.MAX_RETRIES || '5'),
+  maxRetries: parseInt(process.env.MAX_RETRIES || '7'),
 
   // Concurrency settings
-  mintConcurrency: parseInt(process.env.MINT_CONCURRENCY || '3'),
-  mintBaseSepoliaConcurrency: parseInt(process.env.MINT_BASE_SEPOLIA_CONCURRENCY || '3'),
-  unlockConcurrency: parseInt(process.env.UNLOCK_CONCURRENCY || '3'),
+  mintConcurrency: parseInt(process.env.MINT_CONCURRENCY || '8'),
+  mintBaseSepoliaConcurrency: parseInt(process.env.MINT_BASE_SEPOLIA_CONCURRENCY || '8'),
+  unlockConcurrency: parseInt(process.env.UNLOCK_CONCURRENCY || '8'),
 
   // Supabase (optional - for indexing)
   supabaseUrl: process.env.SUPABASE_URL || '',

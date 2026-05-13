@@ -7,6 +7,7 @@ import { config } from './config/wagmi'
 import '@rainbow-me/rainbowkit/styles.css'
 
 import BridgePage from './pages/BridgePage'
+import SwapPage from './pages/SwapPage'
 import HistoryPage from './pages/HistoryPage'
 import ExplorerPage from './pages/ExplorerPage'
 import AdminPage from './pages/AdminPage'
@@ -27,6 +28,7 @@ function App() {
               <main className="flex-1 flex flex-col pt-14">
                 <Routes>
                   <Route path="/" element={<BridgePage />} />
+                  <Route path="/swap" element={<SwapPage />} />
                   <Route path="/history" element={<HistoryPage />} />
                   <Route path="/explorer" element={<ExplorerPage />} />
                   <Route path="/admin" element={<AdminPage />} />

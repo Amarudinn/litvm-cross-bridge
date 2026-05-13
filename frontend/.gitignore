@@ -22,3 +22,5 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+SWAP-ROUTING-EXPLAINED.md

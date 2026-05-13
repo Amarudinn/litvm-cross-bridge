@@ -30,11 +30,10 @@ const sidebarItems: SidebarItem[] = [
   {
     label: 'Swap',
     icon: <ArrowRightLeft className="h-4 w-4" />,
-    soon: true,
     children: [
-      { label: 'Architecture', path: '#', soon: true },
-      { label: 'Contract', path: '#', soon: true },
-      { label: 'Guide', path: '#', soon: true },
+      { label: 'Architecture', path: '/docs/swap/architecture' },
+      { label: 'Contract', path: '/docs/swap/contract' },
+      { label: 'Guide', path: '/docs/swap/guide' },
     ],
   },
   {

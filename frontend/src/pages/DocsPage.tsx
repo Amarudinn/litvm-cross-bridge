@@ -8,6 +8,9 @@ import { BridgeArchitecture } from '@/components/docs/content/BridgeArchitecture
 import { BridgeContract } from '@/components/docs/content/BridgeContract'
 import { BridgeGuide } from '@/components/docs/content/BridgeGuide'
 import { BridgeMigration } from '@/components/docs/content/BridgeMigration'
+import { SwapArchitecture } from '@/components/docs/content/SwapArchitecture'
+import { SwapContract } from '@/components/docs/content/SwapContract'
+import { SwapGuide } from '@/components/docs/content/SwapGuide'
 
 function getContent(section?: string, subsection?: string) {
   if (!section || section === 'overview') {
@@ -26,6 +29,19 @@ function getContent(section?: string, subsection?: string) {
         return <BridgeMigration />
       default:
         return <BridgeArchitecture />
+    }
+  }
+
+  if (section === 'swap') {
+    switch (subsection) {
+      case 'architecture':
+        return <SwapArchitecture />
+      case 'contract':
+        return <SwapContract />
+      case 'guide':
+        return <SwapGuide />
+      default:
+        return <SwapArchitecture />
     }
   }
 

@@ -43,6 +43,8 @@ async function mintWorkerLoop() {
       const pending = txQueue.getPendingMint(config.mintConcurrency);
       if (pending.length > 0) {
         await mintExecutor.executeBatch(pending);
+        // Skip sleep if there are more items to process
+        if (pending.length >= config.mintConcurrency) continue;
       }
     } catch (error) {
       logger.error(`[MINT Worker] Error: ${error.message}`);
@@ -64,6 +66,8 @@ async function mintBaseSepoliaWorkerLoop() {
       const pending = txQueue.getPendingMintBaseSepolia(config.mintBaseSepoliaConcurrency);
       if (pending.length > 0) {
         await mintBaseSepoliaExecutor.executeBatch(pending);
+        // Skip sleep if there are more items to process
+        if (pending.length >= config.mintBaseSepoliaConcurrency) continue;
       }
     } catch (error) {
       logger.error(`[MINT-BS Worker] Error: ${error.message}`);
@@ -86,6 +90,8 @@ async function unlockWorkerLoop() {
       const pending = txQueue.getPendingUnlock(config.unlockConcurrency);
       if (pending.length > 0) {
         await unlockExecutor.executeBatch(pending);
+        // Skip sleep if there are more items to process
+        if (pending.length >= config.unlockConcurrency) continue;
       }
     } catch (error) {
       logger.error(`[UNLOCK Worker] Error: ${error.message}`);
@@ -221,8 +227,8 @@ async function main() {
   mintBaseSepoliaWorkerLoop();
   unlockWorkerLoop();
 
-  // Start retry processor (every 30 seconds)
-  retryTimer = setInterval(processRetries, 30000);
+  // Start retry processor (every 10 seconds for faster recovery)
+  retryTimer = setInterval(processRetries, 10000);
 
   // Log stats every 60 seconds
   statsTimer = setInterval(logStats, 60000);
