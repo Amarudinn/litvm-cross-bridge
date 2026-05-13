@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { Wallet, Check, Loader2, Clock, Coins, ExternalLink, AlertCircle } from 'lucide-react'
+import { Wallet, Check, Clock, Coins, AlertCircle } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import {

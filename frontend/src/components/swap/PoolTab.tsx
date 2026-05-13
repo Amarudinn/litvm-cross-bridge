@@ -120,7 +120,7 @@ export function PoolTab() {
       {/* Content */}
       {view === 'list' && (
         <>
-          <PoolList positions={positions} pools={pools} loading={loading} poolActions={poolActions} />
+          <PoolList positions={positions} pools={pools} loading={loading} />
           <button
             onClick={() => setView('add')}
             className="w-full py-3 rounded-xl text-sm font-semibold bg-primary text-primary-foreground hover:bg-primary/90 shadow-md shadow-primary/20 transition-colors cursor-pointer"

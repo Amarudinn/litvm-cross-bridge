@@ -6,7 +6,7 @@ import { useBalanceStore } from '@/stores/balanceStore'
 import { MULTYRA_ROUTER_ADDRESS, WETH_ADDRESS } from '@/config/dex'
 import { POOLS } from '@/config/pools'
 import { liteforge, sepolia, baseSepolia } from '@/config/chains'
-import { LITEFORGE_CHAIN_ID, SEPOLIA_CHAIN_ID, BASE_SEPOLIA_CHAIN_ID } from '@/config/contracts'
+import { LITEFORGE_CHAIN_ID, SEPOLIA_CHAIN_ID } from '@/config/contracts'
 
 const ERC20_ABI = [
   {

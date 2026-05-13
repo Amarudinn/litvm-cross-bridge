@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 import { useAccount } from 'wagmi'
 import { formatUnits, type Address, createPublicClient, http } from 'viem'
-import { getTokensByChain, type Token } from '@/config/tokens'
-import { LITEFORGE_CHAIN_ID, SEPOLIA_CHAIN_ID, BASE_SEPOLIA_CHAIN_ID } from '@/config/contracts'
+import { getTokensByChain } from '@/config/tokens'
+import { LITEFORGE_CHAIN_ID, SEPOLIA_CHAIN_ID } from '@/config/contracts'
 import { liteforge, sepolia, baseSepolia } from '@/config/chains'
 import { useBalanceStore } from '@/stores/balanceStore'
 

@@ -1,7 +1,6 @@
-import { usePublicClient } from 'wagmi'
 import { type Address, parseUnits, decodeFunctionResult, encodeFunctionData, createPublicClient, http } from 'viem'
 import { QUOTER_V2 } from '@/config/dex'
-import { LITEFORGE_CHAIN_ID, SEPOLIA_CHAIN_ID, BASE_SEPOLIA_CHAIN_ID } from '@/config/contracts'
+import { LITEFORGE_CHAIN_ID, SEPOLIA_CHAIN_ID } from '@/config/contracts'
 import { liteforge, sepolia, baseSepolia } from '@/config/chains'
 import type { Token } from '@/config/tokens'
 

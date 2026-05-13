@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { createPublicClient, http, encodeFunctionData, type Address } from 'viem'
 import { useAccount } from 'wagmi'
 import { POSITION_MANAGER } from '@/config/dex'
-import { LITEFORGE_CHAIN_ID, SEPOLIA_CHAIN_ID, BASE_SEPOLIA_CHAIN_ID } from '@/config/contracts'
+import { LITEFORGE_CHAIN_ID, SEPOLIA_CHAIN_ID } from '@/config/contracts'
 import { liteforge, sepolia, baseSepolia } from '@/config/chains'
 import type { PoolPosition } from './usePoolPositions'
 

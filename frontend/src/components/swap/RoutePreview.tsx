@@ -1,7 +1,6 @@
 import { ArrowRight, Zap, GitBranch } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useSwapStore, type SwapRoute } from '@/stores/swapStore'
-import { POOLS } from '@/config/pools'
 import { getFeeTierLabel } from '@/config/pools'
 import { getTokensByChain } from '@/config/tokens'
 
@@ -10,7 +9,7 @@ interface RoutePreviewProps {
 }
 
 export function RoutePreview({ route }: RoutePreviewProps) {
-  const { amountIn, tokenIn, tokenOut, fromChainId, toChainId } = useSwapStore()
+  const { amountIn, tokenIn, fromChainId, toChainId } = useSwapStore()
   const priceImpact = parseFloat(route.priceImpact) || 0
   const highImpact = route.pools.length > 0 && priceImpact > 10
   const veryHighImpact = route.pools.length > 0 && priceImpact > 20

@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useSwapStore } from '@/stores/swapStore'
 import { useAccount, useChainId, useSwitchChain } from 'wagmi'
-import { Loader2, ArrowRight, Zap, Check, AlertCircle, AlertTriangle } from 'lucide-react'
+import { Loader2, Zap, Check, AlertCircle, AlertTriangle } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { motion } from 'framer-motion'
 import type { SwapStatus } from '@/hooks/useSwap'
@@ -14,7 +14,7 @@ interface SwapButtonProps {
 }
 
 export function SwapButton({ swapHook, crossChainHook, isCrossChain }: SwapButtonProps) {
-  const { tokenIn, tokenOut, amountIn, amountOut, isLoadingRoute, route, fromChainId, resetSwap } = useSwapStore()
+  const { tokenIn, tokenOut, amountIn, amountOut, isLoadingRoute, route, fromChainId } = useSwapStore()
   const { isConnected } = useAccount()
   const chainId = useChainId()
   const { switchChain } = useSwitchChain()

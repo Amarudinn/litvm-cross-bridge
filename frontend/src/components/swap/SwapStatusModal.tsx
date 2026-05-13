@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { Wallet, Check, ArrowLeftRight, ArrowRight, ArrowDownUp, Loader2, Clock, ExternalLink, AlertCircle } from 'lucide-react'
+import { Wallet, Check, ArrowLeftRight, ArrowRight, ArrowDownUp, Clock, ExternalLink, AlertCircle } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { getExplorerUrl, shortenTxHash } from '@/lib/format'
 import { Button } from '@/components/ui/button'

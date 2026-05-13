@@ -20,7 +20,7 @@ import { SwapStatusModal } from './SwapStatusModal'
 export function SwapTab() {
   const {
     fromChainId, toChainId, tokenIn, tokenOut,
-    amountIn, amountOut, route, isLoadingRoute,
+    amountIn, amountOut, isLoadingRoute,
     setFromChainId, setToChainId, setTokenIn, setTokenOut,
     setAmountIn, setAmountOut, setRoute, setIsLoadingRoute,
     switchTokens, resetSwap,
@@ -287,10 +287,6 @@ export function SwapTab() {
           setIsLoadingRoute(false)
           return
         }
-
-        // Find best fee tier by trying all available tiers
-        const poolSymbolIn = quoteTokenIn.symbol === 'zkLTC' ? 'WETH' : quoteTokenIn.symbol
-        const poolSymbolOut = quoteTokenOut.symbol === 'zkLTC' ? 'WETH' : quoteTokenOut.symbol
 
         // Calculate net input after fees
         const input = parseFloat(amountIn)

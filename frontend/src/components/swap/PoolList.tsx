@@ -8,13 +8,11 @@ import { getTokensByChain, getToken } from '@/config/tokens'
 import { formatUnits } from 'viem'
 import { useRemoveQuote } from '@/hooks/useRemoveQuote'
 import type { PoolPosition } from '@/hooks/usePoolPositions'
-import type { usePoolActions } from '@/hooks/usePoolActions'
 
 interface PoolListProps {
   positions: PoolPosition[]
   pools: Pool[]
   loading: boolean
-  poolActions: ReturnType<typeof usePoolActions>
 }
 
 function getSymbol(address: string, chainId: number): string {
@@ -23,7 +21,7 @@ function getSymbol(address: string, chainId: number): string {
   return token?.symbol || address.slice(0, 6) + '...'
 }
 
-export function PoolList({ positions, pools, loading, poolActions }: PoolListProps) {
+export function PoolList({ positions, pools, loading }: PoolListProps) {
   const { setView, selectedChainId, setSelectedTokenId, setToken0Symbol, setToken1Symbol, setFeeTier } = usePoolStore()
   const [activeTab, setActiveTab] = useState<'positions' | 'pools'>('positions')
   const [expandedId, setExpandedId] = useState<string | null>(null)

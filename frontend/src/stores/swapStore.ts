@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { LITEFORGE_CHAIN_ID, SEPOLIA_CHAIN_ID } from '@/config/contracts'
+import { LITEFORGE_CHAIN_ID } from '@/config/contracts'
 import type { Token } from '@/config/tokens'
 
 export type SlippagePreset = '0.1' | '0.5' | '1.0' | 'custom'

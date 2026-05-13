@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { createPublicClient, http, type Address } from 'viem'
 import { UNISWAP_V3_FACTORY } from '@/config/dex'
-import { LITEFORGE_CHAIN_ID, SEPOLIA_CHAIN_ID, BASE_SEPOLIA_CHAIN_ID } from '@/config/contracts'
+import { LITEFORGE_CHAIN_ID, SEPOLIA_CHAIN_ID } from '@/config/contracts'
 import { liteforge, sepolia, baseSepolia } from '@/config/chains'
 
 const FACTORY_ABI = [

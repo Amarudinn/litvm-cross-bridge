@@ -1,11 +1,10 @@
-import { useState, useCallback } from 'react'
-import { useAccount, usePublicClient, useWalletClient, useChainId, useSwitchChain } from 'wagmi'
+import { useState } from 'react'
+import { useAccount, usePublicClient, useWalletClient, useSwitchChain } from 'wagmi'
 import { parseUnits, encodeFunctionData, type Address, maxUint256, createPublicClient, http } from 'viem'
 import { useSwapStore } from '@/stores/swapStore'
 import { useBalanceStore } from '@/stores/balanceStore'
-import { MULTYRA_ROUTER_ADDRESS, WETH_ADDRESS } from '@/config/dex'
+import { MULTYRA_ROUTER_ADDRESS } from '@/config/dex'
 import { POOLS } from '@/config/pools'
-import { getTokensByChain } from '@/config/tokens'
 import { BRIDGE_VAULT_ADDRESS, WRAPPED_ZKLTC_ADDRESS, WRAPPED_ZKLTC_BASE_SEPOLIA_ADDRESS, LITEFORGE_CHAIN_ID, SEPOLIA_CHAIN_ID, BASE_SEPOLIA_CHAIN_ID } from '@/config/contracts'
 import { liteforge, sepolia, baseSepolia } from '@/config/chains'
 
@@ -93,12 +92,11 @@ export function useCrossChainSwap() {
   const [error, setError] = useState<string | null>(null)
 
   const { address } = useAccount()
-  const chainId = useChainId()
   const publicClient = usePublicClient()
   const { data: walletClient } = useWalletClient()
   const { switchChainAsync } = useSwitchChain()
   const invalidateBalances = useBalanceStore((s) => s.invalidate)
-  const { tokenIn, tokenOut, amountIn, amountOut, slippage, fromChainId, toChainId } = useSwapStore()
+  const { tokenIn, tokenOut, amountIn, amountOut, fromChainId, toChainId } = useSwapStore()
 
   const getChain = (id: number) => {
     switch (id) {
@@ -174,7 +172,6 @@ export function useCrossChainSwap() {
       setTxHash(null)
 
       const amountInWei = parseUnits(amountIn, tokenIn.decimals)
-      const slippageBps = Math.floor(parseFloat(slippage) * 100)
 
       // === LiteForge → Destination (lock + swap on dest) ===
       if (fromChainId === LITEFORGE_CHAIN_ID) {

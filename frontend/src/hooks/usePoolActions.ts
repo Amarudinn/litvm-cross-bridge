@@ -1,7 +1,7 @@
 import { useState } from 'react'
-import { useAccount, useWalletClient, useChainId, useSwitchChain } from 'wagmi'
+import { useAccount, useChainId, useSwitchChain } from 'wagmi'
 import { encodeFunctionData, parseUnits, type Address, maxUint256, createPublicClient, http } from 'viem'
-import { POSITION_MANAGER, WETH_ADDRESS, UNISWAP_V3_FACTORY } from '@/config/dex'
+import { POSITION_MANAGER, UNISWAP_V3_FACTORY } from '@/config/dex'
 import { LITEFORGE_CHAIN_ID, SEPOLIA_CHAIN_ID, BASE_SEPOLIA_CHAIN_ID } from '@/config/contracts'
 import { liteforge, sepolia, baseSepolia } from '@/config/chains'
 import { useBalanceStore } from '@/stores/balanceStore'
@@ -202,12 +202,10 @@ export function usePoolActions(chainId: number) {
   const [status, setStatus] = useState<PoolActionStatus>('idle')
   const [error, setError] = useState<string | null>(null)
   const { address } = useAccount()
-  const { data: walletClient } = useWalletClient()
   const currentChainId = useChainId()
   const { switchChainAsync } = useSwitchChain()
   const invalidateBalances = useBalanceStore((s) => s.invalidate)
 
-  const chain = getChain(chainId)
   const client = getClient(chainId)
   const nftPm = POSITION_MANAGER[chainId] as Address
 
