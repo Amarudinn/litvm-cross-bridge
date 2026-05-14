@@ -1,7 +1,6 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef } from 'react'
 import { createPortal } from 'react-dom'
 import { ChevronDown, Search, X } from 'lucide-react'
-import { motion, AnimatePresence } from 'framer-motion'
 import { cn } from '@/lib/utils'
 import type { Token } from '@/config/tokens'
 

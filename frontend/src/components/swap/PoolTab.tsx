@@ -2,7 +2,6 @@ import { useState, useRef, useEffect } from 'react'
 import { ChevronDown, ArrowLeft } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useAccount, useChainId } from 'wagmi'
-import { useConnectModal } from '@rainbow-me/rainbowkit'
 import { usePoolStore } from '@/stores/poolStore'
 import { cn } from '@/lib/utils'
 import { SWAP_CHAINS } from '@/config/dex'
@@ -24,7 +23,6 @@ export function PoolTab() {
   const selectedChain = SWAP_CHAINS.find((c) => c.chainId === selectedChainId)
 
   const { isConnected } = useAccount()
-  const { openConnectModal } = useConnectModal()
   const walletChainId = useChainId()
 
   useEffect(() => {
