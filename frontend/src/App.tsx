@@ -14,6 +14,7 @@ import AdminPage from './pages/AdminPage'
 import DocsPage from './pages/DocsPage'
 import Header from './components/layout/Header'
 import { SupportWidget } from './components/support/SupportWidget'
+import ShapeGrid from './components/layout/ShapeGrid'
 
 const queryClient = new QueryClient()
 
@@ -23,9 +24,20 @@ function App() {
       <QueryClientProvider client={queryClient}>
         <RainbowKitProvider theme={darkTheme({ accentColor: '#4f6ef7', borderRadius: 'medium' })}>
           <BrowserRouter>
-            <div className="min-h-screen bg-background text-foreground flex flex-col">
+            <div className="min-h-screen bg-background text-foreground flex flex-col relative">
+              <div className="fixed inset-0 z-0">
+                <ShapeGrid
+                  speed={0.3}
+                  squareSize={45}
+                  direction="diagonal"
+                  borderColor="hsl(225 73% 57% / 0.08)"
+                  hoverFillColor="hsl(225 73% 57% / 0.15)"
+                  shape="square"
+                  hoverTrailAmount={5}
+                />
+              </div>
               <Header />
-              <main className="flex-1 flex flex-col pt-14">
+              <main className="flex-1 flex flex-col pt-14 relative z-10">
                 <Routes>
                   <Route path="/" element={<BridgePage />} />
                   <Route path="/swap" element={<SwapPage />} />
