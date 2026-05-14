@@ -35,6 +35,14 @@ export const LITEFORGE_TOKENS: Token[] = [
     icon: '/multyra.png',
     chainId: LITEFORGE_CHAIN_ID,
   },
+  {
+    symbol: 'WDEX',
+    name: 'Wolfdex',
+    decimals: 18,
+    address: '0xEa71393074fFCB6d132B8a2b6028CAF952af03A5',
+    icon: '/wolfdex.jpg',
+    chainId: LITEFORGE_CHAIN_ID,
+  },
 ]
 
 // Sepolia tokens

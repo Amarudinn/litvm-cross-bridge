@@ -1,7 +1,7 @@
 'use client'
 
 import { motion, useInView } from 'motion/react'
-import { Activity, Clock, Percent, TrendingUp } from 'lucide-react'
+import { Activity, Layers, Globe, TrendingUp } from 'lucide-react'
 import { useRef } from 'react'
 import { useStats } from '@/hooks/useStats'
 import { AnimatedCounter } from '@/components/animated-counter'
@@ -10,13 +10,13 @@ import { Skeleton } from '@/components/ui/skeleton'
 const statItems = [
   { icon: Activity, label: 'Total Transactions', suffix: '', decimals: 0, color: 'text-blue-400' },
   { icon: TrendingUp, label: 'Volume Bridged', suffix: ' zkLTC', decimals: 2, color: 'text-violet-400' },
-  { icon: Clock, label: 'Average Relay', suffix: 's', decimals: 0, color: 'text-cyan-400' },
-  { icon: Percent, label: 'Bridge Fee', suffix: '%', decimals: 1, color: 'text-emerald-400' },
+  { icon: Layers, label: 'DEXes Integrated', suffix: '', decimals: 0, color: 'text-cyan-400' },
+  { icon: Globe, label: 'Supported Chains', suffix: '', decimals: 0, color: 'text-emerald-400' },
 ]
 
 export function Stats() {
   const { totalTransactions, totalVolume, isLoading } = useStats()
-  const values = [totalTransactions, totalVolume, 20, 0.3]
+  const values = [totalTransactions, totalVolume, 2, 3]
 
   return (
     <section id="stats" className="section-shell overflow-hidden">

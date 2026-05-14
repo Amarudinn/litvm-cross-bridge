@@ -6,9 +6,9 @@ import { cn } from '@/lib/utils'
 import { useRef } from 'react'
 
 const chains = [
-  { name: 'LiteForge', subtitle: 'Layer 2', image: '/litvm.png', chainId: '4441', token: 'zkLTC', time: '~2s', color: 'from-blue-500/20 to-cyan-500/20', borderColor: 'hover:border-blue-500/30' },
-  { name: 'Sepolia', subtitle: 'Ethereum Testnet', image: '/eth.png', chainId: '11155111', token: 'wzkLTC', time: '~12s', color: 'from-violet-500/20 to-indigo-500/20', borderColor: 'hover:border-violet-500/30' },
-  { name: 'Base Sepolia', subtitle: 'Base Testnet', image: '/base.jpeg', chainId: '84532', token: 'wzkLTC', time: '~2s', color: 'from-emerald-500/20 to-teal-500/20', borderColor: 'hover:border-emerald-500/30' },
+  { name: 'LiteForge', subtitle: 'Source • Bridge + Swap + Aggregator', image: '/litvm.png', chainId: '4441', token: 'zkLTC', time: '~2s', color: 'from-blue-500/20 to-cyan-500/20', borderColor: 'hover:border-blue-500/30' },
+  { name: 'Sepolia', subtitle: 'Destination • Bridge + Swap', image: '/eth.png', chainId: '11155111', token: 'wzkLTC', time: '~12s', color: 'from-violet-500/20 to-indigo-500/20', borderColor: 'hover:border-violet-500/30' },
+  { name: 'Base Sepolia', subtitle: 'Destination • Bridge + Swap', image: '/base.jpeg', chainId: '84532', token: 'wzkLTC', time: '~2s', color: 'from-emerald-500/20 to-teal-500/20', borderColor: 'hover:border-emerald-500/30' },
 ]
 
 function ChainCard({ chain, index }: { chain: typeof chains[0]; index: number }) {
@@ -130,7 +130,7 @@ export function Chains() {
           <span className="gradient-text">that matter.</span>
         </h2>
         <p className="mt-5 text-base leading-relaxed text-muted-foreground">
-          LiteForge connects to Sepolia and Base Sepolia with a relayer-backed bridge path.
+          Bridge, swap, and provide liquidity across LiteForge, Sepolia, and Base Sepolia.
         </p>
       </motion.div>
 

@@ -77,13 +77,13 @@ export function Hero() {
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-60" />
               <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
             </span>
-            <span className="text-xs font-medium">Live on LiteForge</span>
+            <span className="text-xs font-medium">Live on LiteForge • Sepolia • Base</span>
           </Badge>
         </motion.div>
 
         {/* Headline with text reveal */}
         <TextReveal
-          text="Bridge zkLTC with calm, precise speed"
+          text="Bridge. Swap. Aggregate. All in one protocol."
           as="h1"
           mode="word"
           className="max-w-5xl text-balance text-4xl font-bold tracking-[-0.04em] sm:text-5xl md:text-7xl lg:text-8xl"
@@ -104,7 +104,7 @@ export function Hero() {
           transition={{ duration: 0.7, delay: 0.5 }}
           className="mx-auto mt-6 max-w-[560px] text-balance text-base leading-relaxed text-muted-foreground sm:mt-8 sm:text-lg md:text-xl"
         >
-          A smooth 1:1 backed bridge for LiteForge, Ethereum Sepolia, and Base Sepolia — no slippage, no complexity.
+          Multyra connects LiteForge to Ethereum and Base with a 1:1 backed bridge, multi-DEX aggregator, and concentrated liquidity pools.
         </motion.p>
 
         {/* CTA */}
@@ -117,7 +117,7 @@ export function Hero() {
           <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.97 }}>
             <Button asChild size="lg" variant="glow">
               <a href="https://app.multyra.xyz" className="gap-2">
-                Launch Bridge <ArrowRight className="h-4 w-4" />
+                Launch App <ArrowRight className="h-4 w-4" />
               </a>
             </Button>
           </motion.div>

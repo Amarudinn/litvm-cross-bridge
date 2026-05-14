@@ -3,7 +3,7 @@ import { useAccount, useChainId, usePublicClient, useWalletClient } from 'wagmi'
 import { parseUnits, encodeFunctionData, type Address, maxUint256, createPublicClient, http } from 'viem'
 import { useSwapStore } from '@/stores/swapStore'
 import { useBalanceStore } from '@/stores/balanceStore'
-import { MULTYRA_ROUTER_ADDRESS, WETH_ADDRESS } from '@/config/dex'
+import { DexId, MULTYRA_ROUTER_ADDRESS, WETH_ADDRESS } from '@/config/dex'
 import { POOLS } from '@/config/pools'
 import { liteforge, sepolia, baseSepolia } from '@/config/chains'
 import { LITEFORGE_CHAIN_ID, SEPOLIA_CHAIN_ID } from '@/config/contracts'
@@ -67,6 +67,47 @@ const MULTYRA_ROUTER_ABI = [
       { name: 'amountOutMinimum', type: 'uint256' },
     ],
     outputs: [{ name: 'amountOut', type: 'uint256' }],
+  },
+] as const
+
+const UNISWAP_V2_ROUTER_ABI = [
+  {
+    name: 'swapExactTokensForTokens',
+    type: 'function',
+    stateMutability: 'nonpayable',
+    inputs: [
+      { name: 'amountIn', type: 'uint256' },
+      { name: 'amountOutMin', type: 'uint256' },
+      { name: 'path', type: 'address[]' },
+      { name: 'to', type: 'address' },
+      { name: 'deadline', type: 'uint256' },
+    ],
+    outputs: [{ name: 'amounts', type: 'uint256[]' }],
+  },
+  {
+    name: 'swapExactETHForTokens',
+    type: 'function',
+    stateMutability: 'payable',
+    inputs: [
+      { name: 'amountOutMin', type: 'uint256' },
+      { name: 'path', type: 'address[]' },
+      { name: 'to', type: 'address' },
+      { name: 'deadline', type: 'uint256' },
+    ],
+    outputs: [{ name: 'amounts', type: 'uint256[]' }],
+  },
+  {
+    name: 'swapExactTokensForETH',
+    type: 'function',
+    stateMutability: 'nonpayable',
+    inputs: [
+      { name: 'amountIn', type: 'uint256' },
+      { name: 'amountOutMin', type: 'uint256' },
+      { name: 'path', type: 'address[]' },
+      { name: 'to', type: 'address' },
+      { name: 'deadline', type: 'uint256' },
+    ],
+    outputs: [{ name: 'amounts', type: 'uint256[]' }],
   },
 ] as const
 
@@ -138,12 +179,14 @@ export function useSwap() {
       return
     }
 
-    const routerAddress = MULTYRA_ROUTER_ADDRESS[fromChainId] as Address
+    const routerAddress = (route?.routerAddress || MULTYRA_ROUTER_ADDRESS[fromChainId]) as Address
     if (!routerAddress) {
       setError('Router not available on this chain')
       setStatus('error')
       return
     }
+
+    const isDexV2 = route?.dexId === DexId.UNISWAP_V2
 
     try {
       setError(null)
@@ -208,7 +251,87 @@ export function useSwap() {
       // Resolve actual addresses (native → WETH)
       const resolvedTokenOut = isNativeOut ? wethAddress : (tokenOut.address as Address)
 
-      if (isNativeIn) {
+      if (isDexV2) {
+        // --- UniswapV2 Execution ---
+        const deadline = BigInt(Math.floor(Date.now() / 1000) + 1200) // 20 min
+        const v2Path = (route?.v2Path || [
+          isNativeIn ? wethAddress : tokenIn.address,
+          isNativeOut ? wethAddress : tokenOut.address,
+        ]) as Address[]
+
+        if (!isNativeIn) {
+          // Check allowance for V2 router
+          setStatus('checking-allowance')
+          const allowance = await getClient().readContract({
+            address: tokenIn.address as Address,
+            abi: ERC20_ABI,
+            functionName: 'allowance',
+            args: [address, routerAddress],
+          })
+
+          if (allowance < amountInWei) {
+            setStatus('approving')
+            const approveData = encodeFunctionData({
+              abi: ERC20_ABI,
+              functionName: 'approve',
+              args: [routerAddress, maxUint256],
+            })
+            const approveHash = await walletClient.sendTransaction({
+              to: tokenIn.address as Address,
+              data: approveData,
+              chain,
+              gas: BigInt(60000),
+            })
+            await getClient().waitForTransactionReceipt({ hash: approveHash })
+          }
+        }
+
+        setStatus('swapping')
+        let swapData: `0x${string}`
+        let value: bigint | undefined
+
+        if (isNativeIn) {
+          // ETH → Token
+          swapData = encodeFunctionData({
+            abi: UNISWAP_V2_ROUTER_ABI,
+            functionName: 'swapExactETHForTokens',
+            args: [minOut, v2Path, address, deadline],
+          })
+          value = amountInWei
+        } else if (isNativeOut) {
+          // Token → ETH
+          swapData = encodeFunctionData({
+            abi: UNISWAP_V2_ROUTER_ABI,
+            functionName: 'swapExactTokensForETH',
+            args: [amountInWei, minOut, v2Path, address, deadline],
+          })
+        } else {
+          // Token → Token
+          swapData = encodeFunctionData({
+            abi: UNISWAP_V2_ROUTER_ABI,
+            functionName: 'swapExactTokensForTokens',
+            args: [amountInWei, minOut, v2Path, address, deadline],
+          })
+        }
+
+        const hash = await walletClient.sendTransaction({
+          to: routerAddress,
+          data: swapData,
+          value,
+          chain,
+          gas: BigInt(300000),
+        })
+
+        setTxHash(hash)
+        const receipt = await getClient().waitForTransactionReceipt({ hash })
+        if (receipt.status === 'reverted') {
+          setError('Transaction reverted on-chain')
+          setStatus('error')
+          return
+        }
+        setStatus('success')
+        invalidateBalances()
+      } else if (isNativeIn) {
         // Native token swap (zkLTC on LiteForge)
         setStatus('swapping')
 

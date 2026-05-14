@@ -8,6 +8,7 @@ import { getTokensByChain } from '@/config/tokens'
 import { POOLS } from '@/config/pools'
 import { SWAP_CHAINS, AGGREGATOR_FEE_BPS, FEE_DENOMINATOR, WETH_ADDRESS } from '@/config/dex'
 import { useQuoter } from '@/hooks/useQuoter'
+import { getMultiDexQuotes, pickBestQuote } from '@/hooks/useMultiDexQuoter'
 import { useTokenBalances } from '@/hooks/useTokenBalances'
 import { useSwap } from '@/hooks/useSwap'
 import { useCrossChainSwap } from '@/hooks/useCrossChainSwap'
@@ -256,32 +257,8 @@ export function SwapTab() {
           return
         }
 
-        // For native tokens, use WETH address for quoting (pool uses WETH)
-        const quoteTokenIn = (() => {
-          let t = isCrossChain && tokenIn.address === 'native'
-            ? getTokensByChain(toChainId).find(tk => tk.symbol === 'wzkLTC')
-            : tokenIn
-          // If native, create a virtual token with WETH address for quoting
-          if (t && t.address === 'native') {
-            const wethAddr = WETH_ADDRESS[quoteChainId]
-            if (wethAddr) {
-              t = { ...t, address: wethAddr }
-            }
-          }
-          return t
-        })()
-        const quoteTokenOut = (() => {
-          let t = tokenOut
-          if (t && t.address === 'native') {
-            const wethAddr = WETH_ADDRESS[quoteChainId]
-            if (wethAddr) {
-              t = { ...t, address: wethAddr }
-            }
-          }
-          return t
-        })()
-
-        if (!quoteTokenIn || !quoteTokenOut) {
+        // For cross-chain, determine quote chain
+        if (!tokenIn || !tokenOut) {
           setAmountOut('')
           setRoute(null)
           setIsLoadingRoute(false)
@@ -295,49 +272,35 @@ export function SwapTab() {
         const netInput = input - aggregatorFee - bridgeFee
         const netInputStr = netInput.toFixed(tokenIn.decimals > 6 ? 8 : 6)
 
-        // Try all fee tiers and pick the best quote
-        const FEE_TIERS = [500, 3000, 10000]
-        let bestQuote: { amountOut: bigint } | null = null
-        let bestFeeTier = 3000
+        // For cross-chain, resolve tokenIn to wzkLTC on dest chain for quoting
+        const quoteTokenInFinal = isCrossChain && tokenIn.address === 'native'
+          ? getTokensByChain(toChainId).find(tk => tk.symbol === 'wzkLTC') || tokenIn
+          : tokenIn
 
-        const quoteResults = await Promise.all(
-          FEE_TIERS.map(async (tier) => {
-            try {
-              const q = await getQuote(quoteChainId, quoteTokenIn, quoteTokenOut, netInputStr, tier)
-              return { tier, quote: q }
-            } catch {
-              return { tier, quote: null }
-            }
-          })
-        )
+        // Multi-DEX quote: query all DEXes in parallel and pick best
+        const quotes = await getMultiDexQuotes(quoteChainId, quoteTokenInFinal, tokenOut, netInputStr)
+        const bestDexQuote = pickBestQuote(quotes)
 
-        for (const { tier, quote } of quoteResults) {
-          if (quote && quote.amountOut > BigInt(0)) {
-            if (!bestQuote || quote.amountOut > bestQuote.amountOut) {
-              bestQuote = quote
-              bestFeeTier = tier
-            }
-          }
-        }
-
-        if (bestQuote && bestQuote.amountOut > BigInt(0)) {
-          const outputFormatted = formatUnits(bestQuote.amountOut, quoteTokenOut.decimals)
+        if (bestDexQuote && bestDexQuote.amountOut > BigInt(0)) {
+          const outputFormatted = formatUnits(bestDexQuote.amountOut, tokenOut.decimals)
           setAmountOut(parseFloat(outputFormatted).toFixed(6))
 
-          // Calculate price impact using a small reference quote
-          // Compare execution price vs mid-price (quote for tiny amount)
+          // Calculate price impact using a smaller reference amount (1% of input)
           let impact = 0
           try {
-            const refAmount = '0.000001' // tiny amount for mid-price reference
-            const refQuote = await getQuote(quoteChainId, quoteTokenIn, quoteTokenOut, refAmount, bestFeeTier)
-            if (refQuote && refQuote.amountOut > BigInt(0)) {
-              const refOut = parseFloat(formatUnits(refQuote.amountOut, quoteTokenOut.decimals))
-              const midPrice = refOut / 0.000001 // output per 1 unit input
-              const execPrice = parseFloat(outputFormatted) / netInput
-              impact = midPrice > 0 ? Math.abs((midPrice - execPrice) / midPrice * 100) : 0
+            const refAmount = (netInput * 0.01).toFixed(tokenIn.decimals > 6 ? 8 : 6)
+            if (parseFloat(refAmount) > 0) {
+              const refQuotes = await getMultiDexQuotes(quoteChainId, quoteTokenInFinal, tokenOut, refAmount)
+              const refBest = refQuotes.find(q => q.dexId === bestDexQuote.dexId)
+              if (refBest && refBest.amountOut > BigInt(0)) {
+                const refOut = parseFloat(formatUnits(refBest.amountOut, tokenOut.decimals))
+                const midPrice = refOut / (netInput * 0.01)
+                const execPrice = parseFloat(outputFormatted) / netInput
+                impact = midPrice > 0 ? Math.abs((midPrice - execPrice) / midPrice * 100) : 0
+              }
             }
           } catch {
-            impact = 0.1
+            impact = 0
           }
 
           const path = isCrossChain
@@ -348,14 +311,19 @@ export function SwapTab() {
 
           setRoute({
             path,
-            pools: [bestFeeTier.toString()],
+            pools: [bestDexQuote.fee?.toString() || 'v2'],
             estimatedOutput: parseFloat(outputFormatted).toFixed(6),
             priceImpact: impact.toFixed(2),
             isCrossChain,
             bridgeFee: isCrossChain ? bridgeFee.toFixed(6) : undefined,
+            dexId: bestDexQuote.dexId,
+            dexName: bestDexQuote.dexName,
+            routerAddress: bestDexQuote.routerAddress,
+            v2Path: bestDexQuote.v2Path,
+            fee: bestDexQuote.fee,
           })
         } else {
-          // Quote returned 0 or failed — no liquidity available
+          // No liquidity available on any DEX
           setAmountOut('')
           setRoute(null)
         }
@@ -441,6 +409,7 @@ export function SwapTab() {
           onTokenSelect={setTokenIn}
           balances={fromBalances}
           disabledSymbols={disabledFromSymbols}
+          chainId={fromChainId}
         />
       </div>
 
@@ -473,6 +442,7 @@ export function SwapTab() {
           loading={isLoadingRoute}
           balances={toBalances}
           disabledSymbols={disabledToSymbols}
+          chainId={toChainId}
         />
       </div>
 

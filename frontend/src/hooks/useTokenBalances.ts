@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useAccount } from 'wagmi'
 import { formatUnits, type Address, createPublicClient, http } from 'viem'
-import { getTokensByChain } from '@/config/tokens'
+import { getTokensByChain, type Token } from '@/config/tokens'
 import { LITEFORGE_CHAIN_ID, SEPOLIA_CHAIN_ID } from '@/config/contracts'
 import { liteforge, sepolia, baseSepolia } from '@/config/chains'
 import { useBalanceStore } from '@/stores/balanceStore'
@@ -26,6 +26,15 @@ function getClientForChain(chainId: number) {
   return createPublicClient({ chain, transport: http(rpcUrl) })
 }
 
+function getCustomTokens(chainId: number): Token[] {
+  try {
+    const storageKey = `custom_tokens_${chainId}`
+    return JSON.parse(localStorage.getItem(storageKey) || '[]') as Token[]
+  } catch {
+    return []
+  }
+}
+
 export function useTokenBalances(chainId: number) {
   const [balances, setBalances] = useState<Record<string, string>>({})
   const { address } = useAccount()
@@ -39,10 +48,18 @@ export function useTokenBalances(chainId: number) {
 
     const fetchBalances = async () => {
       const client = getClientForChain(chainId)
-      const tokens = getTokensByChain(chainId)
+      const defaultTokens = getTokensByChain(chainId)
+      const customTokens = getCustomTokens(chainId)
+
+      // Merge, avoid duplicates
+      const allTokens = [
+        ...defaultTokens,
+        ...customTokens.filter(ct => !defaultTokens.some(t => t.address.toLowerCase() === ct.address.toLowerCase()))
+      ]
+
       const result: Record<string, string> = {}
 
-      for (const token of tokens) {
+      for (const token of allTokens) {
         try {
           if (token.address === 'native') {
             const balance = await client.getBalance({ address })

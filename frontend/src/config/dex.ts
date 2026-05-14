@@ -1,5 +1,76 @@
 import { LITEFORGE_CHAIN_ID, SEPOLIA_CHAIN_ID, BASE_SEPOLIA_CHAIN_ID } from './contracts'
 
+// DEX identifiers
+export enum DexId {
+  MULTYRA_V3 = 'multyra_v3',
+  UNISWAP_V2 = 'uniswap_v2',
+}
+
+// DEX configuration interface
+export interface DexConfig {
+  id: DexId
+  name: string
+  type: 'v3' | 'v2'
+  routerAddress: string
+  // V3-specific
+  quoterAddress?: string
+  factoryAddress?: string
+  feeTiers?: number[]
+  // V2-specific
+  factoryV2Address?: string
+  wethAddress?: string // override WETH for this DEX
+}
+
+// DEX configurations per chain
+export const DEX_CONFIGS: Record<number, DexConfig[]> = {
+  [LITEFORGE_CHAIN_ID]: [
+    {
+      id: DexId.MULTYRA_V3,
+      name: 'Multyra V3',
+      type: 'v3',
+      routerAddress: '0x9D2aD458a789723b8848AeD51c05F4D1fBdB1111',
+      quoterAddress: '0x344bBD93f45f906c44A426C396C9E64F0f686c44',
+      factoryAddress: '0x2305fd1Ebc0f5F3b59bdD06cda6090a4EBe7714D',
+      feeTiers: [500, 3000, 10000],
+    },
+    {
+      id: DexId.UNISWAP_V2,
+      name: 'Wolfdex V2',
+      type: 'v2',
+      routerAddress: '0xd28967D75750f477E450Df81C73f34E2713B86B4',
+      factoryV2Address: '0x5687FDA3BdE14d38057699c402606ab470EcA873',
+      wethAddress: '0x4Fd3765cde8D1d2BE4EdbaA03940AfC56794c304',
+    },
+  ],
+  [SEPOLIA_CHAIN_ID]: [
+    {
+      id: DexId.MULTYRA_V3,
+      name: 'Multyra V3',
+      type: 'v3',
+      routerAddress: '0x4A16218cb6b39cE2a0Cb2c596C33e4B6957265E0',
+      quoterAddress: '0xe168E339fd38bfEd7653a251879180A176312a2C',
+      factoryAddress: '0x38aE7cDAA138Df4da2b228CAB81bd3b0ea8923E6',
+      feeTiers: [500, 3000, 10000],
+    },
+  ],
+  [BASE_SEPOLIA_CHAIN_ID]: [
+    {
+      id: DexId.MULTYRA_V3,
+      name: 'Multyra V3',
+      type: 'v3',
+      routerAddress: '0xDfAb13959371EFF8fdd71aecD1403FD78b743eE0',
+      quoterAddress: '0xCAbe1099fC87Ca2E2e9126c0Da1A592ab9a5D0Bc',
+      factoryAddress: '0x622C7B14fF74bFeC9B82459F3dab954f82b47d7a',
+      feeTiers: [500, 3000, 10000],
+    },
+  ],
+}
+
+// Helper to get DEXes for a chain
+export function getDexesForChain(chainId: number): DexConfig[] {
+  return DEX_CONFIGS[chainId] ?? []
+}
+
 // MultyraRouter (Aggregator) addresses per chain
 export const MULTYRA_ROUTER_ADDRESS: Record<number, string> = {
   [LITEFORGE_CHAIN_ID]: '0x9D2aD458a789723b8848AeD51c05F4D1fBdB1111',

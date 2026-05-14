@@ -14,10 +14,12 @@ export function RoutePreview({ route }: RoutePreviewProps) {
   const highImpact = route.pools.length > 0 && priceImpact > 10
   const veryHighImpact = route.pools.length > 0 && priceImpact > 20
 
+  const isV2 = route.dexId === 'uniswap_v2'
+
   // Calculate fee values
   const inputAmount = parseFloat(amountIn) || 0
-  const poolFeeTier = route.pools[0] ? parseInt(route.pools[0]) : 10000
-  const poolFeePercent = poolFeeTier / 10000 // e.g. 10000 -> 1%
+  const poolFeeTier = route.pools[0] ? parseInt(route.pools[0]) : 0
+  const poolFeePercent = isV2 ? 0.03 : (isNaN(poolFeeTier) ? 0 : poolFeeTier / 10000) // V2 Wolfdex = 0.03%, V3 = dynamic from tier
   const aggregatorFeeValue = inputAmount * 0.001 // 0.1%
   const poolFeeValue = inputAmount * (poolFeePercent / 100)
   const inputSymbol = tokenIn?.symbol || ''
@@ -71,23 +73,27 @@ export function RoutePreview({ route }: RoutePreviewProps) {
             critical={veryHighImpact}
           />
         )}
+        {route.pools.length > 0 && route.pools[0] !== 'wrap' && !isV2 && (
+          <DetailRow
+            label="Aggregator Fee"
+            value={`${aggregatorFeeValue.toFixed(6)} ${inputSymbol} (0.1%)`}
+          />
+        )}
         {route.pools.length > 0 && route.pools[0] !== 'wrap' && (
-          <>
-            <DetailRow
-              label="Aggregator Fee"
-              value={`${aggregatorFeeValue.toFixed(6)} ${inputSymbol} (0.1%)`}
-            />
-            <DetailRow
-              label="Pool Fee"
-              value={`${poolFeeValue.toFixed(6)} ${inputSymbol} (${getFeeTierLabel(poolFeeTier as 500 | 3000 | 10000)})`}
-            />
-          </>
+          <DetailRow
+            label="Pool Fee"
+            value={isV2
+              ? `${poolFeeValue.toFixed(6)} ${inputSymbol} (0.03%)`
+              : `${poolFeeValue.toFixed(6)} ${inputSymbol} (${getFeeTierLabel(poolFeeTier as 500 | 3000 | 10000)})`
+            }
+          />
         )}
         {route.isCrossChain && route.bridgeFee && (
           <DetailRow label="Bridge Fee" value={`${route.bridgeFee} ${inputSymbol} (0.3%)`} />
         )}
         <DetailRow label="Source" value={
           route.pools[0] === 'wrap' ? 'Wrap/Unwrap' :
+          route.dexName ? route.dexName :
           route.pools.length > 0 ? 'Multyra V3' : 'Multyra Bridge'
         } highlight />
       </div>

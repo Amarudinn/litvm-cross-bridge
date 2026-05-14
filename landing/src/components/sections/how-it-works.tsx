@@ -1,7 +1,7 @@
 'use client'
 
 import { motion, useScroll, useTransform, useInView, useReducedMotion } from 'motion/react'
-import { CheckCircle2, MousePointer2, Wallet } from 'lucide-react'
+import { CheckCircle2, MousePointer2, Wallet, Zap } from 'lucide-react'
 import { useRef } from 'react'
 import { cn } from '@/lib/utils'
 
@@ -9,7 +9,7 @@ const steps = [
   {
     icon: Wallet,
     title: 'Connect wallet',
-    description: 'Start with a clean wallet connection and route-aware interface.',
+    description: 'Connect and auto-detect your chain. The interface adapts to your active network.',
     color: 'text-blue-400',
     bg: 'bg-blue-500/10',
     ring: 'ring-blue-500/20',
@@ -17,17 +17,26 @@ const steps = [
   },
   {
     icon: MousePointer2,
-    title: 'Set bridge details',
-    description: 'Pick the route, enter amount, and review the transaction with zero visual noise.',
+    title: 'Choose action',
+    description: 'Bridge tokens cross-chain, swap on same chain, or provide liquidity to earn fees.',
     color: 'text-violet-400',
     bg: 'bg-violet-500/10',
     ring: 'ring-violet-500/20',
     glow: 'shadow-[0_0_30px_hsl(260_70%_55%/0.15)]',
   },
   {
+    icon: Zap,
+    title: 'Best route found',
+    description: 'The aggregator queries all DEXes in parallel and picks the optimal price and route for you.',
+    color: 'text-amber-400',
+    bg: 'bg-amber-500/10',
+    ring: 'ring-amber-500/20',
+    glow: 'shadow-[0_0_30px_hsl(40_80%_55%/0.15)]',
+  },
+  {
     icon: CheckCircle2,
-    title: 'Track completion',
-    description: 'Watch the bridge action complete through a smooth, relayer-backed destination flow.',
+    title: 'Execute & track',
+    description: 'Confirm the transaction and track progress in real-time via the relayer-backed execution engine.',
     color: 'text-emerald-400',
     bg: 'bg-emerald-500/10',
     ring: 'ring-emerald-500/20',
@@ -127,11 +136,11 @@ export function HowItWorks() {
           How it works
         </motion.p>
         <h2 className="text-balance text-3xl font-bold tracking-tight md:text-5xl">
-          Three steps to{' '}
-          <span className="gradient-text">bridge your assets.</span>
+          Four steps to{' '}
+          <span className="gradient-text">DeFi across chains.</span>
         </h2>
         <p className="mx-auto mt-5 max-w-lg text-base leading-relaxed text-muted-foreground">
-          A guided sequence that keeps you informed at every stage.
+          A guided flow that keeps you informed from connection to confirmation.
         </p>
       </motion.div>
 

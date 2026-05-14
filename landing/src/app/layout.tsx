@@ -17,8 +17,8 @@ const inter = localFont({
 })
 
 export const metadata: Metadata = {
-  title: 'Multyra Bridge — Smooth zkLTC Bridging',
-  description: 'A smooth, elegant 1:1 zkLTC bridge for LiteForge, Sepolia, and Base Sepolia.',
+  title: 'Multyra — Bridge, Swap & Aggregate Across Chains',
+  description: 'Multi-chain DeFi protocol. Bridge zkLTC, swap tokens via multi-DEX aggregator, and provide liquidity across LiteForge, Ethereum, and Base.',
   icons: {
     icon: '/multyra.png',
     shortcut: '/multyra.png',

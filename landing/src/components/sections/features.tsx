@@ -1,29 +1,39 @@
 'use client'
 
 import { motion } from 'motion/react'
-import { Coins, Layers3, LockKeyhole, RadioTower } from 'lucide-react'
+import { ArrowLeftRight, Layers3, Droplets, Zap, Search, Radio } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 const features = [
   {
-    icon: RadioTower,
-    title: 'Event-driven bridge engine',
-    description: 'Relayers listen to on-chain events and move each bridge request through a clear execution path.',
-  },
-  {
-    icon: LockKeyhole,
-    title: 'Replay protection built in',
-    description: 'Nonce-based process IDs and guarded contracts keep duplicate execution out of the bridge flow.',
-  },
-  {
-    icon: Coins,
-    title: '1:1 backed representation',
-    description: 'Wrapped zkLTC maps cleanly to native zkLTC locked in the vault without pool complexity.',
+    icon: ArrowLeftRight,
+    title: 'Cross-chain Bridge',
+    description: 'Lock & Mint / Burn & Unlock mechanism. 1:1 backed, no slippage, 0.3% fee, ~20s relay across chains.',
   },
   {
     icon: Layers3,
-    title: 'Multi-chain interface ready',
-    description: 'The interface is shaped for LiteForge today and additional supported destinations tomorrow.',
+    title: 'Multi-DEX Aggregator',
+    description: 'Queries multiple DEXes in parallel and picks the best price. Currently routing through Multyra V3 and Wolfdex V2.',
+  },
+  {
+    icon: Droplets,
+    title: 'Concentrated Liquidity',
+    description: 'UniswapV3-style pools with custom price ranges. Add or remove liquidity with full position control.',
+  },
+  {
+    icon: Zap,
+    title: 'Cross-chain Swap',
+    description: 'Swap tokens across chains in one flow. Bridge and swap are combined automatically behind the scenes.',
+  },
+  {
+    icon: Search,
+    title: 'Token Discovery',
+    description: 'Search any token by contract address. Import custom tokens on the fly and start trading instantly.',
+  },
+  {
+    icon: Radio,
+    title: 'Relayer-backed Execution',
+    description: 'Automated relayer with retry logic, 3-block confirmation, and parallel workers for reliable delivery.',
   },
 ]
 
@@ -51,11 +61,11 @@ export function Features() {
           Why Multyra
         </motion.p>
         <h2 className="text-balance text-3xl font-bold tracking-tight md:text-5xl">
-          A premium bridge surface for{' '}
-          <span className="gradient-text">serious infrastructure.</span>
+          Everything you need for{' '}
+          <span className="gradient-text">cross-chain DeFi.</span>
         </h2>
         <p className="mx-auto mt-5 max-w-lg text-base leading-relaxed text-muted-foreground">
-          Clean visuals, sharp interaction, and mechanics that match the LiteForge bridge architecture.
+          Bridge, swap, and earn across multiple chains with a single protocol built for speed and reliability.
         </p>
       </motion.div>
 
@@ -64,7 +74,7 @@ export function Features() {
         whileInView="show"
         viewport={{ once: true, margin: '-60px' }}
         variants={{ show: { transition: { staggerChildren: 0.1 } } }}
-        className="grid grid-cols-1 gap-4 md:grid-cols-2"
+        className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3"
       >
         {features.map((feature, index) => {
           const Icon = feature.icon

@@ -11,6 +11,12 @@ export interface SwapRoute {
   priceImpact: string
   isCrossChain: boolean
   bridgeFee?: string
+  // DEX info
+  dexId?: string
+  dexName?: string
+  routerAddress?: string
+  v2Path?: string[] // for V2 execution
+  fee?: number // for V3 fee tier
 }
 
 export interface SwapStore {
