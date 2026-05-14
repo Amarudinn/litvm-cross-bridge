@@ -157,7 +157,6 @@ export function SwapInput({
                   onChange={(e) => setSearch(e.target.value)}
                   placeholder="Search token..."
                   className="flex-1 bg-transparent text-sm text-foreground placeholder:text-muted-foreground/50 focus:outline-none"
-                  autoFocus
                 />
               </div>
             </div>

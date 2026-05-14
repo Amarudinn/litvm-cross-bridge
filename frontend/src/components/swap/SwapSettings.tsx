@@ -21,10 +21,10 @@ export function SwapSettings() {
               key={p.value}
               onClick={() => setSlippagePreset(p.value as '0.1' | '0.5' | '1.0')}
               className={cn(
-                'px-3 py-1.5 rounded-lg text-xs font-medium transition-colors cursor-pointer',
+                'px-3 py-1.5 rounded-lg text-xs font-medium transition-colors duration-150 cursor-pointer',
                 slippagePreset === p.value
-                  ? 'bg-primary/10 text-primary border border-primary/20'
-                  : 'bg-muted/50 text-muted-foreground hover:bg-muted/80 border border-transparent'
+                  ? 'bg-primary text-primary-foreground'
+                  : 'bg-muted/50 text-muted-foreground hover:text-foreground/70 border border-transparent'
               )}
             >
               {p.label}

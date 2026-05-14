@@ -45,9 +45,9 @@ export default function Header() {
                 key={item.path}
                 to={item.path}
                 className={cn(
-                  'px-2.5 md:px-3 py-1.5 rounded-lg text-xs md:text-sm font-medium transition-colors',
+                  'px-2.5 md:px-3 py-1.5 rounded-lg text-xs md:text-sm font-medium transition-colors duration-150',
                   (location.pathname === item.path || (item.path !== '/' && location.pathname.startsWith(item.path)))
-                    ? 'bg-primary/10 text-primary'
+                    ? 'bg-primary text-primary-foreground'
                     : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
                 )}
               >
