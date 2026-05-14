@@ -341,7 +341,9 @@ export function SwapTab() {
           }
 
           const path = isCrossChain
-            ? [tokenIn.symbol, 'bridge', tokenOut.symbol]
+            ? fromChainId === 4441
+              ? [tokenIn.symbol, 'bridge', 'wzkLTC', tokenOut.symbol]
+              : [tokenIn.symbol, 'wzkLTC', 'bridge', tokenOut.symbol]
             : [tokenIn.symbol, tokenOut.symbol]
 
           setRoute({

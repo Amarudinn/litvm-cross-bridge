@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react'
 import { ChevronDown, ArrowLeft } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useAccount, useChainId } from 'wagmi'
+import { useConnectModal } from '@rainbow-me/rainbowkit'
 import { usePoolStore } from '@/stores/poolStore'
 import { cn } from '@/lib/utils'
 import { SWAP_CHAINS } from '@/config/dex'
@@ -22,8 +23,8 @@ export function PoolTab() {
   const poolActions = usePoolActions(selectedChainId)
   const selectedChain = SWAP_CHAINS.find((c) => c.chainId === selectedChainId)
 
-  // Sync chain selector with wallet's active chain (only in list view)
   const { isConnected } = useAccount()
+  const { openConnectModal } = useConnectModal()
   const walletChainId = useChainId()
 
   useEffect(() => {
@@ -120,12 +121,14 @@ export function PoolTab() {
       {view === 'list' && (
         <>
           <PoolList positions={positions} pools={pools} loading={loading} />
-          <button
-            onClick={() => setView('add')}
-            className="w-full py-3 rounded-xl text-sm font-semibold bg-primary text-primary-foreground hover:bg-primary/90 shadow-md shadow-primary/20 transition-colors cursor-pointer"
-          >
-            + New Position
-          </button>
+          {isConnected && (
+            <button
+              onClick={() => setView('add')}
+              className="w-full py-3 rounded-xl text-sm font-semibold bg-primary text-primary-foreground hover:bg-primary/90 shadow-md shadow-primary/20 transition-colors cursor-pointer"
+            >
+              + New Position
+            </button>
+          )}
         </>
       )}
       {view === 'add' && <AddLiquidity chainId={selectedChainId} poolActions={poolActions} />}

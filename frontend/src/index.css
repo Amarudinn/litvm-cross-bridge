@@ -103,6 +103,42 @@
   }
 }
 
+/* Glass shine hover effect */
+@keyframes shine {
+  0% {
+    transform: translateX(-100%) skewX(-15deg);
+  }
+  100% {
+    transform: translateX(200%) skewX(-15deg);
+  }
+}
+
+@layer utilities {
+  .btn-shine {
+    position: relative;
+    overflow: hidden;
+  }
+  .btn-shine::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.15),
+      transparent
+    );
+    transform: translateX(-100%) skewX(-15deg);
+    transition: none;
+  }
+  .btn-shine:hover::after {
+    animation: shine 0.6s ease forwards;
+  }
+}
+
 /* Documentation prose styles */
 @layer components {
   .prose-docs {

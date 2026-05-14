@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import { useSwapStore } from '@/stores/swapStore'
 import { useAccount, useChainId, useSwitchChain } from 'wagmi'
-import { Loader2, Zap, Check, AlertCircle, AlertTriangle } from 'lucide-react'
+import { useConnectModal } from '@rainbow-me/rainbowkit'
+import { Loader2, Zap, Check, AlertCircle, AlertTriangle, Wallet } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { motion } from 'framer-motion'
 import type { SwapStatus } from '@/hooks/useSwap'
@@ -16,6 +17,7 @@ interface SwapButtonProps {
 export function SwapButton({ swapHook, crossChainHook, isCrossChain }: SwapButtonProps) {
   const { tokenIn, tokenOut, amountIn, amountOut, isLoadingRoute, route, fromChainId } = useSwapStore()
   const { isConnected } = useAccount()
+  const { openConnectModal } = useConnectModal()
   const chainId = useChainId()
   const { switchChain } = useSwitchChain()
   const [confirmInput, setConfirmInput] = useState('')
@@ -51,7 +53,7 @@ export function SwapButton({ swapHook, crossChainHook, isCrossChain }: SwapButto
       return { label: 'Try Again', disabled: false, variant: 'error' as const, icon: <AlertCircle className="h-4 w-4" /> }
 
     // Pre-swap states
-    if (!isConnected) return { label: 'Connect Wallet', disabled: true, variant: 'muted' as const, icon: null }
+    if (!isConnected) return { label: 'Connect Wallet', disabled: false, variant: 'primary' as const, icon: <Wallet className="h-4 w-4" /> }
     if (needsChainSwitch) return { label: `Switch to ${fromChainId === 4441 ? 'LiteForge' : fromChainId === 11155111 ? 'Sepolia' : 'Base Sepolia'}`, disabled: false, variant: 'primary' as const, icon: null }
     if (!tokenIn) return { label: 'Select input token', disabled: true, variant: 'muted' as const, icon: null }
     if (!tokenOut) return { label: 'Select output token', disabled: true, variant: 'muted' as const, icon: null }
@@ -70,6 +72,10 @@ export function SwapButton({ swapHook, crossChainHook, isCrossChain }: SwapButto
   }
 
   const handleClick = () => {
+    if (!isConnected) {
+      openConnectModal?.()
+      return
+    }
     if (status === 'error') {
       isCrossChain ? crossChainHook.reset() : swapHook.reset()
       return
@@ -120,8 +126,8 @@ export function SwapButton({ swapHook, crossChainHook, isCrossChain }: SwapButto
         whileHover={!state.disabled ? { scale: 1.01 } : undefined}
         whileTap={!state.disabled ? { scale: 0.98 } : undefined}
         className={cn(
-          'w-full flex items-center justify-center gap-2 px-4 py-4 rounded-xl text-sm font-bold transition-all duration-200',
-          state.variant === 'primary' && 'bg-gradient-to-r from-primary to-primary/80 text-primary-foreground hover:shadow-lg hover:shadow-primary/25 cursor-pointer',
+          'w-full flex items-center justify-center gap-2 px-4 py-4 rounded-xl text-sm font-bold transition-all duration-200 btn-shine',
+          state.variant === 'primary' && 'bg-gradient-to-r from-primary to-primary/80 text-primary-foreground cursor-pointer',
           state.variant === 'loading' && 'bg-muted/80 text-muted-foreground cursor-wait',
           state.variant === 'muted' && 'bg-muted/60 text-muted-foreground/70 cursor-not-allowed',
           state.variant === 'success' && 'bg-green-500/90 text-white cursor-not-allowed',

@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
-import { ChevronDown, Search } from 'lucide-react'
+import { createPortal } from 'react-dom'
+import { ChevronDown, Search, X } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { cn } from '@/lib/utils'
 import type { Token } from '@/config/tokens'
@@ -32,14 +33,6 @@ export function SwapInput({
   const [showSelector, setShowSelector] = useState(false)
   const [search, setSearch] = useState('')
   const ref = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    const handler = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node)) setShowSelector(false)
-    }
-    document.addEventListener('mousedown', handler)
-    return () => document.removeEventListener('mousedown', handler)
-  }, [])
 
   const filteredTokens = tokens.filter(
     (t) => (t.symbol.toLowerCase().includes(search.toLowerCase()) ||
@@ -137,16 +130,31 @@ export function SwapInput({
         </div>
       )}
 
-      {/* Token Selector Dropdown */}
-      <AnimatePresence>
-        {showSelector && (
-          <motion.div
-            initial={{ opacity: 0, y: -4, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -4, scale: 0.95 }}
-            transition={{ duration: 0.15 }}
-            className="absolute top-full left-0 right-0 mt-2 z-50 rounded-xl border border-border/60 bg-card/95 backdrop-blur-md shadow-xl overflow-hidden"
+      {/* Token Selector Modal */}
+      {showSelector && createPortal(
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center p-4"
+          onClick={() => { setShowSelector(false); setSearch('') }}
+        >
+          {/* Backdrop */}
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+
+          {/* Modal */}
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="relative w-full max-w-sm rounded-2xl border border-border/60 bg-card shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-150"
           >
+            {/* Header */}
+            <div className="flex items-center justify-between px-4 py-3 border-b border-border/40">
+              <p className="text-sm font-semibold text-foreground">Select Token</p>
+              <button
+                onClick={() => { setShowSelector(false); setSearch('') }}
+                className="p-1 rounded-lg hover:bg-muted/50 transition-colors cursor-pointer"
+              >
+                <X className="h-4 w-4 text-muted-foreground" />
+              </button>
+            </div>
+
             {/* Search */}
             <div className="p-3 border-b border-border/40">
               <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-muted/40 border border-border/30">
@@ -162,7 +170,7 @@ export function SwapInput({
             </div>
 
             {/* Token List */}
-            <div className="max-h-48 overflow-y-auto p-1.5">
+            <div className="max-h-64 overflow-y-auto p-1.5">
               {filteredTokens.length === 0 ? (
                 <p className="text-xs text-muted-foreground text-center py-4">No tokens found</p>
               ) : (
@@ -195,9 +203,10 @@ export function SwapInput({
                 })
               )}
             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          </div>
+        </div>,
+        document.body
+      )}
     </div>
   )
 }

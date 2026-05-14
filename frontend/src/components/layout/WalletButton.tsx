@@ -69,7 +69,7 @@ export function WalletButton() {
         className={cn(
           'flex items-center gap-2 px-3 md:px-4 py-2 rounded-xl text-xs md:text-sm font-bold',
           'bg-gradient-to-r from-primary to-primary/80 text-primary-foreground',
-          'hover:shadow-lg hover:shadow-primary/25 transition-all duration-200',
+          'transition-all duration-200 btn-shine',
           'cursor-pointer'
         )}
       >

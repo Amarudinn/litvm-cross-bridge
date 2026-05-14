@@ -1,6 +1,8 @@
 import { useState, useRef, useEffect } from 'react'
-import { ChevronDown, Plus, Info } from 'lucide-react'
+import { ChevronDown, Plus, Info, Wallet } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useAccount } from 'wagmi'
+import { useConnectModal } from '@rainbow-me/rainbowkit'
 import { usePoolStore } from '@/stores/poolStore'
 import { getTokensByChain, getToken } from '@/config/tokens'
 import { getFeeTierLabel, type FeeTier } from '@/config/pools'
@@ -150,6 +152,8 @@ function DepositInput({ token, symbol, balance, amount, onAmountChange }: {
 }
 
 export function AddLiquidity({ chainId, poolActions }: AddLiquidityProps) {
+  const { isConnected } = useAccount()
+  const { openConnectModal } = useConnectModal()
   const {
     token0Symbol, token1Symbol, feeTier, amount0, amount1, fullRange,
     setToken0Symbol, setToken1Symbol, setFeeTier, setAmount0, setAmount1, setFullRange,
@@ -175,7 +179,7 @@ export function AddLiquidity({ chainId, poolActions }: AddLiquidityProps) {
   // Auto-calculate other amount based on pool price
   const handleAmount0Change = (val: string) => {
     setAmount0(val)
-    if (poolInfo.exists && poolInfo.price && val && parseFloat(val) > 0) {
+    if (isConnected && poolInfo.exists && poolInfo.price && val && parseFloat(val) > 0) {
       const calculated = (parseFloat(val) * poolInfo.price).toFixed(8)
       setAmount1(calculated)
     }
@@ -183,7 +187,7 @@ export function AddLiquidity({ chainId, poolActions }: AddLiquidityProps) {
 
   const handleAmount1Change = (val: string) => {
     setAmount1(val)
-    if (poolInfo.exists && poolInfo.price && poolInfo.price > 0 && val && parseFloat(val) > 0) {
+    if (isConnected && poolInfo.exists && poolInfo.price && poolInfo.price > 0 && val && parseFloat(val) > 0) {
       const calculated = (parseFloat(val) / poolInfo.price).toFixed(8)
       setAmount0(calculated)
     }
@@ -331,7 +335,7 @@ export function AddLiquidity({ chainId, poolActions }: AddLiquidityProps) {
       </div>
 
       {/* Pool Info */}
-      {token0Symbol && token1Symbol && (
+      {isConnected && token0Symbol && token1Symbol && (
         <div className={cn(
           'rounded-xl p-3 text-xs',
           poolInfo.exists
@@ -373,7 +377,7 @@ export function AddLiquidity({ chainId, poolActions }: AddLiquidityProps) {
       )}
 
       {/* Step 3: Deposit */}
-      <div className="rounded-xl border border-border/30 bg-muted/10 p-3.5 space-y-2.5">
+      <div className={cn('rounded-xl border border-border/30 bg-muted/10 p-3.5 space-y-2.5', !isConnected && 'opacity-50 pointer-events-none')}>
         <p className="text-xs font-medium text-foreground">3. Deposit</p>
         <DepositInput
           token={token0}
@@ -395,7 +399,7 @@ export function AddLiquidity({ chainId, poolActions }: AddLiquidityProps) {
       </div>
 
       {/* Summary */}
-      {pairSelected && amount0 && amount1 && (
+      {isConnected && pairSelected && amount0 && amount1 && (
         <div className="rounded-xl border border-border/30 bg-muted/10 p-3 space-y-1.5">
           <div className="flex items-center justify-between">
             <span className="text-[11px] text-muted-foreground">Pair</span>
@@ -420,17 +424,20 @@ export function AddLiquidity({ chainId, poolActions }: AddLiquidityProps) {
 
       {/* Submit */}
       <button
-        onClick={handleAddLiquidity}
-        disabled={!token0Symbol || !token1Symbol || !amount0 || !amount1 || isExecuting}
+        onClick={isConnected ? handleAddLiquidity : () => openConnectModal?.()}
+        disabled={isConnected && (!token0Symbol || !token1Symbol || !amount0 || !amount1 || isExecuting)}
         className={cn(
-          'w-full px-4 py-3.5 rounded-xl text-sm font-semibold transition-all duration-150 flex items-center justify-center gap-2',
-          token0Symbol && token1Symbol && amount0 && amount1 && !isExecuting
-            ? 'bg-primary text-primary-foreground hover:bg-primary/90 shadow-md shadow-primary/20 cursor-pointer'
-            : 'bg-muted text-muted-foreground cursor-not-allowed'
+          'w-full px-4 py-3.5 rounded-xl text-sm font-semibold transition-all duration-150 flex items-center justify-center gap-2 btn-shine',
+          !isConnected
+            ? 'bg-gradient-to-r from-primary to-primary/80 text-primary-foreground cursor-pointer'
+            : token0Symbol && token1Symbol && amount0 && amount1 && !isExecuting
+              ? 'bg-primary text-primary-foreground hover:bg-primary/90 shadow-md shadow-primary/20 cursor-pointer'
+              : 'bg-muted text-muted-foreground cursor-not-allowed'
         )}
       >
         {isExecuting && <Loader2 className="h-4 w-4 animate-spin" />}
-        {!token0Symbol || !token1Symbol ? 'Select tokens' : !amount0 || !amount1 ? 'Enter amounts' : isExecuting ? 'Adding...' : 'Add Liquidity'}
+        {!isConnected && <Wallet className="h-4 w-4" />}
+        {!isConnected ? 'Connect Wallet' : !token0Symbol || !token1Symbol ? 'Select tokens' : !amount0 || !amount1 ? 'Enter amounts' : isExecuting ? 'Adding...' : 'Add Liquidity'}
       </button>
     </div>
   )

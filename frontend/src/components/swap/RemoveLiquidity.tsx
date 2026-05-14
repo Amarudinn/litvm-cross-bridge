@@ -1,3 +1,5 @@
+import { useAccount } from 'wagmi'
+import { useConnectModal } from '@rainbow-me/rainbowkit'
 import { usePoolStore } from '@/stores/poolStore'
 import { cn } from '@/lib/utils'
 import { Loader2 } from 'lucide-react'
@@ -23,6 +25,8 @@ function getSymbol(address: string, chainId: number): string {
 }
 
 export function RemoveLiquidity({ chainId, poolActions }: RemoveLiquidityProps) {
+  const { isConnected } = useAccount()
+  const { openConnectModal } = useConnectModal()
   const { removePercent, setRemovePercent, setView, selectedTokenId } = usePoolStore()
   const { positions } = usePoolPositions(chainId)
 
@@ -152,17 +156,19 @@ export function RemoveLiquidity({ chainId, poolActions }: RemoveLiquidityProps) 
 
       {/* Submit */}
       <button
-        onClick={handleRemove}
-        disabled={isExecuting}
+        onClick={isConnected ? handleRemove : () => openConnectModal?.()}
+        disabled={isConnected && isExecuting}
         className={cn(
-          'w-full px-4 py-3.5 rounded-xl text-sm font-semibold transition-all duration-150 flex items-center justify-center gap-2',
-          !isExecuting
-            ? 'bg-primary text-primary-foreground hover:bg-primary/90 shadow-md shadow-primary/20 cursor-pointer'
-            : 'bg-muted text-muted-foreground cursor-not-allowed'
+          'w-full px-4 py-3.5 rounded-xl text-sm font-semibold transition-all duration-150 flex items-center justify-center gap-2 btn-shine',
+          !isConnected
+            ? 'bg-gradient-to-r from-primary to-primary/80 text-primary-foreground cursor-pointer'
+            : !isExecuting
+              ? 'bg-primary text-primary-foreground hover:bg-primary/90 shadow-md shadow-primary/20 cursor-pointer'
+              : 'bg-muted text-muted-foreground cursor-not-allowed'
         )}
       >
         {isExecuting && <Loader2 className="h-4 w-4 animate-spin" />}
-        {isExecuting ? 'Removing...' : `Remove ${removePercent}%`}
+        {!isConnected ? 'Connect Wallet' : isExecuting ? 'Removing...' : `Remove ${removePercent}%`}
       </button>
     </div>
   )

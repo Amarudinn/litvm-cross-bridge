@@ -1,4 +1,5 @@
 import { parseUnits, formatUnits } from 'viem'
+import { useAccount } from 'wagmi'
 import { useBridgeStore } from '@/stores/bridgeStore'
 import { useBridgeVault } from '@/hooks/useBridgeVault'
 import { useWrappedZkLTC } from '@/hooks/useWrappedZkLTC'
@@ -7,6 +8,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { Info } from 'lucide-react'
 
 export function FeeBreakdown() {
+  const { isConnected } = useAccount()
   const direction = useBridgeStore((s) => s.direction)
   const amount = useBridgeStore((s) => s.amount)
 
@@ -39,6 +41,10 @@ export function FeeBreakdown() {
   }
 
   const feePercentDisplay = feePercent !== undefined ? Number(feePercent) / 100 : undefined
+
+  if (!isConnected) {
+    return null
+  }
 
   if (isLoading) {
     return (

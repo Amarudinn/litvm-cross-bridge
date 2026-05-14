@@ -32,16 +32,9 @@ export default function HistoryPage() {
           transition={{ duration: 0.4 }}
           className="flex flex-col items-center"
         >
-          <div className="h-14 w-14 rounded-full bg-muted/50 flex items-center justify-center mb-4">
-            <Wallet className="h-7 w-7 text-muted-foreground" />
-          </div>
-          <h2 className="text-lg font-semibold mb-1">Connect Your Wallet</h2>
-          <p className="text-sm text-muted-foreground text-center max-w-xs mb-5">
-            Connect your wallet to view your bridge transaction history
-          </p>
           <button
             onClick={openConnectModal}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold bg-gradient-to-r from-blue-500 to-purple-600 text-white hover:from-blue-600 hover:to-purple-700 transition-all shadow-lg shadow-blue-500/20 cursor-pointer"
+            className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold bg-gradient-to-r from-primary to-primary/80 text-primary-foreground transition-all cursor-pointer btn-shine"
           >
             <Wallet className="h-4 w-4" />
             Connect Wallet

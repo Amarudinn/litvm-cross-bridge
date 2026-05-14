@@ -31,8 +31,8 @@ function BridgeBtn({
       whileHover={!(disabled || loading) ? { scale: 1.01 } : undefined}
       whileTap={!(disabled || loading) ? { scale: 0.98 } : undefined}
       className={cn(
-        'w-full flex items-center justify-center gap-2 px-4 py-4 rounded-xl text-sm font-bold transition-all duration-200',
-        variant === 'primary' && 'bg-gradient-to-r from-primary to-primary/80 text-primary-foreground hover:shadow-lg hover:shadow-primary/25 cursor-pointer',
+        'w-full flex items-center justify-center gap-2 px-4 py-4 rounded-xl text-sm font-bold transition-all duration-200 btn-shine',
+        variant === 'primary' && 'bg-gradient-to-r from-primary to-primary/80 text-primary-foreground cursor-pointer',
         variant === 'secondary' && 'bg-primary/10 text-primary border border-primary/20 hover:bg-primary/20 cursor-pointer',
         variant === 'disabled' && 'bg-muted/60 text-muted-foreground/70 cursor-not-allowed',
         (disabled || loading) && 'opacity-60 cursor-not-allowed'
