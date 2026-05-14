@@ -1,7 +1,7 @@
 import { WagmiProvider } from 'wagmi'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { RainbowKitProvider, darkTheme } from '@rainbow-me/rainbowkit'
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
 import { Toaster } from 'sonner'
 import { config } from './config/wagmi'
 import '@rainbow-me/rainbowkit/styles.css'
@@ -18,40 +18,53 @@ import ShapeGrid from './components/layout/ShapeGrid'
 
 const queryClient = new QueryClient()
 
+function AppContent() {
+  const location = useLocation()
+  const isDocs = location.pathname.startsWith('/docs')
+
+  return (
+    <>
+      <div className="min-h-screen bg-background text-foreground flex flex-col relative">
+        {!isDocs && (
+          <div className="fixed inset-0 z-0">
+            <ShapeGrid
+              speed={0.3}
+              squareSize={45}
+              direction="diagonal"
+              borderColor="hsl(225 73% 57% / 0.08)"
+              hoverFillColor="hsl(225 73% 57% / 0.15)"
+              shape="square"
+              hoverTrailAmount={5}
+            />
+          </div>
+        )}
+        <Header />
+        <main className="flex-1 flex flex-col pt-14 relative z-10">
+          <Routes>
+            <Route path="/" element={<BridgePage />} />
+            <Route path="/swap" element={<SwapPage />} />
+            <Route path="/history" element={<HistoryPage />} />
+            <Route path="/explorer" element={<ExplorerPage />} />
+            <Route path="/admin" element={<AdminPage />} />
+            <Route path="/docs" element={<DocsPage />} />
+            <Route path="/docs/:section" element={<DocsPage />} />
+            <Route path="/docs/:section/:subsection" element={<DocsPage />} />
+          </Routes>
+        </main>
+      </div>
+      <Toaster theme="dark" position="bottom-right" />
+      <SupportWidget />
+    </>
+  )
+}
+
 function App() {
   return (
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
         <RainbowKitProvider theme={darkTheme({ accentColor: '#4f6ef7', borderRadius: 'medium' })}>
           <BrowserRouter>
-            <div className="min-h-screen bg-background text-foreground flex flex-col relative">
-              <div className="fixed inset-0 z-0">
-                <ShapeGrid
-                  speed={0.3}
-                  squareSize={45}
-                  direction="diagonal"
-                  borderColor="hsl(225 73% 57% / 0.08)"
-                  hoverFillColor="hsl(225 73% 57% / 0.15)"
-                  shape="square"
-                  hoverTrailAmount={5}
-                />
-              </div>
-              <Header />
-              <main className="flex-1 flex flex-col pt-14 relative z-10">
-                <Routes>
-                  <Route path="/" element={<BridgePage />} />
-                  <Route path="/swap" element={<SwapPage />} />
-                  <Route path="/history" element={<HistoryPage />} />
-                  <Route path="/explorer" element={<ExplorerPage />} />
-                  <Route path="/admin" element={<AdminPage />} />
-                  <Route path="/docs" element={<DocsPage />} />
-                  <Route path="/docs/:section" element={<DocsPage />} />
-                  <Route path="/docs/:section/:subsection" element={<DocsPage />} />
-                </Routes>
-              </main>
-            </div>
-            <Toaster theme="dark" position="bottom-right" />
-            <SupportWidget />
+            <AppContent />
           </BrowserRouter>
         </RainbowKitProvider>
       </QueryClientProvider>

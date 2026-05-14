@@ -118,7 +118,7 @@ export function SwapTab() {
 
   // Route calculation using on-chain QuoterV2
   useEffect(() => {
-    if (!tokenIn || !tokenOut || !amountIn || parseFloat(amountIn) <= 0) {
+    if (!isConnected || !tokenIn || !tokenOut || !amountIn || parseFloat(amountIn) <= 0) {
       setAmountOut('')
       setRoute(null)
       return
@@ -368,7 +368,7 @@ export function SwapTab() {
 
     const timeout = setTimeout(fetchQuote, 600)
     return () => clearTimeout(timeout)
-  }, [amountIn, tokenIn, tokenOut, fromChainId, toChainId, quoteRefresh])
+  }, [isConnected, amountIn, tokenIn, tokenOut, fromChainId, toChainId, quoteRefresh])
 
   return (
     <div className="space-y-3">
