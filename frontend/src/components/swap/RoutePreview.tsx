@@ -32,26 +32,26 @@ export function RoutePreview({ route }: RoutePreviewProps) {
   return (
     <div className="relative rounded-2xl border-0 bg-card shadow-2xl p-3.5 space-y-2.5 z-[1]">
       {/* Route Path */}
-      <div className="flex items-center gap-2">
-        <GitBranch className="h-3.5 w-3.5 text-primary/70 shrink-0" />
-        <div className="flex items-center gap-1.5 flex-wrap">
+      <div className="flex items-center gap-1.5 md:gap-2">
+        <GitBranch className="h-3 w-3 md:h-3.5 md:w-3.5 text-primary/70 shrink-0" />
+        <div className="flex items-center gap-1 md:gap-1.5 flex-wrap">
           {route.path.map((step, i) => (
-            <span key={i} className="flex items-center gap-1.5">
+            <span key={i} className="flex items-center gap-1 md:gap-1.5">
               {step === 'bridge' ? (
-                <span className="flex items-center gap-1 px-2 py-0.5 rounded-md bg-primary/10 text-primary text-[10px] font-semibold border border-primary/10">
-                  <Zap className="h-2.5 w-2.5" />
+                <span className="flex items-center gap-0.5 md:gap-1 px-1.5 md:px-2 py-0.5 rounded-md bg-primary/10 text-primary text-[9px] md:text-[10px] font-semibold border border-primary/10">
+                  <Zap className="h-2 w-2 md:h-2.5 md:w-2.5" />
                   Bridge
                 </span>
               ) : (
-                <span className="flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-muted/50 text-xs font-semibold text-foreground border border-border/20">
+                <span className="flex items-center gap-1 px-1.5 md:px-2 py-0.5 rounded-md bg-muted/50 text-[10px] md:text-xs font-semibold text-foreground border border-border/20">
                   {getTokenIcon(step) && (
-                    <img src={getTokenIcon(step)} alt={step} className="w-3.5 h-3.5 rounded-full" />
+                    <img src={getTokenIcon(step)} alt={step} className="w-3 h-3 md:w-3.5 md:h-3.5 rounded-full" />
                   )}
                   {step}
                 </span>
               )}
               {i < route.path.length - 1 && (
-                <ArrowRight className="h-3 w-3 text-muted-foreground/40" />
+                <ArrowRight className="h-2.5 w-2.5 md:h-3 md:w-3 text-muted-foreground/40" />
               )}
             </span>
           ))}
