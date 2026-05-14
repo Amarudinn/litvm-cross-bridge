@@ -2,6 +2,7 @@ import { useAccount, useBalance, useChainId, useSwitchChain } from 'wagmi'
 import { useConnectModal } from '@rainbow-me/rainbowkit'
 import { parseUnits } from 'viem'
 import { Loader2, Wallet, ArrowLeftRight } from 'lucide-react'
+import { motion } from 'framer-motion'
 import { useBridgeStore } from '@/stores/bridgeStore'
 import { useBridgeVault } from '@/hooks/useBridgeVault'
 import { useWrappedZkLTC } from '@/hooks/useWrappedZkLTC'
@@ -24,20 +25,22 @@ function BridgeBtn({
   variant?: 'primary' | 'secondary' | 'disabled'
 }) {
   return (
-    <button
+    <motion.button
       onClick={onClick}
       disabled={disabled || loading}
+      whileHover={!(disabled || loading) ? { scale: 1.01 } : undefined}
+      whileTap={!(disabled || loading) ? { scale: 0.98 } : undefined}
       className={cn(
-        'w-full h-12 rounded-xl text-sm font-semibold transition-all flex items-center justify-center gap-2',
-        variant === 'primary' && 'bg-gradient-to-r from-blue-500 to-purple-600 text-white hover:from-blue-600 hover:to-purple-700 shadow-lg shadow-blue-500/20 cursor-pointer',
+        'w-full flex items-center justify-center gap-2 px-4 py-4 rounded-xl text-sm font-bold transition-all duration-200',
+        variant === 'primary' && 'bg-gradient-to-r from-primary to-primary/80 text-primary-foreground hover:shadow-lg hover:shadow-primary/25 cursor-pointer',
         variant === 'secondary' && 'bg-primary/10 text-primary border border-primary/20 hover:bg-primary/20 cursor-pointer',
-        variant === 'disabled' && 'bg-muted text-muted-foreground cursor-not-allowed',
+        variant === 'disabled' && 'bg-muted/60 text-muted-foreground/70 cursor-not-allowed',
         (disabled || loading) && 'opacity-60 cursor-not-allowed'
       )}
     >
       {loading && <Loader2 className="h-4 w-4 animate-spin" />}
       {children}
-    </button>
+    </motion.button>
   )
 }
 

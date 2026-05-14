@@ -558,7 +558,6 @@ function ChainPill({ chainId, onChange }: { chainId: number; onChange: (id: numb
                   >
                     <img src={c.icon} alt={c.name} className="w-4 h-4 rounded-full ring-1 ring-border/30" />
                     <span>{c.name}</span>
-                    {isSelected && <div className="ml-auto w-1.5 h-1.5 rounded-full bg-primary" />}
                   </button>
                 )
               })}

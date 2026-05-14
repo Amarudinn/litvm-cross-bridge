@@ -51,13 +51,19 @@ export function PoolList({ positions, pools, loading }: PoolListProps) {
   return (
     <div className="space-y-3">
       {/* Tab switch */}
-      <div className="flex items-center gap-1 p-1 rounded-lg bg-muted/30 border border-border/20">
+      <div className="relative flex items-center p-1 rounded-lg bg-muted/30 border border-border/20">
+        {/* Sliding indicator */}
+        <motion.div
+          className="absolute top-1 bottom-1 w-[calc(50%-4px)] bg-primary rounded-md"
+          animate={{ x: activeTab === 'positions' ? 4 : 'calc(100% + 4px)' }}
+          transition={{ type: 'spring', stiffness: 300, damping: 28 }}
+        />
         <button
           onClick={() => setActiveTab('positions')}
           className={cn(
-            'flex-1 px-3 py-1.5 rounded-md text-xs font-medium transition-colors cursor-pointer',
+            'relative z-10 flex-1 px-3 py-1.5 rounded-md text-xs font-medium cursor-pointer transition-colors duration-200',
             activeTab === 'positions'
-              ? 'bg-background/90 text-foreground shadow-sm border border-border/50'
+              ? 'text-primary-foreground'
               : 'text-muted-foreground hover:text-foreground/80'
           )}
         >
@@ -66,9 +72,9 @@ export function PoolList({ positions, pools, loading }: PoolListProps) {
         <button
           onClick={() => setActiveTab('pools')}
           className={cn(
-            'flex-1 px-3 py-1.5 rounded-md text-xs font-medium transition-colors cursor-pointer',
+            'relative z-10 flex-1 px-3 py-1.5 rounded-md text-xs font-medium cursor-pointer transition-colors duration-200',
             activeTab === 'pools'
-              ? 'bg-background/90 text-foreground shadow-sm border border-border/50'
+              ? 'text-primary-foreground'
               : 'text-muted-foreground hover:text-foreground/80'
           )}
         >

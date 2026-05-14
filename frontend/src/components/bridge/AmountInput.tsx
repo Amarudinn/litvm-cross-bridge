@@ -3,7 +3,6 @@ import { formatUnits, parseUnits } from 'viem'
 import { useBridgeStore } from '@/stores/bridgeStore'
 import { useWrappedZkLTC } from '@/hooks/useWrappedZkLTC'
 import { formatAmount } from '@/lib/format'
-import { Button } from '@/components/ui/button'
 import { Wallet } from 'lucide-react'
 
 export function AmountInput() {
@@ -78,15 +77,13 @@ export function AmountInput() {
           className="flex-1 bg-transparent text-2xl font-semibold outline-none placeholder:text-muted-foreground/30 min-w-0"
         />
         <div className="flex items-center gap-2 shrink-0">
-          <Button
-            variant="secondary"
-            size="sm"
+          <button
             onClick={handleMax}
-            className="h-7 px-2.5 text-xs font-semibold"
             disabled={!currentBalance}
+            className="px-2 py-0.5 rounded-md text-[10px] font-semibold text-primary hover:bg-primary/10 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
           >
             MAX
-          </Button>
+          </button>
           <div className="flex items-center gap-1.5 bg-muted rounded-full px-2.5 py-1">
             <img src={icon} alt={token} className="w-5 h-5 rounded-full" />
             <span className="text-sm font-medium">{token}</span>

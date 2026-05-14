@@ -277,10 +277,10 @@ export function AddLiquidity({ chainId, poolActions }: AddLiquidityProps) {
               key={tier}
               onClick={() => setFeeTier(tier)}
               className={cn(
-                'py-2 rounded-lg text-xs font-medium transition-all duration-150 cursor-pointer text-center',
+                'py-2 rounded-lg text-xs font-medium transition-colors duration-150 cursor-pointer text-center',
                 feeTier === tier
-                  ? 'bg-primary/10 text-primary border border-primary/20'
-                  : 'bg-muted/30 text-muted-foreground hover:bg-muted/50 border border-border/20'
+                  ? 'bg-primary text-primary-foreground'
+                  : 'bg-muted/30 text-muted-foreground hover:text-foreground/70 border border-border/20'
               )}
             >
               {getFeeTierLabel(tier)}

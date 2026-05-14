@@ -111,10 +111,10 @@ export function RemoveLiquidity({ chainId, poolActions }: RemoveLiquidityProps) 
               key={p}
               onClick={() => setRemovePercent(p)}
               className={cn(
-                'flex-1 px-2 py-1.5 rounded-lg text-xs font-medium transition-colors cursor-pointer',
+                'flex-1 px-2 py-1.5 rounded-lg text-xs font-medium transition-colors duration-150 cursor-pointer',
                 removePercent === p
-                  ? 'bg-primary/10 text-primary border border-primary/20'
-                  : 'bg-muted/40 text-muted-foreground hover:bg-muted/60 border border-transparent'
+                  ? 'bg-primary text-primary-foreground'
+                  : 'bg-muted/40 text-muted-foreground hover:text-foreground/70 border border-transparent'
               )}
             >
               {p}%

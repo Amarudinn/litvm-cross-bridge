@@ -42,29 +42,26 @@ export function SwapCard() {
         <Card className="relative rounded-2xl border-0 bg-card shadow-2xl group">
           <CardContent className="p-4 md:p-5">
             {/* Tab Header inside card */}
-            <div className="flex items-center gap-1 p-1 rounded-xl bg-muted/30 border border-border/20 mb-4">
+            <div className="relative flex items-center p-1 rounded-xl bg-muted/30 border border-border/20 mb-4">
+              {/* Sliding indicator */}
+              <motion.div
+                className="absolute top-1 bottom-1 w-[calc(50%-4px)] bg-primary rounded-lg"
+                animate={{ x: activeTab === 'swap' ? 4 : 'calc(100% + 4px)' }}
+                transition={{ type: 'spring', stiffness: 300, damping: 28 }}
+              />
               {tabs.map((tab) => (
                 <button
                   key={tab.key}
                   onClick={() => handleTabChange(tab.key)}
                   className={cn(
-                    'relative flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer',
+                    'relative z-10 flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium cursor-pointer transition-colors duration-200',
                     activeTab === tab.key
-                      ? 'text-foreground'
-                      : 'text-muted-foreground hover:text-foreground/80'
+                      ? 'text-primary-foreground'
+                      : 'text-muted-foreground hover:text-foreground/70'
                   )}
                 >
-                  {activeTab === tab.key && (
-                    <motion.div
-                      layoutId="swap-tab-bg"
-                      className="absolute inset-0 bg-background/90 border border-border/50 rounded-lg shadow-sm"
-                      transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-                    />
-                  )}
-                  <span className="relative z-10 flex items-center gap-2">
-                    {tab.icon}
-                    {tab.label}
-                  </span>
+                  {tab.icon}
+                  {tab.label}
                 </button>
               ))}
             </div>

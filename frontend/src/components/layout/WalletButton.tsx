@@ -1,16 +1,29 @@
-import { useAccount, useDisconnect, useChainId, useSwitchChain } from 'wagmi'
+import { useAccount, useDisconnect, useChainId, useSwitchChain, useBalance } from 'wagmi'
 import { useConnectModal } from '@rainbow-me/rainbowkit'
 import { Wallet, LogOut, ChevronDown, Globe, Check, Copy, ExternalLink } from 'lucide-react'
 import { useState, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { cn } from '@/lib/utils'
 import { shortenAddress } from '@/lib/format'
+import { formatUnits } from 'viem'
 
 const CHAINS = [
-  { id: 4441, name: 'LiteForge', icon: '/litvm.png', color: 'from-blue-500 to-cyan-400' },
-  { id: 11155111, name: 'Sepolia', icon: '/eth.png', color: 'from-indigo-500 to-purple-500' },
-  { id: 84532, name: 'Base Sepolia', icon: '/base.jpeg', color: 'from-blue-600 to-blue-400' },
+  { id: 4441, name: 'LiteForge', icon: '/litvm.png', color: 'from-blue-500 to-cyan-400', symbol: 'zkLTC' },
+  { id: 11155111, name: 'Sepolia', icon: '/eth.png', color: 'from-indigo-500 to-purple-500', symbol: 'ETH' },
+  { id: 84532, name: 'Base Sepolia', icon: '/base.jpeg', color: 'from-blue-600 to-blue-400', symbol: 'ETH' },
 ]
+
+function formatSmartBalance(value: bigint, decimals: number = 18): string {
+  const formatted = parseFloat(formatUnits(value, decimals))
+  if (formatted === 0) return '0'
+  if (formatted >= 1) {
+    // Show up to 4 decimals, remove trailing zeros
+    return formatted.toFixed(4).replace(/\.?0+$/, '')
+  }
+  // For small numbers, show up to 4 decimal places max
+  const str = formatted.toFixed(4)
+  return str.replace(/\.?0+$/, '')
+}
 
 export function WalletButton() {
   const { address, isConnected } = useAccount()
@@ -21,6 +34,15 @@ export function WalletButton() {
   const [open, setOpen] = useState(false)
   const [copied, setCopied] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
+
+  const { data: nativeBalance } = useBalance({
+    address,
+    chainId,
+    query: { enabled: !!address, refetchInterval: 15000 },
+  })
+
+  const currentChain = CHAINS.find(c => c.id === chainId)
+  const nativeSymbol = currentChain?.symbol ?? 'ETH'
 
   // Close dropdown on outside click
   useEffect(() => {
@@ -40,25 +62,30 @@ export function WalletButton() {
 
   if (!isConnected) {
     return (
-      <button
+      <motion.button
         onClick={openConnectModal}
+        whileHover={{ scale: 1.01 }}
+        whileTap={{ scale: 0.98 }}
         className={cn(
-          'flex items-center gap-2 px-3 md:px-4 py-2 rounded-xl text-xs md:text-sm font-semibold',
-          'bg-gradient-to-r from-blue-500 to-purple-600 text-white',
-          'hover:from-blue-600 hover:to-purple-700 transition-all',
-          'shadow-lg shadow-blue-500/20 cursor-pointer'
+          'flex items-center gap-2 px-3 md:px-4 py-2 rounded-xl text-xs md:text-sm font-bold',
+          'bg-gradient-to-r from-primary to-primary/80 text-primary-foreground',
+          'hover:shadow-lg hover:shadow-primary/25 transition-all duration-200',
+          'cursor-pointer'
         )}
       >
         <Wallet className="h-3.5 w-3.5 md:h-4 md:w-4" />
         <span className="hidden sm:inline">Connect Wallet</span>
         <span className="sm:hidden">Connect Wallet</span>
-      </button>
+      </motion.button>
     )
   }
 
-  const currentChain = CHAINS.find(c => c.id === chainId)
   const chainName = currentChain?.name ?? `Chain ${chainId}`
   const chainIcon = currentChain?.icon ?? '/eth.png'
+
+  const balanceDisplay = nativeBalance
+    ? `${formatSmartBalance(nativeBalance.value)} ${nativeSymbol}`
+    : '...'
 
   return (
     <div ref={ref} className="relative">
@@ -92,9 +119,11 @@ export function WalletButton() {
                 <img src={chainIcon} alt={chainName} className="w-10 h-10 rounded-full" />
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-semibold text-foreground truncate">
+                    {balanceDisplay}
+                  </p>
+                  <p className="text-[11px] text-muted-foreground truncate">
                     {shortenAddress(address!)}
                   </p>
-
                 </div>
               </div>
 
@@ -149,8 +178,8 @@ export function WalletButton() {
                         </p>
                       </div>
                       {isActive && (
-                        <span className="flex items-center gap-1 text-[10px] font-semibold text-emerald-400 bg-emerald-400/10 px-2 py-0.5 rounded-full">
-                          <span className="w-1 h-1 rounded-full bg-emerald-400" />
+                        <span className="flex items-center gap-1 text-[10px] font-semibold text-primary bg-primary/10 px-2 py-0.5 rounded-full">
+                          <span className="w-1 h-1 rounded-full bg-primary" />
                           Active
                         </span>
                       )}

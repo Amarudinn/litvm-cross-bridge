@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { MessageCircleQuestion, X, ChevronDown, ChevronRight, Send, Loader2, CheckCircle2, AlertCircle } from 'lucide-react'
 import { useAccount, useChainId } from 'wagmi'
+import { useLocation } from 'react-router-dom'
 import { cn } from '@/lib/utils'
 
 interface FaqItem {
@@ -48,6 +49,16 @@ export function SupportWidget() {
 
   const { address } = useAccount()
   const chainId = useChainId()
+  const location = useLocation()
+
+  // Only show on Bridge (/), History (/history), Explorer (/explorer)
+  const visiblePaths = ['/', '/history', '/explorer']
+  const isVisible = visiblePaths.includes(location.pathname)
+
+  // Close panel when navigating away
+  useEffect(() => {
+    if (!isVisible) setIsOpen(false)
+  }, [isVisible])
 
   const getNetworkName = () => {
     switch (chainId) {
@@ -145,28 +156,30 @@ export function SupportWidget() {
 
   return (
     <>
-      {/* Floating Button */}
-      <motion.button
-        onClick={() => setIsOpen(!isOpen)}
-        className={cn(
-          'fixed bottom-6 right-6 z-40 w-12 h-12 rounded-full flex items-center justify-center shadow-lg transition-colors',
-          isOpen
-            ? 'bg-muted hover:bg-muted/80'
-            : 'bg-primary hover:bg-primary/90'
-        )}
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-      >
-        {isOpen ? (
-          <X className="h-5 w-5 text-foreground" />
-        ) : (
-          <MessageCircleQuestion className="h-5 w-5 text-primary-foreground" />
-        )}
-      </motion.button>
+      {!isVisible ? null : (
+        <>
+          {/* Floating Button */}
+          <motion.button
+            onClick={() => setIsOpen(!isOpen)}
+            className={cn(
+              'fixed bottom-6 right-6 z-40 w-12 h-12 rounded-full flex items-center justify-center shadow-lg transition-colors',
+              isOpen
+                ? 'bg-muted hover:bg-muted/80'
+                : 'bg-primary hover:bg-primary/90'
+            )}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            {isOpen ? (
+              <X className="h-5 w-5 text-foreground" />
+            ) : (
+              <MessageCircleQuestion className="h-5 w-5 text-primary-foreground" />
+            )}
+          </motion.button>
 
-      {/* Panel */}
-      <AnimatePresence>
-        {isOpen && (
+          {/* Panel */}
+          <AnimatePresence>
+            {isOpen && (
           <motion.div
             initial={{ opacity: 0, y: 20, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -342,6 +355,8 @@ export function SupportWidget() {
           </motion.div>
         )}
       </AnimatePresence>
+        </>
+      )}
     </>
   )
 }

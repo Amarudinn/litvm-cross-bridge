@@ -136,13 +136,10 @@ export function ChainSelector() {
       <div className="flex justify-center -my-1 relative z-10">
         <motion.button
           onClick={toggleDirection}
-          animate={{ rotate: isLock ? 0 : 180 }}
-          transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-          className={cn(
-            'h-9 w-9 rounded-full bg-muted/80 backdrop-blur-sm',
-            'flex items-center justify-center',
-            'hover:bg-accent transition-colors cursor-pointer'
-          )}
+          whileHover={{ scale: 1.1, rotate: 180 }}
+          whileTap={{ scale: 0.9 }}
+          transition={{ type: 'spring', stiffness: 300, damping: 15 }}
+          className="h-10 w-10 rounded-full bg-background border-[3px] border-muted/60 flex items-center justify-center hover:border-primary/30 transition-colors cursor-pointer shadow-sm"
         >
           <ArrowDownUp className="h-4 w-4 text-muted-foreground" />
         </motion.button>
