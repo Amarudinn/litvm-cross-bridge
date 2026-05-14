@@ -1,10 +1,12 @@
 import { LITEFORGE_CHAIN_ID, SEPOLIA_CHAIN_ID, BASE_SEPOLIA_CHAIN_ID } from './contracts'
 
 // DEX identifiers
-export enum DexId {
-  MULTYRA_V3 = 'multyra_v3',
-  UNISWAP_V2 = 'uniswap_v2',
-}
+export const DexId = {
+  MULTYRA_V3: 'multyra_v3',
+  UNISWAP_V2: 'uniswap_v2',
+} as const
+
+export type DexId = typeof DexId[keyof typeof DexId]
 
 // DEX configuration interface
 export interface DexConfig {
