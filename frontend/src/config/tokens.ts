@@ -43,6 +43,14 @@ export const LITEFORGE_TOKENS: Token[] = [
     icon: '/wolfdex.jpg',
     chainId: LITEFORGE_CHAIN_ID,
   },
+  {
+    symbol: 'vzkLTC',
+    name: 'vzkLTC',
+    decimals: 18,
+    address: '0x9E1F296300C73cF96489E5e5383B0e17c2c2De48',
+    icon: '/vzkLTC.png',
+    chainId: LITEFORGE_CHAIN_ID,
+  },
 ]
 
 // Sepolia tokens
