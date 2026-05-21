@@ -37,3 +37,4 @@ bot
 /docs
 supabase
 .claude
+prediction-relayer/
