@@ -73,7 +73,9 @@ export function WalletButton({ lockToLiteforge = false }: { lockToLiteforge?: bo
         whileTap={{ scale: 0.98 }}
         className={cn(
           'flex items-center gap-2 px-3 md:px-4 py-2 rounded-xl text-xs md:text-sm font-bold',
-          'bg-gradient-to-r from-primary to-primary/80 text-primary-foreground',
+          isPredictRoute
+            ? 'bg-blue-600 text-white border border-blue-400/30 shadow-sm shadow-blue-500/20 hover:bg-blue-500'
+            : 'bg-gradient-to-r from-primary to-primary/80 text-primary-foreground',
           'transition-all duration-200 btn-shine',
           'cursor-pointer'
         )}
