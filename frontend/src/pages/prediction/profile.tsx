@@ -482,7 +482,7 @@ export function ProfilePage() {
         <p className="text-sm text-muted-foreground mb-4">Connect your wallet to view profile</p>
         <button
           onClick={() => openConnectModal?.()}
-          className="inline-flex items-center justify-center gap-2 rounded-lg bg-accent px-5 py-2.5 text-sm font-medium text-background transition-all duration-150 ease-[var(--ease-out)] hover:bg-primary/90 active:scale-[0.97] glare-hover cursor-pointer"
+          className="inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-medium text-white transition-all duration-150 ease-[var(--ease-out)] hover:bg-blue-500 active:scale-[0.97] glare-hover cursor-pointer"
         >
           <Wallet size={16} weight="bold" />
           Connect Wallet

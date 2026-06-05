@@ -1,9 +1,49 @@
 import { Header, BottomNav } from './header';
 import { Outlet } from 'react-router-dom';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useAccount, useChainId, useSwitchChain } from 'wagmi';
 
+function formatLtcPrice(value: number) {
+  if (value === 0) return '0';
+  if (value < 0.01) {
+    return value.toLocaleString('en-US', {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 6,
+    });
+  }
+  return value.toLocaleString('en-US', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+}
+
+function useLtcPrice() {
+  const [price, setPrice] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function fetchPrice() {
+      try {
+        const res = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=litecoin&vs_currencies=usd');
+        const data = await res.json();
+        const value = data?.litecoin?.usd;
+        if (typeof value === 'number') {
+          setPrice(formatLtcPrice(value));
+        }
+      } catch {
+        // silently fail
+      }
+    }
+
+    fetchPrice();
+    const interval = setInterval(fetchPrice, 30 * 60 * 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  return price;
+}
+
 export function PredictionLayout() {
+  const ltcPrice = useLtcPrice();
   const { isConnected } = useAccount();
   const chainId = useChainId();
   const { switchChain } = useSwitchChain();
@@ -27,10 +67,12 @@ export function PredictionLayout() {
       <footer className="hidden md:block border-t border-border py-5">
         <div className="mx-auto max-w-7xl px-5 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <span className="text-xs text-muted-foreground">LiteForge</span>
-            <span className="font-mono text-xs font-medium text-foreground">Chain 4441</span>
+            <span className="text-xs text-muted-foreground">Litecoin</span>
+            <span className="font-mono text-xs font-medium text-foreground">LTC</span>
+            {ltcPrice && <span className="font-mono text-xs text-primary">${ltcPrice}</span>}
+            {!ltcPrice && <span className="font-mono text-xs text-muted-foreground/50">--</span>}
           </div>
-          <span className="font-mono text-[11px] text-muted-foreground/60">Multyra Predict</span>
+          <span className="font-mono text-[11px] text-muted-foreground/60">LiteForge 4441</span>
         </div>
       </footer>
       <BottomNav />

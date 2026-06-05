@@ -5,8 +5,8 @@ import { ethers } from 'ethers';
 import 'dotenv/config';
 
 const RPC_URL = 'https://liteforge.rpc.caldera.xyz/http';
-const PRIVATE_KEY = '0x71d7f08748ac34e3d5a589093a09bd7138a5a7db385e84d2d4980359a1860020';
-const CONTRACT_ADDRESS = '0xF314F388D63b899b418312EDD424DF1dd3159EDa';
+const PRIVATE_KEY = '';
+const CONTRACT_ADDRESS = '0x6F1Cde75e2EB91b858cfEd2E9CbD7a19EbDeeFBa';
 
 const ABI = [
   "function createMarket(string title, string description, string[] outcomes, uint256 ticketPrice, uint256 fee, uint256 closeTime) external",

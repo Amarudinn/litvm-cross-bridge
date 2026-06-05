@@ -10,6 +10,35 @@ const liteforgeChain = {
   rpcUrls: { default: { http: ['https://liteforge.rpc.caldera.xyz/http'] } },
 } as const;
 
+async function ensureLiteforgeChain() {
+  const provider = (window as any).ethereum;
+  if (!provider) throw new Error('No wallet found');
+
+  const currentChainId = await provider.request({ method: 'eth_chainId' });
+  const liteforgeHex = `0x${liteforgeChain.id.toString(16)}`;
+  if (currentChainId === liteforgeHex) return;
+
+  try {
+    await provider.request({
+      method: 'wallet_switchEthereumChain',
+      params: [{ chainId: liteforgeHex }],
+    });
+  } catch (switchError: any) {
+    if (switchError?.code !== 4902) throw switchError;
+
+    await provider.request({
+      method: 'wallet_addEthereumChain',
+      params: [{
+        chainId: liteforgeHex,
+        chainName: 'LiteForge',
+        nativeCurrency: liteforgeChain.nativeCurrency,
+        rpcUrls: liteforgeChain.rpcUrls.default.http,
+        blockExplorerUrls: ['https://liteforge.explorer.caldera.xyz'],
+      }],
+    });
+  }
+}
+
 function getWalletClient() {
   const provider = (window as any).ethereum;
   if (!provider) throw new Error('No wallet found');
@@ -59,6 +88,7 @@ export function useBuyTicket() {
 
       console.log('[useBuyTicket] Sending tx:', { marketId, outcomeIndex, quantity, totalCost: totalCost.toString() });
 
+      await ensureLiteforgeChain();
       const client = getWalletClient();
       const txHash = await client.sendTransaction({
         account: address,
@@ -111,6 +141,7 @@ export function useClaim() {
     try {
       if (!address) throw new Error('Wallet not connected');
 
+      await ensureLiteforgeChain();
       const client = getWalletClient();
       const txHash = await client.sendTransaction({
         account: address,
@@ -140,6 +171,7 @@ export function useClaim() {
     try {
       if (!address) throw new Error('Wallet not connected');
 
+      await ensureLiteforgeChain();
       const client = getWalletClient();
       const txHash = await client.sendTransaction({
         account: address,

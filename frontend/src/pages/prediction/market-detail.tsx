@@ -417,7 +417,7 @@ export function MarketDetailPage() {
             {!address && (
               <Card className="market-card border-2 p-5 transition-all duration-300 ease-[var(--ease-out)] hover:border-border/60 text-center py-6">
                 <p className="text-sm text-muted-foreground mb-3">Connect wallet to participate</p>
-                <Button size="sm" onClick={() => openConnectModal?.()} className="inline-flex items-center gap-2 glare-hover">
+                <Button size="sm" onClick={() => openConnectModal?.()} className="inline-flex items-center gap-2 glare-hover bg-blue-600 text-white hover:bg-blue-500">
                   <Wallet size={16} weight="bold" />
                   Connect Wallet
                 </Button>
@@ -615,7 +615,7 @@ export function MarketDetailPage() {
                     <Button
                       size="sm"
                       onClick={() => openConnectModal?.()}
-                      className="inline-flex items-center gap-2 glare-hover"
+                      className="inline-flex items-center gap-2 glare-hover bg-blue-600 text-white hover:bg-blue-500"
                     >
                       <Wallet size={16} weight="bold" />
                       Connect Wallet
@@ -811,7 +811,7 @@ export function MarketDetailPage() {
               <Button
                 size="sm"
                 onClick={() => openConnectModal?.()}
-                className="inline-flex items-center gap-2 glare-hover"
+                className="inline-flex items-center gap-2 glare-hover bg-blue-600 text-white hover:bg-blue-500"
               >
                 <Wallet size={16} weight="bold" />
                 Connect Wallet
