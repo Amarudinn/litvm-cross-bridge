@@ -1,5 +1,6 @@
 import { useAccount, useDisconnect, useChainId, useSwitchChain, useBalance } from 'wagmi'
 import { useConnectModal } from '@rainbow-me/rainbowkit'
+import { useLocation } from 'react-router-dom'
 import { Wallet, LogOut, ChevronDown, Globe, Check, Copy, ExternalLink } from 'lucide-react'
 import { useState, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -25,8 +26,10 @@ function formatSmartBalance(value: bigint, decimals: number = 18): string {
   return str.replace(/\.?0+$/, '')
 }
 
-export function WalletButton() {
+export function WalletButton({ lockToLiteforge = false }: { lockToLiteforge?: boolean }) {
   const { address, isConnected } = useAccount()
+  const location = useLocation()
+  const isPredictRoute = location.pathname.startsWith('/predict')
   const { disconnect } = useDisconnect()
   const { openConnectModal } = useConnectModal()
   const chainId = useChainId()
@@ -35,14 +38,16 @@ export function WalletButton() {
   const [copied, setCopied] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
 
+  const liteforgeChain = CHAINS[0]
+  const shouldLockToLiteforge = lockToLiteforge && isPredictRoute
+  const currentChain = shouldLockToLiteforge ? liteforgeChain : CHAINS.find(c => c.id === chainId)
+  const nativeSymbol = currentChain?.symbol ?? 'ETH'
+
   const { data: nativeBalance } = useBalance({
     address,
-    chainId,
+    chainId: shouldLockToLiteforge ? liteforgeChain.id : chainId,
     query: { enabled: !!address, refetchInterval: 15000 },
   })
-
-  const currentChain = CHAINS.find(c => c.id === chainId)
-  const nativeSymbol = currentChain?.symbol ?? 'ETH'
 
   // Close dropdown on outside click
   useEffect(() => {
@@ -154,7 +159,7 @@ export function WalletButton() {
             <div className="p-3">
               <div className="flex items-center gap-1.5 px-1 mb-2">
                 <Globe className="h-3 w-3 text-muted-foreground" />
-                <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">Switch Network</p>
+                <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">{shouldLockToLiteforge ? 'Network Locked' : 'Switch Network'}</p>
               </div>
 
               <div className="space-y-1">
@@ -163,12 +168,15 @@ export function WalletButton() {
                   return (
                     <button
                       key={chain.id}
-                      onClick={() => { if (!isActive) { switchChain({ chainId: chain.id }); setOpen(false) } }}
+                      onClick={() => { if (!shouldLockToLiteforge && !isActive) { switchChain({ chainId: chain.id }); setOpen(false) } }}
+                      disabled={shouldLockToLiteforge && chain.id !== liteforgeChain.id}
                       className={cn(
-                        'w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-all duration-200 cursor-pointer group',
-                        isActive
-                          ? 'bg-gradient-to-r from-primary/10 to-primary/5 border border-primary/20 text-foreground shadow-sm'
-                          : 'hover:bg-muted/80 text-foreground/80 hover:text-foreground border border-transparent'
+                        'w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-all duration-200 group',
+                        shouldLockToLiteforge && chain.id !== liteforgeChain.id
+                          ? 'cursor-not-allowed opacity-45 border border-transparent text-foreground/60'
+                          : isActive
+                          ? 'cursor-pointer bg-gradient-to-r from-primary/10 to-primary/5 border border-primary/20 text-foreground shadow-sm'
+                          : 'cursor-pointer hover:bg-muted/80 text-foreground/80 hover:text-foreground border border-transparent'
                       )}
                     >
                       <img src={chain.icon} alt={chain.name} className="w-7 h-7 rounded-full" />
@@ -184,8 +192,13 @@ export function WalletButton() {
                         </span>
                       )}
                       {!isActive && (
-                        <span className="text-xs text-muted-foreground/0 group-hover:text-muted-foreground transition-colors">
-                          Switch
+                        <span className={cn(
+                          'text-xs transition-colors',
+                          shouldLockToLiteforge
+                            ? 'text-muted-foreground'
+                            : 'text-muted-foreground/0 group-hover:text-muted-foreground'
+                        )}>
+                          {shouldLockToLiteforge ? 'Locked' : 'Switch'}
                         </span>
                       )}
                     </button>

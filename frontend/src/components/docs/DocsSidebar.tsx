@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useLocation, useParams } from 'react-router-dom'
 import { ChevronDown, ChevronRight, BookOpen, Layers, ArrowRightLeft, Map, Coins, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -50,14 +50,22 @@ const sidebarItems: SidebarItem[] = [
   },
 ]
 
-function isActive(itemPath: string, section?: string, subsection?: string): boolean {
-  const currentPath = subsection ? `/docs/${section}/${subsection}` : section ? `/docs/${section}` : '/docs/overview'
-  return itemPath === currentPath
+function getDocsBasePath(pathname: string) {
+  return pathname.startsWith('/predict/docs') ? '/predict/docs' : '/docs'
 }
 
-function isParentActive(children: { label: string; path: string }[], section?: string, subsection?: string): boolean {
-  const currentPath = subsection ? `/docs/${section}/${subsection}` : section ? `/docs/${section}` : '/docs/overview'
-  return children.some(c => c.path === currentPath)
+function withDocsBase(path: string, basePath: string) {
+  return path.replace('/docs', basePath)
+}
+
+function isActive(itemPath: string, basePath: string, section?: string, subsection?: string): boolean {
+  const currentPath = subsection ? `${basePath}/${section}/${subsection}` : section ? `${basePath}/${section}` : `${basePath}/overview`
+  return withDocsBase(itemPath, basePath) === currentPath
+}
+
+function isParentActive(children: { label: string; path: string }[], basePath: string, section?: string, subsection?: string): boolean {
+  const currentPath = subsection ? `${basePath}/${section}/${subsection}` : section ? `${basePath}/${section}` : `${basePath}/overview`
+  return children.some(c => withDocsBase(c.path, basePath) === currentPath)
 }
 
 interface DocsSidebarProps {
@@ -67,6 +75,8 @@ interface DocsSidebarProps {
 
 export function DocsSidebar({ isOpen, onClose }: DocsSidebarProps) {
   const { section, subsection } = useParams()
+  const location = useLocation()
+  const docsBasePath = getDocsBasePath(location.pathname)
   const [expanded, setExpanded] = useState<Record<string, boolean>>({
     Bridge: true,
     Swap: false,
@@ -81,8 +91,8 @@ export function DocsSidebar({ isOpen, onClose }: DocsSidebarProps) {
       {sidebarItems.map((item) => {
         const hasChildren = item.children && item.children.length > 0
         const isExpanded = expanded[item.label] || false
-        const parentActive = hasChildren && isParentActive(item.children!, section, subsection)
-        const itemActive = item.path ? isActive(item.path, section, subsection) : false
+        const parentActive = hasChildren && isParentActive(item.children!, docsBasePath, section, subsection)
+        const itemActive = item.path ? isActive(item.path, docsBasePath, section, subsection) : false
 
         // Default to overview if no section
         const defaultActive = !section && item.path === '/docs/overview'
@@ -131,7 +141,7 @@ export function DocsSidebar({ isOpen, onClose }: DocsSidebarProps) {
                 </span>
               ) : (
                 <Link
-                  to={item.path!}
+                  to={withDocsBase(item.path!, docsBasePath)}
                   onClick={onClose}
                   className={cn(
                     'flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors',
@@ -155,11 +165,11 @@ export function DocsSidebar({ isOpen, onClose }: DocsSidebarProps) {
             {hasChildren && isExpanded && !item.soon && (
               <div className="ml-4 mt-1 space-y-0.5 border-l border-border/40 pl-3">
                 {item.children!.map((child) => {
-                  const childActive = isActive(child.path, section, subsection)
+                  const childActive = isActive(child.path, docsBasePath, section, subsection)
                   return (
                     <Link
                       key={child.path}
-                      to={child.path}
+                      to={withDocsBase(child.path, docsBasePath)}
                       onClick={onClose}
                       className={cn(
                         'flex items-center gap-2 px-2.5 py-1.5 rounded-md text-sm transition-colors',

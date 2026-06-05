@@ -1,0 +1,316 @@
+[2026-06-03 20:42:43] INFO: =================================
+[2026-06-03 20:42:43] INFO:   Rivalis Relayer Starting...
+[2026-06-03 20:42:43] INFO: =================================
+[2026-06-03 20:42:43] INFO: Contract: 0xF314F388D63b899b418312EDD424DF1dd3159EDa
+[2026-06-03 20:42:43] INFO: RPC: https://liteforge.rpc.caldera.xyz/http
+[2026-06-03 20:42:43] INFO: Poll interval: 5000ms
+[2026-06-03 20:42:43] INFO: Block chunk size: 5000
+[2026-06-03 20:42:43] INFO: Starting market event listener...
+[2026-06-03 20:42:43] INFO: Contract: 0xF314F388D63b899b418312EDD424DF1dd3159EDa
+[2026-06-03 20:42:43] INFO: Poll interval: 5000ms, chunk size: 5000
+[2026-06-03 20:42:43] INFO: RPC provider initialized: https://liteforge.rpc.caldera.xyz/http
+[2026-06-03 20:42:43] INFO: Auto-close checker started (interval: 30000ms)
+[2026-06-03 20:42:43] INFO: Supabase client initialized
+[2026-06-03 20:42:43] INFO: Admin API running on port 3002
+[2026-06-03 20:42:44] ERROR: Auto-close check failed {"error":"Invalid API key"}
+[2026-06-03 20:42:44] INFO: SQLite checkpoint DB initialized at C:\Users\User\OneDrive\Desktop\all-folder\litvm\prediction-relayer\data\checkpoint.db
+[2026-06-03 20:43:13] ERROR: Auto-close check failed {"error":"Invalid API key"}
+[2026-06-03 20:43:43] ERROR: Auto-close check failed {"error":"Invalid API key"}
+[2026-06-03 20:44:13] ERROR: Auto-close check failed {"error":"Invalid API key"}
+[2026-06-03 20:44:30] INFO: =================================
+[2026-06-03 20:44:30] INFO:   Rivalis Relayer Starting...
+[2026-06-03 20:44:30] INFO: =================================
+[2026-06-03 20:44:30] INFO: Contract: 0xF314F388D63b899b418312EDD424DF1dd3159EDa
+[2026-06-03 20:44:30] INFO: RPC: https://liteforge.rpc.caldera.xyz/http
+[2026-06-03 20:44:30] INFO: Poll interval: 5000ms
+[2026-06-03 20:44:30] INFO: Block chunk size: 5000
+[2026-06-03 20:44:30] INFO: Starting market event listener...
+[2026-06-03 20:44:30] INFO: Contract: 0xF314F388D63b899b418312EDD424DF1dd3159EDa
+[2026-06-03 20:44:30] INFO: Poll interval: 5000ms, chunk size: 5000
+[2026-06-03 20:44:30] INFO: RPC provider initialized: https://liteforge.rpc.caldera.xyz/http
+[2026-06-03 20:44:30] INFO: Auto-close checker started (interval: 30000ms)
+[2026-06-03 20:44:30] INFO: Supabase client initialized
+[2026-06-03 20:44:30] INFO: Admin API running on port 3002
+[2026-06-03 20:44:30] INFO: SQLite checkpoint DB initialized at C:\Users\User\OneDrive\Desktop\all-folder\litvm\prediction-relayer\data\checkpoint.db
+[2026-06-03 20:48:02] ERROR: [Admin] createMarket failed: execution reverted: "Close time must be future" (action="estimateGas", data="0x08c379a000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000019436c6f73652074696d65206d7573742062652066757475726500000000000000", reason="Close time must be future", transaction={ "data": "0xf2098c5600000000000000000000000000000000000000000000000000000000000000c000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000140000000000000000000000000000000000000000000000000002386f26fc1000000000000000000000000000000000000000000000000000000038d7ea4c6800000000000000000000000000000000000000000000000000000000000684125e0000000000000000000000000000000000000000000000000000000000000000a546573744d61726b657400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000454657374000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000800000000000000000000000000000000000000000000000000000000000000003596573000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000024e6f000000000000000000000000000000000000000000000000000000000000", "from": "0x8c8932232Aa5c5688181dFBF95FE3dF95f94eF7B", "to": "0xF314F388D63b899b418312EDD424DF1dd3159EDa" }, invocation=null, revert={ "args": [ "Close time must be future" ], "name": "Error", "signature": "Error(string)" }, code=CALL_EXCEPTION, version=6.16.0)
+[2026-06-03 20:48:39] ERROR: [Admin] createMarket failed: execution reverted: "Close time must be future" (action="estimateGas", data="0x08c379a000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000019436c6f73652074696d65206d7573742062652066757475726500000000000000", reason="Close time must be future", transaction={ "data": "0xf2098c5600000000000000000000000000000000000000000000000000000000000000c000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000140000000000000000000000000000000000000000000000000002386f26fc1000000000000000000000000000000000000000000000000000000038d7ea4c6800000000000000000000000000000000000000000000000000000000000684999f0000000000000000000000000000000000000000000000000000000000000000b54657374204d61726b657400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000155465737470726564696374696f6e206d61726b657400000000000000000000000000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000800000000000000000000000000000000000000000000000000000000000000003596573000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000024e6f000000000000000000000000000000000000000000000000000000000000", "from": "0x8c8932232Aa5c5688181dFBF95FE3dF95f94eF7B", "to": "0xF314F388D63b899b418312EDD424DF1dd3159EDa" }, invocation=null, revert={ "args": [ "Close time must be future" ], "name": "Error", "signature": "Error(string)" }, code=CALL_EXCEPTION, version=6.16.0)
+[2026-06-03 20:55:46] INFO: SIGINT received. Shutting down gracefully...
+[2026-06-03 20:55:48] INFO: =================================
+[2026-06-03 20:55:48] INFO:   Rivalis Relayer Starting...
+[2026-06-03 20:55:48] INFO: =================================
+[2026-06-03 20:55:48] INFO: Contract: 0xF314F388D63b899b418312EDD424DF1dd3159EDa
+[2026-06-03 20:55:48] INFO: RPC: https://liteforge.rpc.caldera.xyz/http
+[2026-06-03 20:55:48] INFO: Poll interval: 5000ms
+[2026-06-03 20:55:48] INFO: Block chunk size: 5000
+[2026-06-03 20:55:48] INFO: Starting market event listener...
+[2026-06-03 20:55:48] INFO: Contract: 0xF314F388D63b899b418312EDD424DF1dd3159EDa
+[2026-06-03 20:55:48] INFO: Poll interval: 5000ms, chunk size: 5000
+[2026-06-03 20:55:48] INFO: RPC provider initialized: https://liteforge.rpc.caldera.xyz/http
+[2026-06-03 20:55:48] INFO: Auto-close checker started (interval: 30000ms)
+[2026-06-03 20:55:48] INFO: Supabase client initialized
+[2026-06-03 20:55:48] INFO: Admin API running on port 3002
+[2026-06-03 20:55:48] INFO: SQLite checkpoint DB initialized at C:\Users\User\OneDrive\Desktop\all-folder\litvm\prediction-relayer\data\checkpoint.db
+[2026-06-03 21:06:18] INFO: SIGINT received. Shutting down gracefully...
+[2026-06-03 21:06:22] INFO: =================================
+[2026-06-03 21:06:22] INFO:   Rivalis Relayer Starting...
+[2026-06-03 21:06:22] INFO: =================================
+[2026-06-03 21:06:22] INFO: Contract: 0xF314F388D63b899b418312EDD424DF1dd3159EDa
+[2026-06-03 21:06:22] INFO: RPC: https://liteforge.rpc.caldera.xyz/http
+[2026-06-03 21:06:22] INFO: Poll interval: 5000ms
+[2026-06-03 21:06:22] INFO: Block chunk size: 5000
+[2026-06-03 21:06:22] INFO: Starting market event listener...
+[2026-06-03 21:06:22] INFO: Contract: 0xF314F388D63b899b418312EDD424DF1dd3159EDa
+[2026-06-03 21:06:22] INFO: Poll interval: 5000ms, chunk size: 5000
+[2026-06-03 21:06:22] INFO: RPC provider initialized: https://liteforge.rpc.caldera.xyz/http
+[2026-06-03 21:06:22] INFO: Auto-close checker started (interval: 30000ms)
+[2026-06-03 21:06:22] INFO: Supabase client initialized
+[2026-06-03 21:06:22] INFO: Admin API running on port 3002
+[2026-06-03 21:06:23] INFO: SQLite checkpoint DB initialized at C:\Users\User\OneDrive\Desktop\all-folder\litvm\prediction-relayer\data\checkpoint.db
+[2026-06-03 21:16:24] INFO: [Admin] createMarket tx sent: 0xbc9d84273cb2bd832c08e88e9a0c6b9d01ec052098a7e1ac4489bfb4a7dbbd52
+[2026-06-03 21:16:24] INFO: [Admin] createMarket confirmed: 0xbc9d84273cb2bd832c08e88e9a0c6b9d01ec052098a7e1ac4489bfb4a7dbbd52
+[2026-06-03 21:16:33] INFO: MarketCreated: #52 "test" [test, test222]
+[2026-06-03 21:16:34] INFO: [Admin] Category 3 set for market #52 (tx: 0xbc9d84273cb2bd832c08e88e9a0c6b9d01ec052098a7e1ac4489bfb4a7dbbd52)
+[2026-06-03 21:43:03] INFO: =================================
+[2026-06-03 21:43:03] INFO:   Rivalis Relayer Starting...
+[2026-06-03 21:43:03] INFO: =================================
+[2026-06-03 21:43:03] INFO: Contract: 0xF314F388D63b899b418312EDD424DF1dd3159EDa
+[2026-06-03 21:43:03] INFO: RPC: https://liteforge.rpc.caldera.xyz/http
+[2026-06-03 21:43:03] INFO: Poll interval: 5000ms
+[2026-06-03 21:43:03] INFO: Block chunk size: 5000
+[2026-06-03 21:43:03] INFO: Starting market event listener...
+[2026-06-03 21:43:03] INFO: Contract: 0xF314F388D63b899b418312EDD424DF1dd3159EDa
+[2026-06-03 21:43:03] INFO: Poll interval: 5000ms, chunk size: 5000
+[2026-06-03 21:43:03] INFO: RPC provider initialized: https://liteforge.rpc.caldera.xyz/http
+[2026-06-03 21:43:03] INFO: Auto-close checker started (interval: 30000ms)
+[2026-06-03 21:43:03] INFO: Supabase client initialized
+[2026-06-03 21:43:03] INFO: Admin API running on port 3002
+[2026-06-03 21:43:04] INFO: =================================
+[2026-06-03 21:43:04] INFO:   Rivalis Relayer Starting...
+[2026-06-03 21:43:04] INFO: =================================
+[2026-06-03 21:43:04] INFO: Contract: 0xF314F388D63b899b418312EDD424DF1dd3159EDa
+[2026-06-03 21:43:04] INFO: RPC: https://liteforge.rpc.caldera.xyz/http
+[2026-06-03 21:43:04] INFO: Poll interval: 5000ms
+[2026-06-03 21:43:04] INFO: Block chunk size: 5000
+[2026-06-03 21:43:04] INFO: Starting market event listener...
+[2026-06-03 21:43:04] INFO: Contract: 0xF314F388D63b899b418312EDD424DF1dd3159EDa
+[2026-06-03 21:43:04] INFO: Poll interval: 5000ms, chunk size: 5000
+[2026-06-03 21:43:04] INFO: RPC provider initialized: https://liteforge.rpc.caldera.xyz/http
+[2026-06-03 21:43:04] INFO: Auto-close checker started (interval: 30000ms)
+[2026-06-03 21:43:04] INFO: Supabase client initialized
+[2026-06-03 21:43:04] INFO: Admin API running on port 3002
+[2026-06-03 21:43:04] INFO: SQLite checkpoint DB initialized at C:\Users\User\OneDrive\Desktop\all-folder\litvm\prediction-relayer\data\checkpoint.db
+[2026-06-03 21:43:05] INFO: =================================
+[2026-06-03 21:43:05] INFO:   Rivalis Relayer Starting...
+[2026-06-03 21:43:05] INFO: =================================
+[2026-06-03 21:43:05] INFO: Contract: 0xF314F388D63b899b418312EDD424DF1dd3159EDa
+[2026-06-03 21:43:05] INFO: RPC: https://liteforge.rpc.caldera.xyz/http
+[2026-06-03 21:43:05] INFO: Poll interval: 5000ms
+[2026-06-03 21:43:05] INFO: Block chunk size: 5000
+[2026-06-03 21:43:05] INFO: Starting market event listener...
+[2026-06-03 21:43:05] INFO: Contract: 0xF314F388D63b899b418312EDD424DF1dd3159EDa
+[2026-06-03 21:43:05] INFO: Poll interval: 5000ms, chunk size: 5000
+[2026-06-03 21:43:05] INFO: RPC provider initialized: https://liteforge.rpc.caldera.xyz/http
+[2026-06-03 21:43:05] INFO: Auto-close checker started (interval: 30000ms)
+[2026-06-03 21:43:05] INFO: Supabase client initialized
+[2026-06-03 21:43:05] INFO: Admin API running on port 3002
+[2026-06-03 21:43:05] INFO: SQLite checkpoint DB initialized at C:\Users\User\OneDrive\Desktop\all-folder\litvm\prediction-relayer\data\checkpoint.db
+[2026-06-03 21:43:08] INFO: =================================
+[2026-06-03 21:43:08] INFO:   Rivalis Relayer Starting...
+[2026-06-03 21:43:08] INFO: =================================
+[2026-06-03 21:43:08] INFO: Contract: 0xF314F388D63b899b418312EDD424DF1dd3159EDa
+[2026-06-03 21:43:08] INFO: RPC: https://liteforge.rpc.caldera.xyz/http
+[2026-06-03 21:43:08] INFO: Poll interval: 5000ms
+[2026-06-03 21:43:08] INFO: Block chunk size: 5000
+[2026-06-03 21:43:08] INFO: Starting market event listener...
+[2026-06-03 21:43:08] INFO: Contract: 0xF314F388D63b899b418312EDD424DF1dd3159EDa
+[2026-06-03 21:43:08] INFO: Poll interval: 5000ms, chunk size: 5000
+[2026-06-03 21:43:08] INFO: RPC provider initialized: https://liteforge.rpc.caldera.xyz/http
+[2026-06-03 21:43:08] INFO: Auto-close checker started (interval: 30000ms)
+[2026-06-03 21:43:08] INFO: Supabase client initialized
+[2026-06-03 21:43:08] INFO: Admin API running on port 3002
+[2026-06-03 21:43:08] INFO: SQLite checkpoint DB initialized at C:\Users\User\OneDrive\Desktop\all-folder\litvm\prediction-relayer\data\checkpoint.db
+[2026-06-03 21:57:33] INFO: =================================
+[2026-06-03 21:57:33] INFO:   Rivalis Relayer Starting...
+[2026-06-03 21:57:33] INFO: =================================
+[2026-06-03 21:57:33] INFO: Contract: 0xF314F388D63b899b418312EDD424DF1dd3159EDa
+[2026-06-03 21:57:33] INFO: RPC: https://liteforge.rpc.caldera.xyz/http
+[2026-06-03 21:57:33] INFO: Poll interval: 5000ms
+[2026-06-03 21:57:33] INFO: Block chunk size: 5000
+[2026-06-03 21:57:33] INFO: Starting market event listener...
+[2026-06-03 21:57:33] INFO: Contract: 0xF314F388D63b899b418312EDD424DF1dd3159EDa
+[2026-06-03 21:57:33] INFO: Poll interval: 5000ms, chunk size: 5000
+[2026-06-03 21:57:33] INFO: RPC provider initialized: https://liteforge.rpc.caldera.xyz/http
+[2026-06-03 21:57:33] INFO: Auto-close checker started (interval: 30000ms)
+[2026-06-03 21:57:33] INFO: Supabase client initialized
+[2026-06-03 21:57:33] INFO: Admin API running on port 3002
+[2026-06-03 21:57:33] INFO: SQLite checkpoint DB initialized at C:\Users\User\OneDrive\Desktop\all-folder\litvm\prediction-relayer\data\checkpoint.db
+[2026-06-03 22:27:05] INFO: TicketPurchased: market #52, user 0x8c8932232Aa5c5688181dFBF95FE3dF95f94eF7B, outcome 1, qty 1
+[2026-06-03 22:29:46] INFO: TicketPurchased: market #52, user 0x8c8932232Aa5c5688181dFBF95FE3dF95f94eF7B, outcome 0, qty 1
+[2026-06-03 22:36:34] INFO: [Admin] updateCloseTime tx sent: 0x2c99b2b0de9c3c7371b57d6b94221b04ca7b7feb7b8512c104572079a5407261
+[2026-06-03 22:36:34] INFO: [Admin] updateCloseTime confirmed: 0x2c99b2b0de9c3c7371b57d6b94221b04ca7b7feb7b8512c104572079a5407261
+[2026-06-03 22:36:50] INFO: CloseTimeUpdated: market #52, 1780533000 -> 1780531200
+[2026-06-03 22:37:04] INFO: [Admin] updateCloseTime tx sent: 0x1226f36df0ddf2e86be545f79dbdb00b9eef0c5de731f261f9ed9c205c2ae441
+[2026-06-03 22:37:04] INFO: [Admin] updateCloseTime confirmed: 0x1226f36df0ddf2e86be545f79dbdb00b9eef0c5de731f261f9ed9c205c2ae441
+[2026-06-03 22:37:11] INFO: CloseTimeUpdated: market #52, 1780531200 -> 1780501200
+[2026-06-03 22:40:04] INFO: Auto-closed market #52 "test"
+[2026-06-03 23:59:54] ERROR: [Admin] resolveMarket failed: socket hang up
+[2026-06-04 00:00:02] INFO: [Admin] resolveMarket tx sent: 0x7856a7e9b73cfdb63f743c398d8cd18c8993f89d0f939d039ce3f04ce65ad07a
+[2026-06-04 00:00:02] INFO: [Admin] resolveMarket confirmed: 0x7856a7e9b73cfdb63f743c398d8cd18c8993f89d0f939d039ce3f04ce65ad07a
+[2026-06-04 00:00:16] INFO: Leaderboard updated for market #52 (1 users)
+[2026-06-04 00:00:16] INFO: MarketResolved: #52, winner: 1, isRefund: false
+[2026-06-04 00:03:42] INFO: [Admin] createMarket tx sent: 0x51986cf3239bc63c57c76d4aef90fd5004871279e5022864d57e903407090934
+[2026-06-04 00:03:42] INFO: [Admin] createMarket confirmed: 0x51986cf3239bc63c57c76d4aef90fd5004871279e5022864d57e903407090934
+[2026-06-04 00:03:56] INFO: MarketCreated: #53 "test" [wwww, weeewe]
+[2026-06-04 00:03:58] INFO: [Admin] Category 3 set for market #53 (tx: 0x51986cf3239bc63c57c76d4aef90fd5004871279e5022864d57e903407090934)
+[2026-06-04 00:12:50] INFO: Claimed: market #52, user 0x8c8932232Aa5c5688181dFBF95FE3dF95f94eF7B, amount 2000000000000000
+[2026-06-04 00:25:45] INFO: SIGINT received. Shutting down gracefully...
+[2026-06-04 14:15:54] INFO: =================================
+[2026-06-04 14:15:54] INFO:   Rivalis Relayer Starting...
+[2026-06-04 14:15:54] INFO: =================================
+[2026-06-04 14:15:54] INFO: Contract: 0xF314F388D63b899b418312EDD424DF1dd3159EDa
+[2026-06-04 14:15:54] INFO: RPC: https://liteforge.rpc.caldera.xyz/http
+[2026-06-04 14:15:54] INFO: Poll interval: 5000ms
+[2026-06-04 14:15:54] INFO: Block chunk size: 5000
+[2026-06-04 14:15:54] INFO: Starting market event listener...
+[2026-06-04 14:15:54] INFO: Contract: 0xF314F388D63b899b418312EDD424DF1dd3159EDa
+[2026-06-04 14:15:54] INFO: Poll interval: 5000ms, chunk size: 5000
+[2026-06-04 14:15:54] INFO: RPC provider initialized: https://liteforge.rpc.caldera.xyz/http
+[2026-06-04 14:15:54] INFO: Auto-close checker started (interval: 30000ms)
+[2026-06-04 14:15:54] INFO: Supabase client initialized
+[2026-06-04 14:15:54] INFO: Admin API running on port 3002
+[2026-06-04 14:15:55] INFO: =================================
+[2026-06-04 14:15:55] INFO:   Rivalis Relayer Starting...
+[2026-06-04 14:15:55] INFO: =================================
+[2026-06-04 14:15:55] INFO: Contract: 0xF314F388D63b899b418312EDD424DF1dd3159EDa
+[2026-06-04 14:15:55] INFO: RPC: https://liteforge.rpc.caldera.xyz/http
+[2026-06-04 14:15:55] INFO: Poll interval: 5000ms
+[2026-06-04 14:15:55] INFO: Block chunk size: 5000
+[2026-06-04 14:15:55] INFO: Starting market event listener...
+[2026-06-04 14:15:55] INFO: Contract: 0xF314F388D63b899b418312EDD424DF1dd3159EDa
+[2026-06-04 14:15:55] INFO: Poll interval: 5000ms, chunk size: 5000
+[2026-06-04 14:15:55] INFO: RPC provider initialized: https://liteforge.rpc.caldera.xyz/http
+[2026-06-04 14:15:55] INFO: Auto-close checker started (interval: 30000ms)
+[2026-06-04 14:15:55] INFO: Supabase client initialized
+[2026-06-04 14:15:55] INFO: Admin API running on port 3002
+[2026-06-04 14:15:57] INFO: SQLite checkpoint DB initialized at C:\Users\User\OneDrive\Desktop\all-folder\litvm\prediction-relayer\data\checkpoint.db
+[2026-06-04 14:15:58] INFO: =================================
+[2026-06-04 14:15:58] INFO:   Rivalis Relayer Starting...
+[2026-06-04 14:15:58] INFO: =================================
+[2026-06-04 14:15:58] INFO: Contract: 0xF314F388D63b899b418312EDD424DF1dd3159EDa
+[2026-06-04 14:15:58] INFO: RPC: https://liteforge.rpc.caldera.xyz/http
+[2026-06-04 14:15:58] INFO: Poll interval: 5000ms
+[2026-06-04 14:15:58] INFO: Block chunk size: 5000
+[2026-06-04 14:15:58] INFO: Starting market event listener...
+[2026-06-04 14:15:58] INFO: Contract: 0xF314F388D63b899b418312EDD424DF1dd3159EDa
+[2026-06-04 14:15:58] INFO: Poll interval: 5000ms, chunk size: 5000
+[2026-06-04 14:15:58] INFO: RPC provider initialized: https://liteforge.rpc.caldera.xyz/http
+[2026-06-04 14:15:58] INFO: Auto-close checker started (interval: 30000ms)
+[2026-06-04 14:15:58] INFO: Supabase client initialized
+[2026-06-04 14:15:58] INFO: Admin API running on port 3002
+[2026-06-04 14:15:58] INFO: SQLite checkpoint DB initialized at C:\Users\User\OneDrive\Desktop\all-folder\litvm\prediction-relayer\data\checkpoint.db
+[2026-06-04 14:37:35] ERROR: Error in processEvents {"error":"socket hang up"}
+[2026-06-04 14:51:16] INFO: TicketPurchased: market #53, user 0x484E0cAA0e211309771d1Be3A59EbC5F4cD0Cb4c, outcome 1, qty 1
+[2026-06-04 14:53:55] INFO: =================================
+[2026-06-04 14:53:55] INFO:   Rivalis Relayer Starting...
+[2026-06-04 14:53:55] INFO: =================================
+[2026-06-04 14:53:55] INFO: Contract: 0xF314F388D63b899b418312EDD424DF1dd3159EDa
+[2026-06-04 14:53:55] INFO: RPC: https://liteforge.rpc.caldera.xyz/http
+[2026-06-04 14:53:55] INFO: Poll interval: 5000ms
+[2026-06-04 14:53:55] INFO: Block chunk size: 5000
+[2026-06-04 14:53:55] INFO: Starting market event listener...
+[2026-06-04 14:53:55] INFO: Contract: 0xF314F388D63b899b418312EDD424DF1dd3159EDa
+[2026-06-04 14:53:55] INFO: Poll interval: 5000ms, chunk size: 5000
+[2026-06-04 14:53:55] INFO: RPC provider initialized: https://liteforge.rpc.caldera.xyz/http
+[2026-06-04 14:53:55] INFO: Auto-close checker started (interval: 30000ms)
+[2026-06-04 14:53:55] INFO: Supabase client initialized
+[2026-06-04 14:53:55] INFO: Admin API running on port 3002
+[2026-06-04 14:53:55] INFO: SQLite checkpoint DB initialized at C:\Users\User\OneDrive\Desktop\all-folder\litvm\prediction-relayer\data\checkpoint.db
+[2026-06-04 14:54:27] INFO: [Admin] updateCloseTime tx sent: 0x8bc7d03037b1eb7e920ea2f5cf296c548fe7f064c822bb9a83c758b31f46258e
+[2026-06-04 14:54:28] INFO: [Admin] updateCloseTime confirmed: 0x8bc7d03037b1eb7e920ea2f5cf296c548fe7f064c822bb9a83c758b31f46258e
+[2026-06-04 14:54:34] INFO: CloseTimeUpdated: market #53, 1780592400 -> 1780559760
+[2026-06-04 14:56:26] INFO: Auto-closed market #53 "test"
+[2026-06-04 14:57:01] INFO: [Admin] resolveMarket tx sent: 0x388dcdfb096456695d8501116080e12232a87a2e60e2188416bc684281d67264
+[2026-06-04 14:57:01] INFO: [Admin] resolveMarket confirmed: 0x388dcdfb096456695d8501116080e12232a87a2e60e2188416bc684281d67264
+[2026-06-04 14:57:11] INFO: Leaderboard updated for market #53 (1 users)
+[2026-06-04 14:57:11] INFO: MarketResolved: #53, winner: 0, isRefund: false
+[2026-06-04 14:58:05] INFO: [Admin] createMarket tx sent: 0xa0efef368809b0ef35de36dd085b07479a3c91f7b9978b81845ba3a43f2f3b60
+[2026-06-04 14:58:06] INFO: [Admin] createMarket confirmed: 0xa0efef368809b0ef35de36dd085b07479a3c91f7b9978b81845ba3a43f2f3b60
+[2026-06-04 14:58:09] INFO: MarketCreated: #54 "qwer" [qa, ws]
+[2026-06-04 14:58:09] INFO: [Admin] Category 1 set for market #54 (tx: 0xa0efef368809b0ef35de36dd085b07479a3c91f7b9978b81845ba3a43f2f3b60)
+[2026-06-04 14:58:30] INFO: TicketPurchased: market #54, user 0x484E0cAA0e211309771d1Be3A59EbC5F4cD0Cb4c, outcome 0, qty 2
+[2026-06-04 14:58:41] INFO: TicketPurchased: market #54, user 0x484E0cAA0e211309771d1Be3A59EbC5F4cD0Cb4c, outcome 1, qty 1
+[2026-06-04 15:00:26] INFO: Auto-closed market #54 "qwer"
+[2026-06-04 15:01:26] INFO: [Admin] resolveMarket tx sent: 0x26fc94866406a8c51e367556e8a0766eee7cf3b77a8fd667a8b3f4c904937730
+[2026-06-04 15:01:26] INFO: [Admin] resolveMarket confirmed: 0x26fc94866406a8c51e367556e8a0766eee7cf3b77a8fd667a8b3f4c904937730
+[2026-06-04 15:01:37] INFO: Leaderboard updated for market #54 (1 users)
+[2026-06-04 15:01:37] INFO: MarketResolved: #54, winner: 1, isRefund: false
+[2026-06-04 15:05:59] INFO: [Admin] createMarket tx sent: 0x29d7085c93599a3b7eb8cc3bfe7bf193b579c31a65010d3fafca103e60644039
+[2026-06-04 15:06:00] INFO: [Admin] createMarket confirmed: 0x29d7085c93599a3b7eb8cc3bfe7bf193b579c31a65010d3fafca103e60644039
+[2026-06-04 15:06:05] INFO: MarketCreated: #55 "asas" [sas, asasa]
+[2026-06-04 15:06:06] INFO: [Admin] Category 2 set for market #55 (tx: 0x29d7085c93599a3b7eb8cc3bfe7bf193b579c31a65010d3fafca103e60644039)
+[2026-06-04 15:06:46] INFO: TicketPurchased: market #55, user 0x484E0cAA0e211309771d1Be3A59EbC5F4cD0Cb4c, outcome 1, qty 1
+[2026-06-04 15:09:25] INFO: Claimed: market #54, user 0x484E0cAA0e211309771d1Be3A59EbC5F4cD0Cb4c, amount 30000000000000000
+[2026-06-04 16:12:23] INFO: TicketPurchased: market #55, user 0x484E0cAA0e211309771d1Be3A59EbC5F4cD0Cb4c, outcome 0, qty 1
+[2026-06-04 16:12:53] INFO: TicketPurchased: market #55, user 0x484E0cAA0e211309771d1Be3A59EbC5F4cD0Cb4c, outcome 1, qty 1
+[2026-06-04 16:18:24] INFO: TicketPurchased: market #55, user 0x484E0cAA0e211309771d1Be3A59EbC5F4cD0Cb4c, outcome 1, qty 1
+[2026-06-04 16:25:33] INFO: TicketPurchased: market #55, user 0x484E0cAA0e211309771d1Be3A59EbC5F4cD0Cb4c, outcome 0, qty 2
+[2026-06-04 16:29:39] INFO: =================================
+[2026-06-04 16:29:39] INFO:   Rivalis Relayer Starting...
+[2026-06-04 16:29:39] INFO: =================================
+[2026-06-04 16:29:39] INFO: Contract: 0xF314F388D63b899b418312EDD424DF1dd3159EDa
+[2026-06-04 16:29:39] INFO: RPC: https://liteforge.rpc.caldera.xyz/http
+[2026-06-04 16:29:39] INFO: Poll interval: 5000ms
+[2026-06-04 16:29:39] INFO: Block chunk size: 5000
+[2026-06-04 16:29:39] INFO: Starting market event listener...
+[2026-06-04 16:29:39] INFO: Contract: 0xF314F388D63b899b418312EDD424DF1dd3159EDa
+[2026-06-04 16:29:39] INFO: Poll interval: 5000ms, chunk size: 5000
+[2026-06-04 16:29:39] INFO: RPC provider initialized: https://liteforge.rpc.caldera.xyz/http
+[2026-06-04 16:29:39] INFO: Auto-close checker started (interval: 30000ms)
+[2026-06-04 16:29:39] INFO: Supabase client initialized
+[2026-06-04 16:29:39] INFO: Admin API running on port 3002
+[2026-06-04 16:29:40] INFO: =================================
+[2026-06-04 16:29:40] INFO:   Rivalis Relayer Starting...
+[2026-06-04 16:29:40] INFO: =================================
+[2026-06-04 16:29:40] INFO: Contract: 0xF314F388D63b899b418312EDD424DF1dd3159EDa
+[2026-06-04 16:29:40] INFO: RPC: https://liteforge.rpc.caldera.xyz/http
+[2026-06-04 16:29:40] INFO: Poll interval: 5000ms
+[2026-06-04 16:29:40] INFO: Block chunk size: 5000
+[2026-06-04 16:29:40] INFO: Starting market event listener...
+[2026-06-04 16:29:40] INFO: Contract: 0xF314F388D63b899b418312EDD424DF1dd3159EDa
+[2026-06-04 16:29:40] INFO: Poll interval: 5000ms, chunk size: 5000
+[2026-06-04 16:29:40] INFO: RPC provider initialized: https://liteforge.rpc.caldera.xyz/http
+[2026-06-04 16:29:40] INFO: Auto-close checker started (interval: 30000ms)
+[2026-06-04 16:29:40] INFO: Supabase client initialized
+[2026-06-04 16:29:40] INFO: Admin API running on port 3002
+[2026-06-04 16:29:40] INFO: SQLite checkpoint DB initialized at C:\Users\User\OneDrive\Desktop\all-folder\litvm\prediction-relayer\data\checkpoint.db
+[2026-06-04 16:29:41] INFO: =================================
+[2026-06-04 16:29:41] INFO:   Rivalis Relayer Starting...
+[2026-06-04 16:29:41] INFO: =================================
+[2026-06-04 16:29:41] INFO: Contract: 0xF314F388D63b899b418312EDD424DF1dd3159EDa
+[2026-06-04 16:29:41] INFO: RPC: https://liteforge.rpc.caldera.xyz/http
+[2026-06-04 16:29:41] INFO: Poll interval: 5000ms
+[2026-06-04 16:29:41] INFO: Block chunk size: 5000
+[2026-06-04 16:29:41] INFO: Starting market event listener...
+[2026-06-04 16:29:41] INFO: Contract: 0xF314F388D63b899b418312EDD424DF1dd3159EDa
+[2026-06-04 16:29:41] INFO: Poll interval: 5000ms, chunk size: 5000
+[2026-06-04 16:29:41] INFO: RPC provider initialized: https://liteforge.rpc.caldera.xyz/http
+[2026-06-04 16:29:41] INFO: Auto-close checker started (interval: 30000ms)
+[2026-06-04 16:29:41] INFO: Supabase client initialized
+[2026-06-04 16:29:41] INFO: Admin API running on port 3002
+[2026-06-04 16:29:41] INFO: SQLite checkpoint DB initialized at C:\Users\User\OneDrive\Desktop\all-folder\litvm\prediction-relayer\data\checkpoint.db
+[2026-06-04 16:30:52] INFO: =================================
+[2026-06-04 16:30:52] INFO:   Rivalis Relayer Starting...
+[2026-06-04 16:30:52] INFO: =================================
+[2026-06-04 16:30:52] INFO: Contract: 0xF314F388D63b899b418312EDD424DF1dd3159EDa
+[2026-06-04 16:30:52] INFO: RPC: https://liteforge.rpc.caldera.xyz/http
+[2026-06-04 16:30:52] INFO: Poll interval: 5000ms
+[2026-06-04 16:30:52] INFO: Block chunk size: 5000
+[2026-06-04 16:30:52] INFO: Starting market event listener...
+[2026-06-04 16:30:52] INFO: Contract: 0xF314F388D63b899b418312EDD424DF1dd3159EDa
+[2026-06-04 16:30:52] INFO: Poll interval: 5000ms, chunk size: 5000
+[2026-06-04 16:30:52] INFO: RPC provider initialized: https://liteforge.rpc.caldera.xyz/http
+[2026-06-04 16:30:52] INFO: Auto-close checker started (interval: 30000ms)
+[2026-06-04 16:30:52] INFO: Supabase client initialized
+[2026-06-04 16:30:52] INFO: Admin API running on port 3002
+[2026-06-04 16:30:52] INFO: SQLite checkpoint DB initialized at C:\Users\User\OneDrive\Desktop\all-folder\litvm\prediction-relayer\data\checkpoint.db
+[2026-06-04 16:46:06] INFO: SIGINT received. Shutting down gracefully...

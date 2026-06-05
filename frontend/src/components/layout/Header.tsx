@@ -11,6 +11,7 @@ export default function Header() {
   const navItems = [
     { path: '/', label: 'Bridge', soon: false },
     { path: '/swap', label: 'Swap', soon: false },
+    { path: '/predict', label: 'Prediction', soon: false },
     { path: '/history', label: 'History', soon: false },
     { path: '/explorer', label: 'Explorer', soon: false },
     { path: '/docs', label: 'Docs', soon: false },
