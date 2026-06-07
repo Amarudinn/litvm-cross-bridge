@@ -1,6 +1,6 @@
 # Multyra
 
-**Multi-product DeFi platform on LiteForge** — Cross-chain Bridge, DEX Aggregator, and Prediction Market
+Bridge, swap, and predict all in one platform. Multyra connects LiteForge with Ethereum testnets through a high-performance cross-chain bridge, multi-DEX aggregator, and on-chain prediction market
 
 ## Overview
 
