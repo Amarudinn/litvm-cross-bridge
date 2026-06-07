@@ -37,3 +37,7 @@ bot
 /docs
 supabase
 .claude
+
+tasks.md
+plan.md
+implementation.md
